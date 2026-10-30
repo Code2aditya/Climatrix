@@ -40,10 +40,10 @@ def seed_database():
 
     # 1. Organisations
     ops_org = Organisation(
-        name="AuraHeat Platform Operations",
-        slug="auraheat-ops",
+        name="Climatrix Platform Operations",
+        slug="climatrix-ops",
         org_type="PLATFORM_OPERATOR",
-        contact_email="ops@auraheat.io",
+        contact_email="ops@climatrix.io",
         contact_phone="+91-181-5550100",
         is_active=True
     )
@@ -69,7 +69,7 @@ def seed_database():
     # 2. Users with RBAC Roles
     super_admin = User(
         organisation_id=ops_org.id,
-        email="admin@auraheat.io",
+        email="admin@climatrix.io",
         hashed_password=get_password_hash("AntigravityAdmin2026!"),
         full_name="Dr. Vikramjit Singh (Super Admin)",
         phone="+91-9876543210",

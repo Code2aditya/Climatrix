@@ -3,7 +3,7 @@ import logging
 from typing import List, Dict, Any, Optional
 from app.core.config import settings
 
-logger = logging.getLogger("auraheat.llm")
+logger = logging.getLogger("climatrix.llm")
 
 class LLMDecisionEngine:
     """

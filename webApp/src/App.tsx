@@ -331,7 +331,7 @@ function LoginPortalScreen({
           </div>
           <div>
             <h1 className="text-3xl font-black bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 bg-clip-text text-transparent tracking-tight">
-              AuraHeat
+              Climatrix
             </h1>
             <p className="text-sm font-semibold text-slate-300 mt-1">
               AI-Powered Urban Heat Island &amp; Climate Resilience System
@@ -619,7 +619,7 @@ export function App() {
           <div>
             <div className="flex items-center gap-2">
               <span className="text-xl font-extrabold tracking-tight bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 bg-clip-text text-transparent">
-                AuraHeat
+                Climatrix
               </span>
               <span className="text-xs px-2.5 py-0.5 rounded-full font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
                 Pilot: Jalandhar (80 Wards)
@@ -1680,7 +1680,7 @@ export function App() {
       {/* 6. FOOTER */}
       <footer className="border-t border-slate-800/80 bg-slate-950 px-6 py-4 text-xs text-slate-500 flex flex-wrap items-center justify-between gap-4">
         <div>
-          <span>AuraHeat Platform · Jalandhar Smart Climate Pilot · Track CTBF-SU-06</span>
+          <span>Climatrix Platform · Jalandhar Smart Climate Pilot · Track CTBF-SU-06</span>
         </div>
         <div className="flex items-center gap-4">
           <span>USGS Landsat 9 TIRS-2 &amp; Sentinel-2 MSI</span>

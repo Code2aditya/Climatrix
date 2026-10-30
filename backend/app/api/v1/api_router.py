@@ -63,10 +63,10 @@ def pilot_info(db: Session = Depends(get_db)):
 @api_router.get("/system/pipeline-flow", tags=["System"])
 def system_pipeline_flow():
     """
-    Returns the structured end-to-end data pipeline architecture schema for AuraHeat.
+    Returns the structured end-to-end data pipeline architecture schema for Climatrix.
     """
     return {
-        "pipeline_name": "AuraHeat End-to-End Climate Data Pipeline",
+        "pipeline_name": "Climatrix End-to-End Climate Data Pipeline",
         "version": "1.0.0",
         "stages": [
             {
