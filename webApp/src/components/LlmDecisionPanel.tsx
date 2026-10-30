@@ -2,46 +2,23 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import {
   BrainCircuit,
-  Sparkles,
   Send,
-  Thermometer,
   Trees,
-  Wind,
-  CheckCircle2,
-  AlertTriangle,
-  Layers,
-  ArrowRight,
-  ShieldCheck,
-  Building,
-  Loader2,
-  Compass,
-  GraduationCap,
-  Activity,
-  Cpu,
-  Database
+  Loader2
 } from 'lucide-react';
-import { GisMap, type WardData, type TreeData } from './GisMap';
-import { type UserPersona } from './RoleLoginModal';
+import { type WardData } from './GisMap';
 
 const API_BASE = 'http://localhost:8000/api/v1';
 
 interface LlmDecisionPanelProps {
-  wards: WardData[];
-  trees: TreeData[];
   selectedWard: WardData;
-  currentUser: UserPersona;
-  onSelectWard: (ward: WardData) => void;
 }
 
 export const LlmDecisionPanel: React.FC<LlmDecisionPanelProps> = ({
-  wards,
-  trees,
-  selectedWard,
-  currentUser,
-  onSelectWard
+  selectedWard
 }) => {
   const [activeView, setActiveView] = useState<'advisor' | 'training'>('advisor');
-  const [selectedModel, setSelectedModel] = useState<string>('ft:gpt-4o-mini:climatrix-jalandhar-v1');
+  const [selectedModel] = useState<string>('ft:gpt-4o-mini:climatrix-jalandhar-v1');
   const [customPrompt, setCustomPrompt] = useState<string>(
     `Evaluate ${selectedWard.name} for 48°C extreme summer heat intervention & microclimate cooling`
   );
@@ -50,16 +27,6 @@ export const LlmDecisionPanel: React.FC<LlmDecisionPanelProps> = ({
   const [siteType, setSiteType] = useState<string>('ROADSIDE_STRIP');
   const [loading, setLoading] = useState<boolean>(false);
   const [llmResult, setLlmResult] = useState<any>(null);
-
-  // Training & Fine-Tuning State
-  const [trainingStatus, setTrainingStatus] = useState<any>(null);
-  const [trainingDataset, setTrainingDataset] = useState<any>(null);
-  const [isStartingJob, setIsStartingJob] = useState<boolean>(false);
-  const [jobSuccessMsg, setJobSuccessMsg] = useState<string>('');
-
-  // Map Controls State
-  const [activeMapLayer, setActiveMapLayer] = useState<'lst' | 'ndvi' | 'hotspots'>('lst');
-  const [showTreesOnMap, setShowTreesOnMap] = useState<boolean>(true);
 
   // Quick Preset Prompts
   const PRESET_PROMPTS = [
@@ -173,122 +140,44 @@ export const LlmDecisionPanel: React.FC<LlmDecisionPanelProps> = ({
     }
   };
 
-  const fetchTrainingData = async () => {
-    try {
-      const statusRes = await axios.get(`${API_BASE}/llm/training/status`);
-      setTrainingStatus(statusRes.data);
-      const datasetRes = await axios.get(`${API_BASE}/llm/training/dataset`);
-      setTrainingDataset(datasetRes.data);
-    } catch {
-      setTrainingStatus({
-        job_id: "ftjob-climatrix-jalandhar-2026",
-        status: "succeeded",
-        base_model: "gpt-4o-mini",
-        fine_tuned_model_id: "ft:gpt-4o-mini:climatrix-jalandhar-v1",
-        trained_tokens: 142500,
-        validation_accuracy_pct: 98.4,
-        epochs_completed: 3,
-        total_epochs: 3,
-        training_loss_curve: [
-          { step: 10, epoch: 0.5, train_loss: 0.85, val_loss: 0.88 },
-          { step: 20, epoch: 1.0, train_loss: 0.52, val_loss: 0.55 },
-          { step: 30, epoch: 1.5, train_loss: 0.31, val_loss: 0.34 },
-          { step: 40, epoch: 2.0, train_loss: 0.18, val_loss: 0.20 },
-          { step: 50, epoch: 2.5, train_loss: 0.09, val_loss: 0.11 },
-          { step: 60, epoch: 3.0, train_loss: 0.04, val_loss: 0.06 }
-        ]
-      });
-    }
-  };
-
-  const handleStartFineTuning = async () => {
-    setIsStartingJob(true);
-    try {
-      const res = await axios.post(`${API_BASE}/llm/training/start-job`);
-      setJobSuccessMsg(`✓ Fine-tuning job ${res.data.job_id} successfully submitted! Training model weights for ft:gpt-4o-mini:climatrix-jalandhar-v1`);
-    } catch {
-      setJobSuccessMsg('✓ Fine-tuning job ftjob-2026-climatrix submitted! Training 3 epochs over 50 JSONL ward microclimate examples.');
-    } finally {
-      setIsStartingJob(false);
-      setTimeout(() => setJobSuccessMsg(''), 4000);
-    }
-  };
-
   useEffect(() => {
     setCustomPrompt(`Evaluate ${selectedWard.name} for 48°C extreme summer heat intervention & microclimate cooling`);
   }, [selectedWard]);
 
   useEffect(() => {
     fetchLlmDecision();
-    fetchTrainingData();
-  }, [selectedWard, roadWidth, waterDepth, siteType, selectedModel]);
+  }, [selectedWard, roadWidth, waterDepth, siteType]);
 
   return (
-    <div className="space-y-6">
-      {/* 1. TOP ARANYIX AI BANNER & PROMPT INPUT */}
-      <div className="p-6 rounded-3xl bg-[#0b101d] border border-[#1e293b] shadow-2xl space-y-5 relative overflow-hidden">
-        {/* Ambient Light Glow Orbs */}
-        <div className="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none" />
-
-        <div className="flex flex-wrap items-center justify-between gap-4 relative z-10">
-          <div>
-            <span className="font-mono tracking-widest text-[10px] uppercase font-bold text-emerald-400 flex items-center gap-1.5">
-              <BrainCircuit className="w-4 h-4 text-emerald-400" /> Cognitive AI Decision &amp; Fine-Tuning Engine
-            </span>
-            <h3 className="text-2xl font-black text-white tracking-tight mt-0.5">
-              Aranyix Bio-Intelligence Workspace
-            </h3>
-            <p className="text-xs text-slate-300 mt-1 max-w-2xl leading-relaxed">
-              Trained on 80 Jalandhar ward microclimate scenarios to deliver deterministic agro-climatic species scoring and cool roof SRI calculations.
-            </p>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2">
-            {/* View Switcher Pills */}
-            <div className="flex gap-1 bg-[#030712] p-1 rounded-2xl border border-[#1e293b] text-xs font-bold shadow">
-              <button
-                onClick={() => setActiveView('advisor')}
-                className={`px-3.5 py-1.5 rounded-xl transition ${
-                  activeView === 'advisor'
-                    ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-black shadow-lg'
-                    : 'text-slate-400 hover:text-white'
-                }`}
-              >
-                <Sparkles className="w-3.5 h-3.5" /> Decision Advisor
-              </button>
-              <button
-                onClick={() => setActiveView('training')}
-                className={`px-3.5 py-1.5 rounded-xl transition ${
-                  activeView === 'training'
-                    ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-black shadow-lg'
-                    : 'text-slate-400 hover:text-white'
-                }`}
-              >
-                <GraduationCap className="w-3.5 h-3.5" /> Fine-Tuning Pipeline
-              </button>
-            </div>
-
-            {/* Model Switcher Dropdown */}
-            <select
-              value={selectedModel}
-              onChange={(e) => setSelectedModel(e.target.value)}
-              className="text-xs px-3 py-1.5 rounded-full font-mono font-bold bg-[#030712] text-emerald-300 border border-emerald-500/30 shadow cursor-pointer focus:outline-none"
+    <div className="space-y-4">
+      {/* 1. GOVERNMENT AI ASSISTANT FIELDSET */}
+      <fieldset className="govt-fieldset">
+        <legend className="govt-legend flex items-center justify-between w-full">
+          <span className="flex items-center gap-1.5"><BrainCircuit className="w-4 h-4 text-[#064e3b]" /> Official AI Climate Decision &amp; Fine-Tuning Register</span>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setActiveView('advisor')}
+              className={`px-3 py-1 rounded text-xs font-bold ${
+                activeView === 'advisor' ? 'bg-[#064e3b] text-white' : 'bg-slate-100 text-slate-700 border border-slate-300'
+              }`}
             >
-              <option value="ft:gpt-4o-mini:climatrix-jalandhar-v1" className="bg-[#030712] text-slate-100">
-                ✨ Custom Model: ft:gpt-4o-mini:climatrix-jalandhar-v1 (Fine-Tuned 98.4%)
-              </option>
-              <option value="gpt-4o-mini" className="bg-[#030712] text-slate-100">
-                🤖 Base Model: gpt-4o-mini
-              </option>
-            </select>
+              Decision Advisor
+            </button>
+            <button
+              onClick={() => setActiveView('training')}
+              className={`px-3 py-1 rounded text-xs font-bold ${
+                activeView === 'training' ? 'bg-[#064e3b] text-white' : 'bg-slate-100 text-slate-700 border border-slate-300'
+              }`}
+            >
+              Fine-Tuning Register
+            </button>
           </div>
-        </div>
+        </legend>
 
-        {/* VIEW 1: DECISION ADVISOR PROMPT BAR */}
         {activeView === 'advisor' && (
-          <>
-            <div className="space-y-2 relative z-10">
-              <label className="text-xs font-semibold text-slate-200 block">
+          <div className="space-y-3 pt-2 text-xs">
+            <div>
+              <label className="text-slate-800 font-bold block mb-1">
                 Natural Language Scenario Query for LLM Reasoning:
               </label>
               <div className="flex gap-2">
@@ -296,430 +185,138 @@ export const LlmDecisionPanel: React.FC<LlmDecisionPanelProps> = ({
                   type="text"
                   value={customPrompt}
                   onChange={(e) => setCustomPrompt(e.target.value)}
-                  placeholder="e.g. Evaluate Rainak Bazaar Ward 14 for 48°C heat wave intervention..."
-                  className="flex-1 bg-[#030712] border border-[#1e293b] rounded-2xl px-4 py-3 text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-emerald-500 font-medium transition shadow-inner"
+                  className="govt-input flex-1"
                 />
                 <button
                   onClick={fetchLlmDecision}
                   disabled={loading}
-                  className="px-6 py-3 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-extrabold text-xs transition shadow-xl shadow-emerald-500/20 flex items-center gap-2 flex-shrink-0"
+                  className="govt-btn-primary flex items-center gap-1 flex-shrink-0"
                 >
-                  {loading ? (
-                    <>
-                      <Loader2 className="w-4 h-4 animate-spin" /> Reasoning...
-                    </>
-                  ) : (
-                    <>
-                      <Send className="w-4 h-4" /> Execute LLM Decision
-                    </>
-                  )}
+                  {loading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
+                  Execute LLM Reasoning
                 </button>
               </div>
-
-              {/* Quick Preset Prompt Pills */}
-              <div className="flex flex-wrap gap-1.5 pt-1">
-                <span className="text-[11px] text-slate-400 font-medium">Quick Prompts:</span>
-                {PRESET_PROMPTS.map((promptText, pIdx) => (
-                  <button
-                    key={pIdx}
-                    onClick={() => {
-                      setCustomPrompt(promptText);
-                      fetchLlmDecision();
-                    }}
-                    className="text-[10px] px-3 py-1 rounded-xl bg-[#030712] hover:bg-slate-800 border border-[#1e293b] text-slate-200 transition"
-                  >
-                    "{promptText}"
-                  </button>
-                ))}
-              </div>
             </div>
 
-            {/* Ward Sliders */}
-            <div className="space-y-3 pt-3 border-t border-[#1e293b] relative z-10">
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <span className="font-mono tracking-widest text-[10px] uppercase font-bold text-slate-200 flex items-center gap-1.5">
-                  <Compass className="w-4 h-4 text-emerald-400" /> Select Target Ward for Spatial Reasoning:
-                </span>
-                <div className="flex flex-wrap gap-1 font-mono">
-                  {wards.filter(w => w.is_licensed).map((w) => (
-                    <button
-                      key={w.id}
-                      onClick={() => onSelectWard(w)}
-                      className={`px-3 py-1 rounded-xl text-xs font-bold transition ${
-                        selectedWard.id === w.id
-                          ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 shadow-lg shadow-emerald-500/20'
-                          : 'bg-[#030712] text-slate-300 hover:bg-slate-800 border border-[#1e293b]'
-                      }`}
-                    >
-                      {w.code.replace('JAL-WARD-', 'W-')}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-5 text-xs">
-                <div className="p-3.5 rounded-2xl bg-[#030712] border border-[#1e293b] space-y-1">
-                  <label className="font-semibold text-slate-300 block mb-1">
-                    Road Right-of-Way Width: <span className="text-emerald-400 font-bold">{roadWidth}m</span>
-                  </label>
-                  <input
-                    type="range"
-                    min="3.0"
-                    max="18.0"
-                    step="0.5"
-                    value={roadWidth}
-                    onChange={(e) => setRoadWidth(parseFloat(e.target.value))}
-                    className="w-full accent-emerald-500 cursor-pointer"
-                  />
-                </div>
-
-                <div className="p-3.5 rounded-2xl bg-[#030712] border border-[#1e293b] space-y-1">
-                  <label className="font-semibold text-slate-300 block mb-1">
-                    Groundwater Table Depth: <span className="text-cyan-400 font-bold">{waterDepth}m</span>
-                  </label>
-                  <input
-                    type="range"
-                    min="10.0"
-                    max="35.0"
-                    step="1.0"
-                    value={waterDepth}
-                    onChange={(e) => setWaterDepth(parseFloat(e.target.value))}
-                    className="w-full accent-cyan-500 cursor-pointer"
-                  />
-                </div>
-
-                <div className="p-3.5 rounded-2xl bg-[#030712] border border-[#1e293b] space-y-1">
-                  <label className="font-semibold text-slate-300 block mb-1">
-                    Site Typology:
-                  </label>
-                  <select
-                    value={siteType}
-                    onChange={(e) => setSiteType(e.target.value)}
-                    className="w-full bg-[#030712] border border-[#1e293b] rounded-xl px-3 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-emerald-500 cursor-pointer font-medium"
-                  >
-                    <option value="ROADSIDE_STRIP">Avenue / Roadside Strip</option>
-                    <option value="RESIDENTIAL_STREET">Narrow Residential Street</option>
-                    <option value="INDUSTRIAL_BOUNDARY">Industrial Buffer Belt (High Pollution)</option>
-                    <option value="PUBLIC_PARK">Municipal Park / Educational Campus</option>
-                  </select>
-                </div>
-              </div>
+            {/* Quick Prompts */}
+            <div className="flex flex-wrap gap-1.5 items-center">
+              <span className="text-slate-500 font-bold text-[11px]">Suggested Queries:</span>
+              {PRESET_PROMPTS.map((p, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => { setCustomPrompt(p); fetchLlmDecision(); }}
+                  className="px-2.5 py-1 rounded bg-slate-100 border border-slate-300 text-slate-800 text-[11px] font-medium hover:bg-slate-200"
+                >
+                  "{p}"
+                </button>
+              ))}
             </div>
-          </>
-        )}
-      </div>
 
-      {/* VIEW 2: FINE-TUNING PIPELINE & TRAINING PROGRESS */}
-      {activeView === 'training' && (
-        <div className="space-y-6">
-          {jobSuccessMsg && (
-            <div className="p-4 rounded-2xl bg-emerald-950/60 border border-emerald-800 text-emerald-300 text-xs font-bold flex items-center gap-2 shadow-lg">
-              <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0" />
-              <span>{jobSuccessMsg}</span>
-            </div>
-          )}
-
-          {/* Model Status Card */}
-          <div className="p-6 rounded-3xl bg-[#0b101d] border border-[#1e293b] shadow-2xl space-y-4">
-            <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#1e293b] pb-4">
+            {/* Micro-site Sliders */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2 border-t border-slate-200">
               <div>
-                <span className="font-mono text-xs font-bold text-emerald-300 bg-emerald-500/20 px-2.5 py-0.5 rounded-full border border-emerald-500/30">
-                  {trainingStatus?.fine_tuned_model_id || 'ft:gpt-4o-mini:climatrix-jalandhar-v1'}
-                </span>
-                <h4 className="text-lg font-extrabold text-white mt-1">
-                  Custom Fine-Tuned Model Weights &amp; Calibration Metrics
-                </h4>
+                <label className="text-slate-700 font-bold block mb-1">Road Width: <span className="text-[#064e3b]">{roadWidth}m</span></label>
+                <input type="range" min="3.0" max="18.0" step="0.5" value={roadWidth} onChange={(e) => setRoadWidth(parseFloat(e.target.value))} className="w-full accent-[#064e3b]" />
               </div>
-
-              <button
-                onClick={handleStartFineTuning}
-                disabled={isStartingJob}
-                className="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-extrabold text-xs transition shadow-lg shadow-emerald-500/20 flex items-center gap-2"
-              >
-                {isStartingJob ? <Loader2 className="w-4 h-4 animate-spin" /> : <GraduationCap className="w-4 h-4" />}
-                Trigger Fine-Tuning Training Job
-              </button>
-            </div>
-
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs font-mono">
-              <div className="p-4 rounded-2xl bg-[#030712] border border-[#1e293b] space-y-1">
-                <span className="text-slate-400 text-[10px] uppercase font-bold block">Validation Accuracy</span>
-                <span className="font-extrabold text-emerald-400 text-2xl block">98.4%</span>
-                <span className="text-emerald-300 text-[10px] block font-semibold">Loss convergence: 0.04</span>
+              <div>
+                <label className="text-slate-700 font-bold block mb-1">Water Table Depth: <span className="text-[#064e3b]">{waterDepth}m</span></label>
+                <input type="range" min="10.0" max="35.0" step="1.0" value={waterDepth} onChange={(e) => setWaterDepth(parseFloat(e.target.value))} className="w-full accent-[#064e3b]" />
               </div>
-
-              <div className="p-4 rounded-2xl bg-[#030712] border border-[#1e293b] space-y-1">
-                <span className="text-slate-400 text-[10px] uppercase font-bold block">Trained Tokens</span>
-                <span className="font-extrabold text-purple-300 text-2xl block">142,500</span>
-                <span className="text-slate-400 text-[10px] block">50 Domain Examples</span>
-              </div>
-
-              <div className="p-4 rounded-2xl bg-[#030712] border border-[#1e293b] space-y-1">
-                <span className="text-slate-400 text-[10px] uppercase font-bold block">Training Epochs</span>
-                <span className="font-extrabold text-cyan-400 text-2xl block">3 / 3</span>
-                <span className="text-cyan-300 text-[10px] block font-semibold">100% Completed</span>
-              </div>
-
-              <div className="p-4 rounded-2xl bg-[#030712] border border-[#1e293b] space-y-1">
-                <span className="text-slate-400 text-[10px] uppercase font-bold block">Fine-Tuning Job ID</span>
-                <span className="font-extrabold text-amber-400 text-xs block mt-1">ftjob-climatrix-2026</span>
-                <span className="text-emerald-400 text-[10px] block font-bold">STATUS: SUCCEEDED</span>
-              </div>
-            </div>
-
-            {/* Loss Curve Table */}
-            <div className="space-y-2 pt-2">
-              <span className="font-mono tracking-widest text-[10px] font-bold text-slate-300 uppercase block">
-                📈 Fine-Tuning Loss Curve &amp; Epoch Progress:
-              </span>
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs text-slate-300 font-mono">
-                  <thead className="bg-[#030712] uppercase text-slate-400 border-b border-[#1e293b]">
-                    <tr>
-                      <th className="py-2 px-3">Step</th>
-                      <th className="py-2 px-3">Epoch</th>
-                      <th className="py-2 px-3">Training Loss</th>
-                      <th className="py-2 px-3">Validation Loss</th>
-                      <th className="py-2 px-3">Convergence</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-[#1e293b]">
-                    {trainingStatus?.training_loss_curve?.map((lc: any, idx: number) => (
-                      <tr key={idx} className="hover:bg-slate-800/40 transition">
-                        <td className="py-2 px-3 text-slate-400">Step {lc.step}</td>
-                        <td className="py-2 px-3 text-purple-300 font-bold">Epoch {lc.epoch}</td>
-                        <td className="py-2 px-3 text-amber-400 font-bold">{lc.train_loss}</td>
-                        <td className="py-2 px-3 text-emerald-400 font-bold">{lc.val_loss}</td>
-                        <td className="py-2 px-3 text-emerald-300 font-bold">
-                          {lc.train_loss < 0.10 ? '✓ Optimal Convergence' : 'Training...'}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+              <div>
+                <label className="text-slate-700 font-bold block mb-1">Site Typology:</label>
+                <select value={siteType} onChange={(e) => setSiteType(e.target.value)} className="govt-input w-full">
+                  <option value="ROADSIDE_STRIP">Avenue / Roadside Corridor</option>
+                  <option value="RESIDENTIAL_STREET">Narrow Residential Alley</option>
+                  <option value="INDUSTRIAL_BOUNDARY">Industrial Buffer Belt</option>
+                  <option value="PUBLIC_PARK">Municipal Park / Campus</option>
+                </select>
               </div>
             </div>
           </div>
+        )}
+      </fieldset>
+
+      {/* 2. ADVISORY OUTPUT TABLE */}
+      {activeView === 'advisor' && llmResult && (
+        <div className="overflow-x-auto border border-slate-300 rounded bg-white shadow-sm">
+          <table className="govt-table">
+            <thead>
+              <tr>
+                <th>Ward Code &amp; Name</th>
+                <th>Recommended Strategy</th>
+                <th>Primary Intervention</th>
+                <th>UHI Delta (°C)</th>
+                <th>Projected Surface Cooling</th>
+                <th>LLM Engine Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <span className="font-mono font-bold text-slate-800 bg-slate-100 px-2 py-0.5 rounded border border-slate-300 mr-1.5">
+                    {llmResult.advisory?.ward_code}
+                  </span>
+                  <strong className="text-slate-900">{llmResult.advisory?.ward_name}</strong>
+                </td>
+                <td className="font-bold text-[#064e3b]">{llmResult.advisory?.recommended_strategy}</td>
+                <td className="text-xs text-slate-800">{llmResult.advisory?.primary_intervention}</td>
+                <td className="font-bold text-red-700">+{llmResult.advisory?.uhi_intensity_delta_celsius}°C</td>
+                <td className="font-bold text-emerald-800">-{llmResult.advisory?.projected_surface_cooling_celsius}°C</td>
+                <td>
+                  <span className="px-2 py-0.5 rounded font-bold text-[10px] bg-emerald-100 text-emerald-900 border border-emerald-300">
+                    {llmResult.llm_engine_mode}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       )}
 
-      {/* VIEW 1: SPATIAL MAP & LLM DECISION REPORT GRID */}
+      {/* 3. SPECIES RECOMMENDATIONS TABLE */}
       {activeView === 'advisor' && llmResult && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Left Column: Interactive GIS Map */}
-          <div className="lg:col-span-1 space-y-3">
-            <div className="p-5 rounded-3xl bg-[#0b101d] border border-[#1e293b] shadow-2xl space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-white flex items-center gap-1.5">
-                  <Compass className="w-4 h-4 text-emerald-400" /> Target Spatial Boundary Map
-                </span>
-                <span className="font-mono text-[10px] px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/30">
-                  {selectedWard.code}
-                </span>
-              </div>
-
-              {/* Map Layer Controls */}
-              <div className="flex items-center gap-1 bg-[#030712] p-1 rounded-2xl border border-[#1e293b] text-[11px] font-semibold">
-                <button
-                  onClick={() => setActiveMapLayer('lst')}
-                  className={`flex-1 py-1.5 rounded-xl transition ${
-                    activeMapLayer === 'lst' ? 'bg-red-500 text-white font-bold shadow' : 'text-slate-400 hover:text-white'
-                  }`}
-                >
-                  🔥 LST Temp
-                </button>
-                <button
-                  onClick={() => setActiveMapLayer('ndvi')}
-                  className={`flex-1 py-1.5 rounded-xl transition ${
-                    activeMapLayer === 'ndvi' ? 'bg-emerald-500 text-slate-950 font-bold shadow' : 'text-slate-400 hover:text-white'
-                  }`}
-                >
-                  🌿 NDVI
-                </button>
-                <button
-                  onClick={() => setActiveMapLayer('hotspots')}
-                  className={`flex-1 py-1.5 rounded-xl transition ${
-                    activeMapLayer === 'hotspots' ? 'bg-amber-500 text-slate-950 font-bold shadow' : 'text-slate-400 hover:text-white'
-                  }`}
-                >
-                  ⚠️ Hotspots
-                </button>
-              </div>
-
-              {/* GIS Map Viewport */}
-              <div className="rounded-2xl overflow-hidden border border-[#1e293b] shadow-xl">
-                <GisMap
-                  wards={wards}
-                  trees={trees}
-                  selectedWard={selectedWard}
-                  onSelectWard={onSelectWard}
-                  activeLayer={activeMapLayer}
-                  showTrees={showTreesOnMap}
-                />
-              </div>
-
-              <div className="p-3.5 rounded-2xl bg-[#030712] border border-[#1e293b] text-[11px] space-y-1.5">
-                <div className="flex justify-between">
-                  <span className="text-slate-400">Mean Surface LST:</span>
-                  <span className="font-bold text-red-400 font-mono">{selectedWard.heat_analysis?.mean_lst_celsius}°C</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-400">Vegetation NDVI:</span>
-                  <span className="font-bold text-emerald-400 font-mono">{selectedWard.heat_analysis?.mean_ndvi}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-400">Priority Vulnerability:</span>
-                  <span className="font-bold text-amber-400 font-mono">Rank #{selectedWard.heat_analysis?.vulnerability_rank}</span>
-                </div>
-              </div>
-            </div>
+        <fieldset className="govt-fieldset">
+          <legend className="govt-legend flex items-center gap-1.5">
+            <Trees className="w-4 h-4 text-[#064e3b]" /> Evaluated Punjab Native Species Matrix
+          </legend>
+          <div className="overflow-x-auto border border-slate-300 rounded bg-white">
+            <table className="govt-table">
+              <thead>
+                <tr>
+                  <th>Species Name</th>
+                  <th>Suitability Score</th>
+                  <th>Suitability Tier</th>
+                  <th>Match Rationales</th>
+                  <th>Planting Guidance</th>
+                </tr>
+              </thead>
+              <tbody>
+                {llmResult.species_recommendations?.map((rec: any, idx: number) => (
+                  <tr key={idx}>
+                    <td>
+                      <strong className="text-slate-900 block">{rec.species?.common_name_punjabi}</strong>
+                      <span className="text-[11px] italic text-slate-600">{rec.species?.botanical_name}</span>
+                    </td>
+                    <td className="font-bold text-emerald-900 text-base">{rec.suitability_score}%</td>
+                    <td>
+                      <span className="px-2 py-0.5 rounded font-bold text-[10px] bg-emerald-100 text-emerald-900 border border-emerald-300">
+                        {rec.suitability_level}
+                      </span>
+                    </td>
+                    <td className="text-xs text-slate-700">
+                      <ul className="list-disc list-inside space-y-0.5">
+                        {rec.match_reasons?.map((m: string, mIdx: number) => (
+                          <li key={mIdx}>{m}</li>
+                        ))}
+                      </ul>
+                    </td>
+                    <td className="text-xs text-slate-800">{rec.planting_guidance}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
-
-          {/* Right Column: Executive LLM Advisory & Rationale */}
-          <div className="lg:col-span-2 space-y-6">
-            <div className="p-6 rounded-3xl bg-[#0b101d] border border-[#1e293b] shadow-2xl space-y-4">
-              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#1e293b] pb-3">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-9 h-9 rounded-2xl bg-emerald-500/20 text-emerald-300 flex items-center justify-center font-bold border border-emerald-500/30 shadow">
-                    <BrainCircuit className="w-5 h-5 text-emerald-400" />
-                  </div>
-                  <div>
-                    <span className="font-mono text-[10px] font-bold text-emerald-300 bg-emerald-500/20 px-2 py-0.5 rounded border border-emerald-500/30">
-                      {llmResult.advisory?.ward_code}
-                    </span>
-                    <h4 className="text-base font-extrabold text-white mt-0.5">
-                      Aranyix Decision Advisory: {llmResult.advisory?.ward_name}
-                    </h4>
-                  </div>
-                </div>
-
-                <span className="text-xs font-bold text-emerald-300 bg-emerald-500/20 border border-emerald-500/30 px-3 py-1 rounded-full flex items-center gap-1.5 shadow">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400" /> {llmResult.llm_engine_mode}
-                </span>
-              </div>
-
-              <p className="text-xs text-slate-200 leading-relaxed italic bg-[#030712] p-4 rounded-2xl border border-[#1e293b] shadow-inner">
-                "{llmResult.advisory?.executive_summary}"
-              </p>
-
-              {/* Main Decision Spec */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-                <div className="p-4 rounded-2xl bg-[#030712] border border-[#1e293b] space-y-1">
-                  <span className="text-slate-400 text-[10px] uppercase font-bold block font-mono">Recommended Primary Strategy:</span>
-                  <span className="font-extrabold text-emerald-400 text-sm block">
-                    {llmResult.advisory?.recommended_strategy}
-                  </span>
-                  <span className="text-slate-300 block text-[11px] mt-1 font-semibold leading-snug">
-                    {llmResult.advisory?.primary_intervention}
-                  </span>
-                </div>
-
-                <div className="p-4 rounded-2xl bg-[#030712] border border-[#1e293b] space-y-1">
-                  <span className="text-slate-400 text-[10px] uppercase font-bold block font-mono">Urban Heat Island Delta:</span>
-                  <span className="font-extrabold text-red-400 text-2xl block">
-                    +{llmResult.advisory?.uhi_intensity_delta_celsius}°C
-                  </span>
-                  <span className="text-slate-400 text-[10px] block">Above rural background reference</span>
-                </div>
-
-                <div className="p-4 rounded-2xl bg-emerald-950/30 border border-emerald-800/50 space-y-1">
-                  <span className="text-emerald-400 text-[10px] uppercase font-bold block font-mono">Projected Temp Drop:</span>
-                  <span className="font-extrabold text-emerald-300 text-2xl block">
-                    -{llmResult.advisory?.projected_surface_cooling_celsius}°C
-                  </span>
-                  <span className="text-emerald-300 text-[10px] block font-semibold">
-                    Estimated cooling after intervention
-                  </span>
-                </div>
-              </div>
-
-              {/* In-depth LLM Rationale */}
-              <div className="p-4 rounded-2xl bg-[#030712] border border-[#1e293b] space-y-2 text-xs">
-                <span className="font-bold text-white flex items-center gap-1.5">
-                  <Sparkles className="w-4 h-4 text-emerald-400" />
-                  LLM Cognitive Rationale:
-                </span>
-                <p className="text-slate-300 leading-relaxed">
-                  {llmResult.advisory?.decision_rationale}
-                </p>
-              </div>
-
-              {/* Action Items */}
-              <div className="space-y-1.5 text-xs">
-                <span className="font-bold text-slate-400 block mb-1 font-mono text-[10px] uppercase">Key Action Directives Generated by LLM:</span>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5">
-                  {llmResult.advisory?.key_actions?.map((act: string, aIdx: number) => (
-                    <div key={aIdx} className="p-3 rounded-xl bg-[#030712] border border-[#1e293b] text-slate-300 flex items-center gap-2 font-medium">
-                      <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-                      <span>{act}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* 3. SPECIES SUITABILITY MATRIX (EVALUATED BY LLM) */}
-      {activeView === 'advisor' && llmResult && (
-        <div className="space-y-3">
-          <h4 className="text-base font-bold text-white flex items-center gap-2">
-            <Trees className="w-5 h-5 text-emerald-400" />
-            Punjab Native Species Suitability (LLM Evaluated for {roadWidth}m Road &amp; {waterDepth}m Water Table)
-          </h4>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {llmResult.species_recommendations?.map((rec: any, sIdx: number) => (
-              <div key={sIdx} className="p-6 rounded-3xl bg-[#0b101d] border border-[#1e293b] hover:border-emerald-500/40 transition-all shadow-xl space-y-3.5">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <span className="text-xs font-bold text-emerald-400 block">
-                      {rec.species?.common_name_punjabi}
-                    </span>
-                    <h5 className="text-sm font-extrabold text-white mt-0.5">
-                      {rec.species?.botanical_name}
-                    </h5>
-                  </div>
-
-                  <div className="text-right">
-                    <span className="text-2xl font-black text-emerald-400 block">
-                      {rec.suitability_score}%
-                    </span>
-                    <span className="font-mono text-[9px] font-extrabold uppercase px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                      {rec.suitability_level}
-                    </span>
-                  </div>
-                </div>
-
-                <p className="text-xs text-slate-300 leading-snug">
-                  {rec.species?.description}
-                </p>
-
-                <div className="space-y-1.5 text-xs pt-3 border-t border-[#1e293b]">
-                  <span className="font-mono text-[10px] font-bold text-slate-400 uppercase block">LLM Match Rationales:</span>
-                  {rec.match_reasons?.map((reason: string, rIdx: number) => (
-                    <div key={rIdx} className="text-emerald-300 flex items-start gap-1.5 text-[11px]">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0 mt-0.5" />
-                      <span>{reason}</span>
-                    </div>
-                  ))}
-
-                  {rec.risk_warnings?.map((warn: string, wIdx: number) => (
-                    <div key={wIdx} className="text-amber-300 flex items-start gap-1.5 text-[11px]">
-                      <AlertTriangle className="w-3.5 h-3.5 text-amber-400 flex-shrink-0 mt-0.5" />
-                      <span>{warn}</span>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="p-3 rounded-2xl bg-[#030712] border border-[#1e293b] text-[10px] text-slate-400">
-                  💡 <strong>Planting Guidance:</strong> {rec.planting_guidance}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+        </fieldset>
       )}
     </div>
   );

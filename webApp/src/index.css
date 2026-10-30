@@ -1,57 +1,121 @@
 @import "tailwindcss";
 @import "leaflet/dist/leaflet.css";
 
-/* Aranyix Nature-Tech Design System Variables & Tokens */
+/* Indian Government Portal Design Tokens */
 :root {
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
-  --bg-obsidian: #030712;
-  --bg-card: #0b101d;
-  --border-card: #1e293b;
-  --accent-emerald: #10b981;
-  --accent-cyan: #06b6d4;
-  color-scheme: dark;
+  --govt-green: #064e3b;
+  --govt-navy: #0f172a;
+  --govt-bg: #f8fafc;
+  --govt-border: #cbd5e1;
+  color-scheme: light;
 }
 
 body {
-  background-color: var(--bg-obsidian);
-  color: #f8fafc;
+  background-color: var(--govt-bg);
+  color: #0f172a;
   font-family: var(--font-sans);
   margin: 0;
   min-height: 100vh;
   overflow-x: hidden;
 }
 
-/* Aranyix Utility Classes */
-.aranyix-card {
-  background: #0b101d;
-  border: 1px solid #1e293b;
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+/* Government Portal Utility Classes */
+.govt-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8125rem;
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
 }
 
-.aranyix-card:hover {
-  border-color: rgba(16, 185, 129, 0.4);
-}
-
-.aranyix-badge {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.1em;
+.govt-table th {
+  background-color: #f1f5f9;
+  color: #0f172a;
+  font-weight: 700;
   text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  padding: 0.625rem 0.875rem;
+  border-bottom: 2px solid #cbd5e1;
+  border-right: 1px solid #e2e8f0;
 }
 
-.aranyix-btn-primary {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-  color: #030712;
-  font-weight: 800;
-  box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.25);
-  transition: all 0.2s ease;
+.govt-table td {
+  padding: 0.625rem 0.875rem;
+  border-bottom: 1px solid #e2e8f0;
+  border-right: 1px solid #f1f5f9;
+  color: #1e293b;
 }
 
-.aranyix-btn-primary:hover {
-  background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
-  box-shadow: 0 12px 30px -5px rgba(16, 185, 129, 0.4);
+.govt-table tr:nth-child(even) {
+  background-color: #f8fafc;
+}
+
+.govt-table tr:hover {
+  background-color: #f0fdf4;
+}
+
+.govt-fieldset {
+  border: 1px solid #cbd5e1;
+  background-color: #ffffff;
+  border-radius: 0.5rem;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.govt-legend {
+  font-weight: 700;
+  font-size: 0.875rem;
+  color: #064e3b;
+  padding: 0 0.5rem;
+}
+
+.govt-input {
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.375rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.8125rem;
+  color: #0f172a;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.govt-input:focus {
+  border-color: #064e3b;
+  box-shadow: 0 0 0 2px rgba(6, 78, 59, 0.15);
+}
+
+.govt-btn-primary {
+  background-color: #064e3b;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.8125rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  border: 1px solid #042f2e;
+  transition: background-color 0.15s ease;
+}
+
+.govt-btn-primary:hover {
+  background-color: #047857;
+}
+
+.govt-btn-secondary {
+  background-color: #1e293b;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.8125rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  border: 1px solid #0f172a;
+  transition: background-color 0.15s ease;
+}
+
+.govt-btn-secondary:hover {
+  background-color: #334155;
 }
 
 /* Custom Scrollbars */
@@ -61,32 +125,32 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #030712;
+  background: #f1f5f9;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1e293b;
+  background: #cbd5e1;
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #059669;
+  background: #064e3b;
 }
 
-/* Leaflet Map overrides for Aranyix dark theme */
+/* Leaflet Map overrides for light/dark containers */
 .leaflet-container {
-  background: #030712 !important;
+  background: #f8fafc !important;
   font-family: inherit;
 }
 
 .leaflet-popup-content-wrapper {
-  background: #0b101d !important;
-  color: #f8fafc !important;
-  border-radius: 12px !important;
-  border: 1px solid #1e293b !important;
-  box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.8) !important;
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border-radius: 8px !important;
+  border: 1px solid #cbd5e1 !important;
+  box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.15) !important;
 }
 
 .leaflet-popup-tip {
-  background: #0b101d !important;
+  background: #ffffff !important;
 }

@@ -3,24 +3,14 @@ import {
   Thermometer,
   Trees,
   ShieldAlert,
-  Compass,
   Layers,
   CheckCircle2,
-  Leaf,
-  Wind,
-  CreditCard,
   Lock,
   ArrowRight,
   Sparkles,
   Building,
   GraduationCap,
-  Users,
-  Award,
   Globe,
-  FileSpreadsheet,
-  Activity,
-  Cpu,
-  Camera,
   ShieldCheck,
   ChevronRight,
   Satellite
@@ -32,12 +22,31 @@ interface LandingPageProps {
 }
 
 export const LandingPage: React.FC<LandingPageProps> = ({ onOpenApp, onOpenLogin }) => {
+  React.useEffect(() => {
+    if (window.location.hash) {
+      const id = window.location.hash.replace('#', '');
+      const el = document.getElementById(id);
+      if (el) {
+        setTimeout(() => {
+          el.scrollIntoView({ behavior: 'smooth' });
+        }, 300);
+      }
+    }
+  }, []);
+
+  const scrollToSection = (id: string) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#030712] text-slate-100 font-sans selection:bg-emerald-500 selection:text-slate-950">
       {/* 1. NAVIGATION BAR */}
       <header className="sticky top-0 z-50 bg-[#030712]/90 backdrop-blur-xl border-b border-[#1e293b] px-6 py-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
             <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-600 via-teal-500 to-emerald-400 flex items-center justify-center shadow-lg shadow-emerald-500/20 border border-white/20">
               <Thermometer className="w-6 h-6 text-slate-950 font-bold" />
             </div>
@@ -52,12 +61,12 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenApp, onOpenLogin
           </div>
 
           <nav className="hidden md:flex items-center gap-8 text-xs font-semibold text-slate-300">
-            <a href="#platform" className="hover:text-emerald-400 transition">Platform</a>
-            <a href="#solutions" className="hover:text-emerald-400 transition">Solutions</a>
-            <a href="#intelligence" className="hover:text-emerald-400 transition">Climate Intelligence</a>
-            <a href="#cooling" className="hover:text-emerald-400 transition">Urban Cooling</a>
-            <a href="#passports" className="hover:text-emerald-400 transition">Tree Passports</a>
-            <a href="#security" className="hover:text-emerald-400 transition">Security &amp; ABAC</a>
+            <button onClick={() => scrollToSection('platform')} className="hover:text-emerald-400 transition cursor-pointer">Platform</button>
+            <button onClick={() => scrollToSection('solutions')} className="hover:text-emerald-400 transition cursor-pointer">Solutions</button>
+            <button onClick={() => scrollToSection('intelligence')} className="hover:text-emerald-400 transition cursor-pointer">Climate Intelligence</button>
+            <button onClick={() => scrollToSection('cooling')} className="hover:text-emerald-400 transition cursor-pointer">Urban Cooling</button>
+            <button onClick={() => scrollToSection('passports')} className="hover:text-emerald-400 transition cursor-pointer">Tree Passports</button>
+            <button onClick={() => scrollToSection('security')} className="hover:text-emerald-400 transition cursor-pointer">Security &amp; ABAC</button>
           </nav>
 
           <div className="flex items-center gap-3">

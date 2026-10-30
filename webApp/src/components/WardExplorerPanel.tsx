@@ -1,44 +1,29 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import {
-  Thermometer,
-  Search,
-  Filter,
-  CheckCircle2,
   Lock,
   Unlock,
-  Building,
-  Wind,
-  Trees,
-  Layers,
-  ArrowUpRight,
-  SlidersHorizontal
+  Layers
 } from 'lucide-react';
 import { type WardData } from './GisMap';
-import { type UserPersona } from './RoleLoginModal';
 
 const API_BASE = 'http://localhost:8000/api/v1';
 
 interface WardExplorerPanelProps {
   wards: WardData[];
-  currentUser: UserPersona;
   selectedWard: WardData;
   onSelectWard: (ward: WardData) => void;
-  onOpenBilling: () => void;
 }
 
 export const WardExplorerPanel: React.FC<WardExplorerPanelProps> = ({
   wards,
-  currentUser,
   selectedWard,
-  onSelectWard,
-  onOpenBilling
+  onSelectWard
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSeverity, setSelectedSeverity] = useState<string>('ALL');
   const [selectedLicenseFilter, setSelectedLicenseFilter] = useState<'ALL' | 'LICENSED' | 'LOCKED'>('ALL');
   const [detailWard, setDetailWard] = useState<WardData | null>(null);
-  const [geocodedResults, setGeocodedResults] = useState<any[]>([]);
   const [isGeocoding, setIsGeocoding] = useState<boolean>(false);
 
   const handleGeocodeSearch = async () => {
@@ -46,9 +31,9 @@ export const WardExplorerPanel: React.FC<WardExplorerPanelProps> = ({
     setIsGeocoding(true);
     try {
       const res = await axios.get(`${API_BASE}/geo/search?q=${encodeURIComponent(searchQuery)}`);
-      setGeocodedResults(res.data || []);
+      setSearchQuery(res.data?.[0]?.display_name || searchQuery);
     } catch {
-      setGeocodedResults([]);
+      // Fallback
     } finally {
       setIsGeocoding(false);
     }
@@ -75,66 +60,44 @@ export const WardExplorerPanel: React.FC<WardExplorerPanelProps> = ({
   });
 
   return (
-    <div className="space-y-6">
-      {/* 1. TOP ARANYIX SEARCH & FILTER BAR */}
-      <div className="p-6 rounded-3xl bg-[#0b101d] border border-[#1e293b] shadow-2xl space-y-4 relative overflow-hidden">
-        {/* Ambient Light Orbs */}
-        <div className="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none" />
+    <div className="space-y-4">
+      {/* 1. GOVERNMENT SEARCH & FILTER BAR */}
+      <fieldset className="govt-fieldset">
+        <legend className="govt-legend flex items-center gap-1.5">
+          <Layers className="w-4 h-4 text-[#064e3b]" /> Municipal Ward Microclimate Inventory &amp; Vulnerability Register
+        </legend>
 
-        <div className="flex flex-wrap items-center justify-between gap-4 relative z-10">
-          <div>
-            <span className="font-mono tracking-widest text-[10px] uppercase font-bold text-emerald-400 flex items-center gap-1.5">
-              <Layers className="w-4 h-4 text-emerald-400" /> Comprehensive Multi-Ward Environmental Matrix
-            </span>
-            <h3 className="text-2xl font-black text-white tracking-tight mt-0.5">
-              Jalandhar Ward Data Explorer &amp; Microclimate Inventory
-            </h3>
-            <p className="text-xs text-slate-300 mt-1 max-w-2xl leading-relaxed">
-              Browse, filter, and compare high-resolution thermal remote sensing, vegetation density, and cooling interventions across all municipal wards.
-            </p>
-          </div>
-
-          <div className="flex items-center gap-2 relative z-10">
-            <span className="text-xs text-slate-400 font-medium">Logged in as:</span>
-            <span className="text-xs font-bold px-3 py-1.5 rounded-full bg-[#030712] border border-[#1e293b] text-slate-200 shadow">
-              {currentUser.name} ({currentUser.organisation})
-            </span>
-          </div>
-        </div>
-
-        {/* Search & Filter Controls */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2 relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
           {/* Search Box with Geocoding */}
-          <div className="relative flex items-center gap-1">
+          <div className="flex items-center gap-1">
             <div className="relative flex-1">
-              <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
               <input
                 type="text"
-                placeholder="Search Ward or Geocode Landmark..."
+                placeholder="Search Ward or Geocode Address..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyDown={(e) => { if (e.key === 'Enter') handleGeocodeSearch(); }}
-                className="w-full bg-[#030712] border border-[#1e293b] rounded-2xl pl-10 pr-3 py-2.5 text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-emerald-500 font-medium transition"
+                className="govt-input w-full"
               />
             </div>
             <button
               onClick={handleGeocodeSearch}
               disabled={isGeocoding}
-              className="px-3.5 py-2.5 rounded-2xl bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 font-bold text-[11px] border border-emerald-500/30 transition flex-shrink-0"
+              className="govt-btn-primary flex-shrink-0"
             >
-              {isGeocoding ? 'Geocoding...' : '📍 Geocode'}
+              {isGeocoding ? 'Locating...' : '📍 Search'}
             </button>
           </div>
 
           {/* Severity Filter */}
           <div className="flex items-center gap-2">
-            <Filter className="w-4 h-4 text-slate-400 flex-shrink-0" />
+            <label className="text-slate-700 font-bold whitespace-nowrap">Heat Severity:</label>
             <select
               value={selectedSeverity}
               onChange={(e) => setSelectedSeverity(e.target.value)}
-              className="w-full bg-[#030712] border border-[#1e293b] rounded-2xl px-3 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-emerald-500 cursor-pointer font-medium"
+              className="govt-input w-full"
             >
-              <option value="ALL">All Heat Severities</option>
+              <option value="ALL">All Heat Tiers</option>
               <option value="CRITICAL">Critical Hotspots (&gt; 46°C)</option>
               <option value="HIGH">High Surface Temp (42°C - 45°C)</option>
               <option value="MODERATE">Moderate Heat (38°C - 41°C)</option>
@@ -142,231 +105,140 @@ export const WardExplorerPanel: React.FC<WardExplorerPanelProps> = ({
             </select>
           </div>
 
-          {/* Licensing Status Filter (ABAC) */}
+          {/* Licensing Filter */}
           <div className="flex items-center gap-2">
-            <SlidersHorizontal className="w-4 h-4 text-slate-400 flex-shrink-0" />
+            <label className="text-slate-700 font-bold whitespace-nowrap">ABAC Status:</label>
             <select
               value={selectedLicenseFilter}
               onChange={(e) => setSelectedLicenseFilter(e.target.value as any)}
-              className="w-full bg-[#030712] border border-[#1e293b] rounded-2xl px-3 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-emerald-500 cursor-pointer font-medium"
+              className="govt-input w-full"
             >
-              <option value="ALL">All Wards (Show Active Wards)</option>
-              <option value="LICENSED">Licensed to My Organization Only</option>
-              <option value="LOCKED">Requires Additional License (ABAC)</option>
+              <option value="ALL">All Authorized Wards</option>
+              <option value="LICENSED">Licensed Wards Only</option>
             </select>
           </div>
         </div>
-      </div>
+      </fieldset>
 
-      {/* 2. ARANYIX WARDS GRID */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-        {filteredWards.map((w) => {
-          const isSelected = selectedWard?.id === w.id;
-
-          return (
-            <div
-              key={w.id}
-              className={`p-6 rounded-3xl border transition-all duration-300 relative flex flex-col justify-between ${
-                !w.is_licensed
-                  ? 'bg-[#030712]/40 border-[#1e293b] hover:border-slate-700'
-                  : isSelected
-                  ? 'bg-[#0b101d] border-emerald-500 shadow-2xl shadow-emerald-500/10 ring-1 ring-emerald-500'
-                  : 'bg-[#0b101d] border-[#1e293b] hover:border-emerald-500/40 shadow-xl'
-              }`}
-            >
-              <div className="space-y-3.5">
-                {/* Header */}
-                <div className="flex items-start justify-between">
-                  <div>
-                    <span className="font-mono text-[10px] px-2.5 py-0.5 rounded-full font-bold bg-[#030712] text-slate-300 border border-[#1e293b]">
+      {/* 2. GOVERNMENT WARDS TABLE */}
+      <div className="overflow-x-auto border border-slate-300 rounded-lg bg-white shadow-sm">
+        <table className="govt-table">
+          <thead>
+            <tr>
+              <th>Ward Code &amp; Name</th>
+              <th>Mean Surface LST (°C)</th>
+              <th>NDVI Canopy Index</th>
+              <th>Vulnerability Rank</th>
+              <th>ABAC Access Status</th>
+              <th>Recommended Intervention</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredWards.map((w) => {
+              const isSelected = selectedWard?.id === w.id;
+              return (
+                <tr key={w.id} className={isSelected ? 'bg-emerald-50/90 font-semibold' : ''}>
+                  <td>
+                    <span className="font-mono text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 border border-slate-300 text-slate-800 mr-2">
                       {w.code}
                     </span>
-                    <h4 className="text-base font-extrabold text-white mt-1.5 leading-snug">
-                      {w.name}
-                    </h4>
-                  </div>
-
-                  {w.is_licensed ? (
-                    <span className="flex items-center gap-1 font-mono text-[10px] font-semibold px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 shadow">
-                      <Unlock className="w-3 h-3 text-emerald-400" /> Licensed
+                    <strong className="text-slate-900">{w.name}</strong>
+                  </td>
+                  <td className="font-bold text-red-700">{w.heat_analysis?.mean_lst_celsius}°C</td>
+                  <td className="font-bold text-emerald-800">{w.heat_analysis?.mean_ndvi}</td>
+                  <td>
+                    <span className="px-2 py-0.5 rounded font-bold text-[10px] bg-amber-100 text-amber-900 border border-amber-300">
+                      Rank #{w.heat_analysis?.vulnerability_rank}
                     </span>
-                  ) : (
-                    <span className="flex items-center gap-1 font-mono text-[10px] font-semibold px-3 py-1 rounded-full bg-red-500/20 text-red-300 border border-red-500/30 shadow">
-                      <Lock className="w-3 h-3 text-red-400" /> Locked
-                    </span>
-                  )}
-                </div>
-
-                <p className="text-xs text-slate-300 leading-relaxed line-clamp-2">
-                  {w.description}
-                </p>
-
-                {/* Metrics Matrix */}
-                {w.is_licensed ? (
-                  <div className="grid grid-cols-3 gap-2 text-center text-xs py-1">
-                    <div className="p-2.5 rounded-2xl bg-[#030712] border border-[#1e293b]">
-                      <span className="text-[10px] text-slate-400 block font-mono">Mean LST</span>
-                      <span className="font-black text-red-400 text-sm">
-                        {w.heat_analysis?.mean_lst_celsius}°C
+                  </td>
+                  <td>
+                    {w.is_licensed ? (
+                      <span className="px-2 py-0.5 rounded font-bold text-[10px] bg-emerald-100 text-emerald-900 border border-emerald-300 flex items-center gap-1 w-fit">
+                        <Unlock className="w-3 h-3 text-emerald-700" /> Authorized
                       </span>
-                    </div>
-                    <div className="p-2.5 rounded-2xl bg-[#030712] border border-[#1e293b]">
-                      <span className="text-[10px] text-slate-400 block font-mono">NDVI Canopy</span>
-                      <span className="font-black text-emerald-400 text-sm">
-                        {w.heat_analysis?.mean_ndvi}
+                    ) : (
+                      <span className="px-2 py-0.5 rounded font-bold text-[10px] bg-red-100 text-red-900 border border-red-300 flex items-center gap-1 w-fit">
+                        <Lock className="w-3 h-3 text-red-700" /> Restricted
                       </span>
+                    )}
+                  </td>
+                  <td className="text-xs text-slate-800">
+                    {w.code === 'JAL-WARD-14' || w.code === 'JAL-WARD-18' ? (
+                      <span className="text-cyan-800 font-semibold">High-Albedo Cool Roofs (SRI &gt; 82)</span>
+                    ) : (
+                      <span className="text-emerald-800 font-semibold">Avenue Native Species Corridor</span>
+                    )}
+                  </td>
+                  <td>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => onSelectWard(w)}
+                        className="govt-btn-primary text-xs"
+                      >
+                        Map View
+                      </button>
+                      <button
+                        onClick={() => setDetailWard(w)}
+                        className="govt-btn-secondary text-xs"
+                      >
+                        Details
+                      </button>
                     </div>
-                    <div className="p-2.5 rounded-2xl bg-[#030712] border border-[#1e293b]">
-                      <span className="text-[10px] text-slate-400 block font-mono">Priority</span>
-                      <span className="font-bold text-amber-400 text-xs">
-                        Rank #{w.heat_analysis?.vulnerability_rank}
-                      </span>
-                    </div>
-                  </div>
-                ) : (
-                  /* Locked Notice for Unlicensed Customer */
-                  <div className="p-3.5 rounded-2xl bg-[#030712] border border-red-900/40 text-center space-y-1.5">
-                    <div className="flex items-center justify-center gap-1.5 text-xs font-bold text-red-400">
-                      <Lock className="w-3.5 h-3.5" /> ABAC Protected Data
-                    </div>
-                    <p className="text-[11px] text-slate-400 leading-snug">
-                      Purchased only by <strong>MCJ</strong>. Inaccessible to {currentUser.organisation}.
-                    </p>
-                  </div>
-                )}
-
-                {/* Strategy Badge */}
-                <div className="text-[11px]">
-                  <span className="text-slate-400 block mb-1 font-medium">Recommended Solution:</span>
-                  {w.code === 'JAL-WARD-14' || w.code === 'JAL-WARD-18' ? (
-                    <span className="px-2.5 py-1 rounded-xl bg-cyan-500/10 text-cyan-300 border border-cyan-500/30 font-semibold flex items-center gap-1.5 w-fit">
-                      <Wind className="w-3.5 h-3.5 text-cyan-400" /> High-Albedo Cool Roofs (SRI &gt; 82)
-                    </span>
-                  ) : w.code === 'JAL-WARD-22' ? (
-                    <span className="px-2.5 py-1 rounded-xl bg-amber-500/10 text-amber-300 border border-amber-500/30 font-semibold flex items-center gap-1.5 w-fit">
-                      <Building className="w-3.5 h-3.5 text-amber-400" /> Industrial Boundary Buffer Forest
-                    </span>
-                  ) : (
-                    <span className="px-2.5 py-1 rounded-xl bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 font-semibold flex items-center gap-1.5 w-fit">
-                      <Trees className="w-3.5 h-3.5 text-emerald-400" /> Avenue Native Species Corridor
-                    </span>
-                  )}
-                </div>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="pt-4 mt-3 border-t border-[#1e293b] flex items-center justify-between gap-2">
-                {w.is_licensed ? (
-                  <>
-                    <button
-                      onClick={() => onSelectWard(w)}
-                      className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition border border-[#1e293b]"
-                    >
-                      View on Map
-                    </button>
-                    <button
-                      onClick={() => setDetailWard(w)}
-                      className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 text-xs font-extrabold transition flex items-center gap-1 shadow-lg shadow-emerald-500/20"
-                    >
-                      Deep Dive <ArrowUpRight className="w-3.5 h-3.5" />
-                    </button>
-                  </>
-                ) : (
-                  <button
-                    onClick={onOpenBilling}
-                    className="w-full py-2.5 rounded-2xl bg-red-950/40 hover:bg-red-900/60 text-red-300 border border-red-700/50 text-xs font-bold transition flex items-center justify-center gap-1.5"
-                  >
-                    <Lock className="w-3.5 h-3.5" /> License This Ward
-                  </button>
-                )}
-              </div>
-            </div>
-          );
-        })}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
       </div>
 
-      {/* 3. ARANYIX WARD DEEP DIVE MODAL */}
+      {/* 3. WARD DETAIL MODAL */}
       {detailWard && (
-        <div className="fixed inset-0 z-50 bg-[#030712]/90 backdrop-blur-xl flex items-center justify-center p-4">
-          <div className="bg-[#0b101d] border border-[#1e293b] rounded-3xl max-w-2xl w-full p-8 shadow-2xl space-y-5">
-            <div className="flex items-start justify-between border-b border-[#1e293b] pb-4">
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white border border-slate-300 rounded-lg max-w-2xl w-full p-6 shadow-2xl space-y-4 text-xs">
+            <div className="flex items-start justify-between border-b border-slate-300 pb-3">
               <div>
-                <span className="font-mono text-xs font-bold text-emerald-300 bg-emerald-500/20 px-2.5 py-0.5 rounded-full border border-emerald-500/30">
+                <span className="font-mono text-xs font-bold text-emerald-900 bg-emerald-100 px-2 py-0.5 rounded border border-emerald-300">
                   {detailWard.code}
                 </span>
-                <h3 className="text-xl font-black text-white mt-1">{detailWard.name}</h3>
-                <p className="text-xs text-slate-300 mt-0.5">{detailWard.description}</p>
+                <h3 className="text-lg font-bold text-slate-900 mt-1">{detailWard.name}</h3>
+                <p className="text-slate-600">{detailWard.description}</p>
               </div>
               <button
                 onClick={() => setDetailWard(null)}
-                className="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center font-bold border border-[#1e293b]"
+                className="w-7 h-7 rounded bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold"
               >
                 ✕
               </button>
             </div>
 
-            {/* Diagnostic Metrics */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-center text-xs">
-              <div className="p-3.5 rounded-2xl bg-[#030712] border border-[#1e293b]">
-                <span className="text-[10px] text-slate-400 block font-mono">Mean Surface LST</span>
-                <span className="text-xl font-black text-red-400">{detailWard.heat_analysis?.mean_lst_celsius}°C</span>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-center">
+              <div className="p-3 rounded bg-slate-50 border border-slate-300">
+                <span className="text-[10px] text-slate-500 uppercase font-bold block">Mean LST</span>
+                <span className="text-lg font-bold text-red-700">{detailWard.heat_analysis?.mean_lst_celsius}°C</span>
               </div>
-              <div className="p-3.5 rounded-2xl bg-[#030712] border border-[#1e293b]">
-                <span className="text-[10px] text-slate-400 block font-mono">Peak Thermal Spot</span>
-                <span className="text-xl font-black text-red-500">{detailWard.heat_analysis?.max_lst_celsius}°C</span>
+              <div className="p-3 rounded bg-slate-50 border border-slate-300">
+                <span className="text-[10px] text-slate-500 uppercase font-bold block">Peak Thermal Spot</span>
+                <span className="text-lg font-bold text-red-800">{detailWard.heat_analysis?.max_lst_celsius}°C</span>
               </div>
-              <div className="p-3.5 rounded-2xl bg-[#030712] border border-[#1e293b]">
-                <span className="text-[10px] text-slate-400 block font-mono">NDVI Canopy</span>
-                <span className="text-xl font-black text-emerald-400">{detailWard.heat_analysis?.mean_ndvi}</span>
+              <div className="p-3 rounded bg-slate-50 border border-slate-300">
+                <span className="text-[10px] text-slate-500 uppercase font-bold block">NDVI Canopy</span>
+                <span className="text-lg font-bold text-emerald-800">{detailWard.heat_analysis?.mean_ndvi}</span>
               </div>
-              <div className="p-3.5 rounded-2xl bg-[#030712] border border-[#1e293b]">
-                <span className="text-[10px] text-slate-400 block font-mono">NDBI Density</span>
-                <span className="text-xl font-black text-amber-400">{detailWard.heat_analysis?.mean_ndbi}</span>
+              <div className="p-3 rounded bg-slate-50 border border-slate-300">
+                <span className="text-[10px] text-slate-500 uppercase font-bold block">Priority Rank</span>
+                <span className="text-lg font-bold text-amber-800">#{detailWard.heat_analysis?.vulnerability_rank}</span>
               </div>
             </div>
 
-            {/* In-depth Analysis Section */}
-            <div className="p-4 rounded-2xl bg-[#030712] border border-[#1e293b] space-y-2 text-xs">
-              <h4 className="font-bold text-white flex items-center gap-1.5">
-                <Thermometer className="w-4 h-4 text-red-400" />
-                Urban Heat Island &amp; Microclimate Diagnosis:
-              </h4>
-              <p className="text-slate-300 leading-relaxed">
-                This ward exhibits a surface temperature anomaly of <strong>+{detailWard.heat_analysis?.heat_island_intensity}°C</strong> above 
-                rural background baselines. Due to high impervious cover (NDBI: {detailWard.heat_analysis?.mean_ndbi}), solar radiation is stored in 
-                concrete/asphalt paving during midday and re-radiated into evening hours.
-              </p>
-            </div>
-
-            <div className="p-4 rounded-2xl bg-emerald-950/30 border border-emerald-800/50 space-y-2 text-xs">
-              <h4 className="font-bold text-emerald-300 flex items-center gap-1.5">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                Actionable Intervention Spec:
-              </h4>
-              <p className="text-slate-300 leading-relaxed">
-                {detailWard.code === 'JAL-WARD-14' || detailWard.code === 'JAL-WARD-18' ? (
-                  <span>
-                    <strong>Ground tree planting is unfeasible:</strong> Dense subterranean sewerage pipelines and 3.5m road clearances 
-                    limit ground excavation. <strong>Primary Solution:</strong> Install 4,500 sqm of high-albedo cool roof coatings (SRI &gt; 82) on municipal terraces 
-                    and deploy tensile pedestrian shade sails between shop facades.
-                  </span>
-                ) : (
-                  <span>
-                    <strong>Plantation is feasible:</strong> Target available municipal road margins and pocket parks. 
-                    Recommended native species: <strong>Azadirachta indica (Neem)</strong> and <strong>Dalbergia sissoo (Tahli)</strong> with deep taproots 
-                    and drought resilience ratings of 4-5.
-                  </span>
-                )}
-              </p>
-            </div>
-
-            <div className="flex justify-end gap-2 pt-2 border-t border-[#1e293b]">
+            <div className="flex justify-end gap-2 pt-2 border-t border-slate-300">
               <button
                 onClick={() => {
                   onSelectWard(detailWard);
                   setDetailWard(null);
                 }}
-                className="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 text-xs font-extrabold transition shadow-lg shadow-emerald-500/20"
+                className="govt-btn-primary"
               >
                 Inspect on GIS Map
               </button>

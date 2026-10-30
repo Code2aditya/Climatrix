@@ -1,441 +1,143 @@
 import React, { useState } from 'react';
-import {
-  Database,
-  Satellite,
-  Thermometer,
-  Wind,
-  Lock,
-  CreditCard,
-  UserCheck,
-  ShieldCheck,
-  LayoutDashboard,
-  Trees,
-  CheckCircle2,
-  ArrowRight,
-  Cpu,
-  Layers,
-  ShieldAlert,
-  GitMerge,
-  Camera,
-  Activity
-} from 'lucide-react';
+import { Activity } from 'lucide-react';
 
 export const WorkflowVisualizer: React.FC = () => {
   const [viewMode, setViewMode] = useState<'dataflow' | 'steps'>('dataflow');
 
   const steps = [
-    {
-      step: 1,
-      title: "Admin Adds City & Ward Spatial Boundaries",
-      desc: "Super Admin uploads GeoJSON MultiPolygons for Jalandhar 80 municipal wards.",
-      icon: Database,
-      color: "from-blue-500 to-cyan-500",
-      accent: "text-blue-400",
-      border: "border-blue-500/30"
-    },
-    {
-      step: 2,
-      title: "Automated Satellite Remote Sensing",
-      desc: "Landsat 9 TIRS-2 (Band 10) & Sentinel-2 MSI multispectral ingestion with cloud masking.",
-      icon: Satellite,
-      color: "from-cyan-500 to-teal-500",
-      accent: "text-cyan-400",
-      border: "border-cyan-500/30"
-    },
-    {
-      step: 3,
-      title: "Hyperlocal Heat & Vegetation Analysis",
-      desc: "Radiative transfer calculates Land Surface Temp (LST); Band math derives NDVI & NDBI at 30m resolution.",
-      icon: Thermometer,
-      color: "from-red-500 to-amber-500",
-      accent: "text-red-400",
-      border: "border-red-500/30"
-    },
-    {
-      step: 4,
-      title: "AI Plantation & Cooling Recommendations",
-      desc: "Scores Punjab native species for plantable zones; prescribes Cool Roofs/Shades for unplantable bazaars.",
-      icon: Wind,
-      color: "from-emerald-500 to-teal-500",
-      accent: "text-emerald-400",
-      border: "border-emerald-500/30"
-    },
-    {
-      step: 5,
-      title: "Encrypted Multi-Tenant Storage & PostGIS",
-      desc: "All spatial rasters and vector metrics stored in PostgreSQL/PostGIS with Row-Level Security (RLS).",
-      icon: Lock,
-      color: "from-purple-500 to-indigo-500",
-      accent: "text-purple-400",
-      border: "border-purple-500/30"
-    },
-    {
-      step: 6,
-      title: "Customer Selects Plan & Wards",
-      desc: "Customer (MCJ, University, or Private Developer) chooses subscription tier and specific wards.",
-      icon: CreditCard,
-      color: "from-amber-500 to-orange-500",
-      accent: "text-amber-400",
-      border: "border-amber-500/30"
-    },
-    {
-      step: 7,
-      title: "Admin Assigns Geographical Licences (ABAC)",
-      desc: "Backend grants access strictly to purchased location IDs in the location_access table.",
-      icon: UserCheck,
-      color: "from-teal-500 to-emerald-500",
-      accent: "text-teal-400",
-      border: "border-teal-500/30"
-    },
-    {
-      step: 8,
-      title: "Customer User Logs In",
-      desc: "Customer authenticates via JWT; claims include organisation_id and licensed_location_ids.",
-      icon: ShieldCheck,
-      color: "from-blue-500 to-indigo-500",
-      accent: "text-blue-400",
-      border: "border-blue-500/30"
-    },
-    {
-      step: 9,
-      title: "Backend Validates ABAC Permissions",
-      desc: "Every API request checks if requested ward is licensed. Unlicensed wards are strictly rejected with HTTP 403.",
-      icon: Lock,
-      color: "from-rose-500 to-red-600",
-      accent: "text-rose-400",
-      border: "border-rose-500/30"
-    },
-    {
-      step: 10,
-      title: "Customer Sees Authorised Dashboard",
-      desc: "Authorized maps, heat hotspots, species planner, and alternative cooling specs displayed seamlessly.",
-      icon: LayoutDashboard,
-      color: "from-emerald-500 to-green-500",
-      accent: "text-emerald-400",
-      border: "border-emerald-500/30"
-    },
-    {
-      step: 11,
-      title: "Ground Field Monitoring & Verification",
-      desc: "Field workers log GPS-tagged inspection photos; 3/6/12-month sapling survival tracked over time.",
-      icon: Trees,
-      color: "from-green-500 to-emerald-600",
-      accent: "text-green-400",
-      border: "border-green-500/30"
-    }
+    { step: 1, title: "Spatial Boundaries Ingestion", desc: "Upload GeoJSON MultiPolygons for Jalandhar 80 municipal wards." },
+    { step: 2, title: "Automated Satellite Ingestion", desc: "USGS Landsat 9 TIRS-2 (Band 10) & Sentinel-2 MSI multispectral rasters with QA cloud masking." },
+    { step: 3, title: "Microclimate Temperature Analysis", desc: "Split-window radiative transfer calculates Land Surface Temp (LST); Band math derives NDVI & NDBI." },
+    { step: 4, title: "AI Decision Reasoning Engine", desc: "Scores Punjab native tree species for plantable zones; prescribes Cool Roofs (SRI > 82) for dense bazaars." },
+    { step: 5, title: "Encrypted Multi-Tenant PostGIS", desc: "Spatial rasters and vector metrics stored in PostgreSQL/PostGIS with Row-Level Security (RLS)." },
+    { step: 6, title: "Geographical License Assignment", desc: "Backend grants access strictly to authorized ward IDs in location_access table." },
+    { step: 7, title: "Server-Side ABAC Enforcement", desc: "Every API request evaluates location permissions. Unlicensed wards strictly return HTTP 403 Forbidden." },
+    { step: 8, title: "Sub-15m Field Verification Audit", desc: "Horticulture officers submit GPS-geotagged inspection audits at 3/6/12 month milestones." }
   ];
 
   const pipelineStages = [
     {
       stage: 1,
-      title: "Spatial & Remote Sensing Ingestion Layer",
+      title: "Remote Sensing Ingestion Layer",
       category: "LAYER 01 · SENSOR FUSION",
-      icon: Satellite,
-      color: "from-blue-600 to-cyan-600",
-      accent: "text-cyan-400",
-      inputs: [
-        "USGS Landsat 9 TIRS-2 Band 10 Thermal",
-        "Copernicus Sentinel-2 MSI (B4, B8, B11)",
-        "Municipal Ward GeoJSON Vector Boundaries"
-      ],
-      entities: ["SatelliteAsset", "Location"],
-      transformations: [
-        "Top-of-Atmosphere (TOA) spectral radiance conversion",
-        "At-sensor thermal brightness temperature mapping",
-        "QA Band cloud & shadow pixel masking"
-      ],
-      outputPayload: "Calibrated 30m Surface Reflectance & Thermal Rasters"
+      inputs: "USGS Landsat 9 TIRS-2 Band 10 Thermal & Sentinel-2 MSI",
+      transformations: "Top-of-Atmosphere Radiance conversion & QA Cloud Masking",
+      outputPayload: "Calibrated 30m Thermal & 10m Reflectance Rasters"
     },
     {
       stage: 2,
-      title: "Microclimate Matrix & Spatial Analysis Layer",
-      icon: Cpu,
-      category: "LAYER 02 · RASTER ALGORITHMS",
-      color: "from-red-600 to-amber-600",
-      accent: "text-red-400",
-      inputs: [
-        "Calibrated Thermal Brightness Temp",
-        "Multispectral Red, NIR, & SWIR Reflectance"
-      ],
-      entities: ["HeatAnalysis"],
-      transformations: [
-        "Split-Window Radiative Transfer: LST = T_b / [1 + (λ * T_b / ρ) * ln(ε)]",
-        "NDVI Index: (NIR - Red) / (NIR + Red)",
-        "NDBI Index: (SWIR - NIR) / (SWIR + NIR)",
-        "UHI Delta: ΔT = LST_Ward - LST_Rural_Baseline"
-      ],
+      title: "Microclimate Analysis Layer",
+      category: "LAYER 02 · RASTER MATH",
+      inputs: "Thermal Brightness Temp & Multispectral Red/NIR Reflectance",
+      transformations: "LST = T_b / [1 + (λ * T_b / ρ) * ln(ε)] & NDVI = (NIR-Red)/(NIR+Red)",
       outputPayload: "Ward Microclimate Records (LST °C, NDVI, NDBI, Vulnerability Rank #1-#80)"
     },
     {
       stage: 3,
       title: "Multi-Tenant ABAC Security Layer",
-      icon: ShieldAlert,
-      category: "LAYER 03 · SECURITY & ISOLATION",
-      color: "from-purple-600 to-indigo-600",
-      accent: "text-purple-400",
-      inputs: [
-        "Customer JWT Token (organisation_id, role)",
-        "Target Location ID requested"
-      ],
-      entities: ["LocationAccess", "AuditLog"],
-      transformations: [
-        "Location License Evaluation: WHERE org_id = :org_id AND location_id = :loc_id AND is_active = True",
-        "Unauthorized Breach Detection: Audit Log entry generated on 403 Forbidden"
-      ],
+      category: "LAYER 03 · GEOGRAPHICAL ISOLATION",
+      inputs: "User JWT Token (organisation_id) & Target Location ID",
+      transformations: "Location License Evaluation: WHERE org_id = :org AND location_id = :loc",
       outputPayload: "HTTP 200 Authorized Payload OR HTTP 403 Forbidden Security Block"
     },
     {
       stage: 4,
       title: "Dual AI Decision Support Layer",
-      icon: GitMerge,
       category: "LAYER 04 · HYBRID COOLING SOLVER",
-      color: "from-emerald-600 to-teal-600",
-      accent: "text-emerald-400",
-      inputs: [
-        "Authorized Ward Microclimate Diagnostics",
-        "Site Constraints: Road Width (m), Groundwater Depth (m), Site Typology"
-      ],
-      entities: ["TreeSpecies", "PlantationSite", "CoolingRecommendation"],
-      transformations: [
-        "Plantation Feasibility Classifier: Checks road width & underground utilities",
-        "Native Species Suitability Scoring: Evaluates Neem, Tahli, Kachnar, Kikar for root profile, drought & APTI",
-        "Alternative Cooling Solver: Prescribes High-Albedo Cool Roofs (SRI > 82) for unplantable dense bazaars"
-      ],
-      outputPayload: "Ranked Native Species Matrix OR High-Albedo Cool Roof Engineering Specs"
+      inputs: "Authorized Ward Microclimate Diagnostics & Road Right-of-Way Width",
+      transformations: "Agro-Climatic Species Matching OR High-Albedo Cool Roof SRI > 82 Solver",
+      outputPayload: "Ranked Native Species Matrix OR Cool Roof Engineering Specs"
     },
     {
       stage: 5,
-      title: "Field Verification & Tree Passport Layer",
-      icon: Camera,
-      category: "LAYER 05 · GROUND TRUTH AUDIT",
-      color: "from-green-600 to-emerald-700",
-      accent: "text-green-400",
-      inputs: [
-        "Field Officer Camera Geotagged Submission",
-        "Sub-5m GPS Receiver Lat/Lng Coordinates"
-      ],
-      entities: ["PlantedTree", "TreeInspection"],
-      transformations: [
-        "Haversine GPS Drift Calculation: Distance d = 2r * arcsin(√[sin²(Δlat/2) + cos(lat1)*cos(lat2)*sin²(Δlng/2)])",
-        "GPS Verification Gate: Distance <= 15m tolerance for valid audit",
-        "Tree Survival State Escalation: Rating <= 1 -> CRITICAL, Rating >= 4 -> THRIVING"
-      ],
-      outputPayload: "Tamper-Evident Sapling Survival Audit & Tree Passport Timeline"
+      title: "Field Verification Audit Layer",
+      category: "LAYER 05 · TREE PASSPORTS",
+      inputs: "Horticulture Officer Camera Geotagged Audit & Sub-15m GPS Coordinates",
+      transformations: "Haversine GPS Drift Calculation & Distance Verification Gate (d <= 15m)",
+      outputPayload: "Tamper-Evident Tree Passport & Survival Audit Trail"
     }
   ];
 
   return (
-    <div className="p-6 rounded-3xl bg-[#0b101d] border border-[#1e293b] shadow-2xl space-y-6 relative overflow-hidden">
-      {/* Ambient Glow */}
-      <div className="absolute -top-20 -left-20 w-64 h-64 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none" />
+    <div className="space-y-4">
+      <fieldset className="govt-fieldset">
+        <legend className="govt-legend flex items-center justify-between w-full">
+          <span className="flex items-center gap-1.5"><Activity className="w-4 h-4 text-[#064e3b]" /> System Technical Data Flow &amp; Governance Architecture</span>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setViewMode('dataflow')}
+              className={`px-3 py-1 rounded text-xs font-bold ${
+                viewMode === 'dataflow' ? 'bg-[#064e3b] text-white' : 'bg-slate-100 text-slate-700 border border-slate-300'
+              }`}
+            >
+              5-Layer Architecture
+            </button>
+            <button
+              onClick={() => setViewMode('steps')}
+              className={`px-3 py-1 rounded text-xs font-bold ${
+                viewMode === 'steps' ? 'bg-[#064e3b] text-white' : 'bg-slate-100 text-slate-700 border border-slate-300'
+              }`}
+            >
+              8 Operational Steps
+            </button>
+          </div>
+        </legend>
 
-      {/* HEADER & VIEW TOGGLE SWITCH */}
-      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#1e293b] pb-4 relative z-10">
-        <div>
-          <span className="font-mono tracking-widest text-[10px] uppercase font-bold text-emerald-400 flex items-center gap-1.5">
-            <Activity className="w-4 h-4 text-emerald-400" /> Climatrix Intelligence Stack: Five Layers
-          </span>
-          <h3 className="text-2xl font-black text-white tracking-tight mt-0.5">
-            Structured Flow of Data &amp; Operational Lifecycle
-          </h3>
-          <p className="text-xs text-slate-300 mt-1 max-w-2xl leading-relaxed">
-            Explore the technical ingestion, mathematical transformation, ABAC security enforcement, and field verification loops.
-          </p>
-        </div>
-
-        {/* View Switcher Pills */}
-        <div className="flex gap-1.5 bg-[#030712] p-1.5 rounded-2xl border border-[#1e293b] text-xs font-bold shadow-lg">
-          <button
-            onClick={() => setViewMode('dataflow')}
-            className={`px-4 py-2 rounded-xl transition ${
-              viewMode === 'dataflow'
-                ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-black shadow-lg shadow-emerald-500/20'
-                : 'text-slate-400 hover:text-white'
-            }`}
-          >
-            <Layers className="w-4 h-4" /> Intelligence Stack (5 Layers)
-          </button>
-          <button
-            onClick={() => setViewMode('steps')}
-            className={`px-4 py-2 rounded-xl transition ${
-              viewMode === 'steps'
-                ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-black shadow-lg shadow-emerald-500/20'
-                : 'text-slate-400 hover:text-white'
-            }`}
-          >
-            <CheckCircle2 className="w-4 h-4" /> Operational Steps (11 Steps)
-          </button>
-        </div>
-      </div>
-
-      {/* VIEW 1: STRUCTURED TECHNICAL DATA FLOW PIPELINE */}
-      {viewMode === 'dataflow' && (
-        <div className="space-y-6 relative z-10">
-          {/* High-Level Pipeline Flow Nodes */}
-          <div className="p-6 rounded-2xl bg-[#030712] border border-[#1e293b] overflow-x-auto shadow-inner">
-            <span className="font-mono tracking-widest text-[10px] uppercase font-bold text-slate-400 block mb-4">
-              Intelligence Stack Architecture Flow
-            </span>
-            <div className="flex items-center justify-between min-w-[750px] gap-2 text-xs font-mono">
-              <div className="p-3.5 rounded-2xl bg-[#0b101d] border border-cyan-500/30 text-center space-y-1 flex-1 shadow">
-                <Satellite className="w-5 h-5 text-cyan-400 mx-auto" />
-                <span className="font-bold text-white block">Layer 01</span>
-                <span className="text-[10px] text-slate-400 block">Sensor Fusion</span>
-              </div>
-
-              <ArrowRight className="w-4 h-4 text-slate-600 flex-shrink-0" />
-
-              <div className="p-3.5 rounded-2xl bg-[#0b101d] border border-red-500/30 text-center space-y-1 flex-1 shadow">
-                <Cpu className="w-5 h-5 text-red-400 mx-auto" />
-                <span className="font-bold text-white block">Layer 02</span>
-                <span className="text-[10px] text-slate-400 block">Raster Math</span>
-              </div>
-
-              <ArrowRight className="w-4 h-4 text-slate-600 flex-shrink-0" />
-
-              <div className="p-3.5 rounded-2xl bg-[#0b101d] border border-purple-500/30 text-center space-y-1 flex-1 shadow">
-                <Lock className="w-5 h-5 text-purple-400 mx-auto" />
-                <span className="font-bold text-white block">Layer 03</span>
-                <span className="text-[10px] text-slate-400 block">ABAC Gate</span>
-              </div>
-
-              <ArrowRight className="w-4 h-4 text-slate-600 flex-shrink-0" />
-
-              <div className="p-3.5 rounded-2xl bg-[#0b101d] border border-emerald-500/30 text-center space-y-1 flex-1 shadow">
-                <GitMerge className="w-5 h-5 text-emerald-400 mx-auto" />
-                <span className="font-bold text-white block">Layer 04</span>
-                <span className="text-[10px] text-slate-400 block">AI Hybrid Solver</span>
-              </div>
-
-              <ArrowRight className="w-4 h-4 text-slate-600 flex-shrink-0" />
-
-              <div className="p-3.5 rounded-2xl bg-[#0b101d] border border-green-500/30 text-center space-y-1 flex-1 shadow">
-                <Camera className="w-5 h-5 text-green-400 mx-auto" />
-                <span className="font-bold text-white block">Layer 05</span>
-                <span className="text-[10px] text-slate-400 block">Tree Passports</span>
-              </div>
+        {viewMode === 'dataflow' && (
+          <div className="space-y-4 pt-2">
+            <div className="overflow-x-auto border border-slate-300 rounded bg-white">
+              <table className="govt-table">
+                <thead>
+                  <tr>
+                    <th>Architecture Layer</th>
+                    <th>Input Data Sources</th>
+                    <th>Algorithmic Transformations</th>
+                    <th>Output Deliverable</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {pipelineStages.map((ps) => (
+                    <tr key={ps.stage}>
+                      <td>
+                        <strong className="text-slate-900 block">{ps.title}</strong>
+                        <span className="text-[10px] font-mono text-slate-500">{ps.category}</span>
+                      </td>
+                      <td className="text-xs text-slate-800">{ps.inputs}</td>
+                      <td className="font-mono text-xs text-amber-900">{ps.transformations}</td>
+                      <td className="font-bold text-emerald-900 text-xs">{ps.outputPayload}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
+        )}
 
-          {/* Detailed Pipeline Stage Cards */}
-          <div className="space-y-4">
-            {pipelineStages.map((ps) => {
-              const Icon = ps.icon;
-              return (
-                <div
-                  key={ps.stage}
-                  className="p-6 rounded-3xl bg-[#030712] border border-[#1e293b] hover:border-emerald-500/40 transition-all shadow-xl space-y-4"
-                >
-                  <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#1e293b] pb-3">
-                    <div className="flex items-center gap-3">
-                      <div className={`w-9 h-9 rounded-2xl bg-gradient-to-tr ${ps.color} text-white flex items-center justify-center font-bold text-sm shadow`}>
-                        0{ps.stage}
-                      </div>
-                      <div>
-                        <span className="font-mono tracking-widest text-[10px] font-bold text-slate-400 uppercase">
-                          {ps.category}
-                        </span>
-                        <h4 className={`text-base font-bold ${ps.accent}`}>
-                          {ps.title}
-                        </h4>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-1.5 text-xs text-slate-400 font-mono">
-                      <span>Database Entities:</span>
-                      {ps.entities.map((ent, eIdx) => (
-                        <span key={eIdx} className="px-2.5 py-0.5 rounded-full bg-[#0b101d] text-emerald-300 font-bold border border-[#1e293b]">
-                          {ent}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-                    {/* Input Sources */}
-                    <div className="p-4 rounded-2xl bg-[#0b101d] border border-[#1e293b] space-y-2">
-                      <span className="font-bold text-slate-300 block uppercase tracking-wider text-[10px] font-mono">
-                        📥 Input Data Sources:
-                      </span>
-                      <ul className="space-y-1.5 text-slate-300">
-                        {ps.inputs.map((inp, idx) => (
-                          <li key={idx} className="flex items-start gap-1.5">
-                            <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 mt-1 flex-shrink-0"></span>
-                            <span>{inp}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-
-                    {/* Mathematical & Algorithmic Transformations */}
-                    <div className="p-4 rounded-2xl bg-[#0b101d] border border-[#1e293b] space-y-2">
-                      <span className="font-bold text-slate-300 block uppercase tracking-wider text-[10px] font-mono">
-                        ⚙️ Key Transformations &amp; Formulas:
-                      </span>
-                      <ul className="space-y-1.5 text-slate-300">
-                        {ps.transformations.map((trans, idx) => (
-                          <li key={idx} className="flex items-start gap-1.5">
-                            <span className="w-1.5 h-1.5 rounded-full bg-amber-400 mt-1 flex-shrink-0"></span>
-                            <span className="font-mono text-[11px]">{trans}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-
-                    {/* Output Deliverable */}
-                    <div className="p-4 rounded-2xl bg-emerald-950/30 border border-emerald-800/40 space-y-2">
-                      <span className="font-bold text-emerald-400 block uppercase tracking-wider text-[10px] font-mono">
-                        📤 Output Deliverable:
-                      </span>
-                      <p className="text-emerald-300 font-semibold leading-relaxed">
-                        {ps.outputPayload}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
+        {viewMode === 'steps' && (
+          <div className="pt-2">
+            <div className="overflow-x-auto border border-slate-300 rounded bg-white">
+              <table className="govt-table">
+                <thead>
+                  <tr>
+                    <th>Step #</th>
+                    <th>Lifecycle Process</th>
+                    <th>Technical Governance Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {steps.map((s) => (
+                    <tr key={s.step}>
+                      <td className="font-mono font-bold text-emerald-900">STEP 0{s.step}</td>
+                      <td className="font-bold text-slate-900">{s.title}</td>
+                      <td className="text-xs text-slate-700">{s.desc}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
-      )}
-
-      {/* VIEW 2: 11-STEP OPERATIONAL WORKFLOW */}
-      {viewMode === 'steps' && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 relative z-10">
-          {steps.map((s) => {
-            const Icon = s.icon;
-            return (
-              <div
-                key={s.step}
-                className={`p-5 rounded-3xl bg-[#030712] border ${s.border} hover:border-emerald-500/50 transition-all shadow-xl relative group`}
-              >
-                <div className="flex items-center justify-between mb-2.5">
-                  <span className="font-mono text-[10px] font-extrabold px-2.5 py-0.5 rounded-full bg-[#0b101d] text-slate-300 border border-[#1e293b]">
-                    STEP 0{s.step}
-                  </span>
-                  <div className={`w-8 h-8 rounded-xl bg-gradient-to-tr ${s.color} text-slate-950 flex items-center justify-center font-bold shadow`}>
-                    <Icon className="w-4 h-4" />
-                  </div>
-                </div>
-                <h4 className={`text-sm font-bold ${s.accent} leading-snug`}>
-                  {s.title}
-                </h4>
-                <p className="text-xs text-slate-300 mt-2 leading-relaxed">
-                  {s.desc}
-                </p>
-              </div>
-            );
-          })}
-        </div>
-      )}
-
-      {/* FOOTER NOTICE */}
-      <div className="p-4 rounded-2xl bg-[#030712] border border-[#1e293b] text-xs text-slate-300 flex items-center justify-between relative z-10">
-        <span className="text-slate-400">
-          Core SaaS Commercial Principle: <strong className="text-white">Strict Geographical Licensing (ABAC)</strong> prevents unauthorized cross-ward or cross-customer data leakage.
-        </span>
-        <span className="text-emerald-400 font-bold font-mono">100% Backend-Enforced</span>
-      </div>
+        )}
+      </fieldset>
     </div>
   );
 };

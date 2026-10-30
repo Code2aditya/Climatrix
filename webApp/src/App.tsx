@@ -3,33 +3,16 @@ import axios from 'axios';
 import {
   Thermometer,
   Trees,
-  ShieldAlert,
-  Compass,
-  Layers,
   MapPin,
   CheckCircle2,
   Leaf,
   Wind,
   CreditCard,
   Camera,
-  Lock,
-  Unlock,
   Users,
-  Workflow,
-  BrainCircuit,
-  LogOut,
-  Shield,
   ArrowRight,
   KeyRound,
-  AlertCircle,
-  Menu,
-  X,
-  Home,
-  Globe,
-  ChevronRight,
-  Sparkles,
-  Building,
-  GraduationCap
+  AlertCircle
 } from 'lucide-react';
 import {
   BarChart,
@@ -485,7 +468,6 @@ function LoginPortalScreen({
 
 export function App() {
   const [appMode, setAppMode] = useState<'landing' | 'app'>('landing');
-  const [sidebarOpen, setSidebarOpen] = useState<boolean>(true);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<'map' | 'wards' | 'workflow' | 'llm' | 'heat' | 'species' | 'cooling' | 'trees' | 'billing'>('map');
   const [currentUser, setCurrentUser] = useState<UserPersona>(PRESET_PERSONAS[1]); // Default: MCJ Commissioner
@@ -494,8 +476,6 @@ export function App() {
   const [wards, setWards] = useState<WardData[]>(INITIAL_WARDS);
   const [trees, setTrees] = useState<TreeData[]>(INITIAL_TREES);
   const [selectedWard, setSelectedWard] = useState<WardData>(INITIAL_WARDS[1]); // Ward 14 Rainak Bazaar default
-  const [activeMapLayer, setActiveMapLayer] = useState<'lst' | 'ndvi' | 'hotspots'>('lst');
-  const [showTreesOnMap, setShowTreesOnMap] = useState<boolean>(true);
 
   // Real-Time Weather & Multi-City State
   const [weatherInfo, setWeatherInfo] = useState<any>(null);
@@ -644,7 +624,10 @@ export function App() {
   if (appMode === 'landing') {
     return (
       <LandingPage
-        onOpenApp={() => setAppMode('app')}
+        onOpenApp={() => {
+          setAppMode('app');
+          setIsLoggedIn(true);
+        }}
         onOpenLogin={() => {
           setAppMode('app');
           setIsLoggedIn(false);
@@ -659,271 +642,192 @@ export function App() {
         onLogin={(persona) => {
           setCurrentUser(persona);
           setIsLoggedIn(true);
+          setAppMode('app');
         }}
       />
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#030712] text-slate-100 flex flex-col font-sans relative overflow-x-hidden">
-      {/* Background Ambient Light Orbs */}
-      <div className="absolute top-0 left-1/4 w-96 h-96 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none" />
-      <div className="absolute top-1/2 right-10 w-96 h-96 rounded-full bg-teal-500/10 blur-3xl pointer-events-none" />
-
-      {/* 1. TOP ARANYIX HEADER & PERSONA BAR */}
-      <header className="sticky top-0 z-50 bg-[#030712]/90 backdrop-blur-2xl border-b border-[#1e293b] px-6 py-3 flex flex-wrap items-center justify-between gap-4 shadow-xl">
-        {/* Brand */}
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-600 via-teal-500 to-cyan-400 flex items-center justify-center shadow-lg shadow-emerald-500/25 border border-white/20">
-            <Thermometer className="w-6 h-6 text-slate-950 font-bold" />
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="text-xl font-black tracking-tight bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 bg-clip-text text-transparent">
-                Climatrix
-              </span>
-
-              {/* Multi-City Catalog Selector */}
-              <select
-                value={activeCity}
-                onChange={(e) => setActiveCity(e.target.value)}
-                className="text-xs px-2.5 py-0.5 rounded-full font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 backdrop-blur-md shadow cursor-pointer focus:outline-none"
-              >
-                {citiesCatalog.length > 0 ? (
-                  citiesCatalog.map((c) => (
-                    <option key={c.city_id} value={c.name} className="bg-slate-900 text-slate-100">
-                      {c.name} ({c.wards_count} Wards) - {c.status}
-                    </option>
-                  ))
-                ) : (
-                  <option value="Jalandhar" className="bg-slate-900 text-slate-100">Pilot: Jalandhar (80 Wards)</option>
-                )}
-              </select>
-
-              {/* IP Geolocation Badge */}
-              {clientIpLocation && (
-                <span className="text-[11px] px-2 py-0.5 rounded-full font-mono bg-cyan-500/10 text-cyan-300 border border-cyan-500/20">
-                  📍 Client: {clientIpLocation.city}, {clientIpLocation.region}
-                </span>
-              )}
-            </div>
-            <p className="text-xs text-slate-300">
-              AI-Powered Urban Heat Island &amp; Climate Resilience Decision-Support System
-            </p>
-          </div>
-        </div>
-
-        {/* Current Active Persona Profile & Switcher Button */}
-        <div className="flex items-center gap-3">
-          {/* Quick Persona Card */}
-          <div className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-slate-800/80 border border-slate-700/60 shadow text-xs">
-            <div className={`w-7 h-7 rounded-lg bg-gradient-to-tr ${currentUser.color} text-white flex items-center justify-center font-bold text-xs`}>
-              {currentUser.avatarText}
+    <div className="min-h-screen bg-[#f8fafc] text-slate-900 flex flex-col font-sans relative overflow-x-hidden">
+      {/* 1. INDIAN GOVERNMENT PORTAL HEADER */}
+      <header className="bg-[#064e3b] text-white border-b-2 border-[#ff9933] shadow-md">
+        <div className="max-w-7xl mx-auto px-6 py-3 flex flex-wrap items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded bg-emerald-900 border border-emerald-700 flex items-center justify-center font-black text-[#ff9933] text-lg shadow">
+              🏛️
             </div>
             <div>
-              <div className="font-bold text-white flex items-center gap-1.5">
-                {currentUser.name}
-                <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-slate-900 text-emerald-400 border border-slate-700">
-                  {currentUser.role}
-                </span>
-              </div>
-              <span className="text-[10px] text-slate-400 block truncate max-w-[180px]">
-                {currentUser.organisation}
-              </span>
+              <h1 className="text-lg font-extrabold tracking-tight text-white">
+                Smart Urban Heat &amp; Climate Resilience Platform
+              </h1>
+              <p className="text-xs text-emerald-200">
+                Department of Local Government &amp; Municipal Affairs | Govt of Punjab
+              </p>
             </div>
           </div>
 
-          {/* Public Landing Portal Toggle */}
-          <button
-            onClick={() => setAppMode('landing')}
-            className="px-3.5 py-2 rounded-xl bg-[#0b101d] hover:bg-slate-800 text-slate-200 font-bold text-xs transition border border-[#1e293b] flex items-center gap-1.5"
-          >
-            <Globe className="w-4 h-4 text-emerald-400" />
-            Public Portal
-          </button>
+          <div className="flex items-center gap-3 text-xs">
+            {clientIpLocation && (
+              <span className="text-[10px] font-mono text-emerald-200 bg-emerald-950 px-2 py-0.5 rounded border border-emerald-700">
+                📍 {clientIpLocation.city}, {clientIpLocation.region}
+              </span>
+            )}
+            {/* Multi-City Catalog Selector */}
+            <select
+              value={activeCity}
+              onChange={(e) => setActiveCity(e.target.value)}
+              className="govt-input text-xs font-bold text-slate-900"
+            >
+              {citiesCatalog.length > 0 ? (
+                citiesCatalog.map((c) => (
+                  <option key={c.city_id} value={c.name}>
+                    {c.name} ({c.wards_count} Wards)
+                  </option>
+                ))
+              ) : (
+                <option value="Jalandhar">Jalandhar Municipal Corporation (80 Wards)</option>
+              )}
+            </select>
 
-          {/* Role Switcher Button */}
-          <button
-            onClick={() => setShowRoleModal(true)}
-            className="px-3.5 py-2 rounded-xl bg-[#0b101d] hover:bg-slate-800 text-slate-200 font-bold text-xs transition border border-[#1e293b] flex items-center gap-1.5"
-          >
-            <Users className="w-4 h-4 text-emerald-400" />
-            Switch Role
-          </button>
+            {/* Persona Badge */}
+            <div className="px-3 py-1 rounded bg-emerald-950 border border-emerald-700 text-emerald-100 font-bold">
+              {currentUser.name} ({currentUser.role})
+            </div>
 
-          {/* Sign Out Button */}
-          <button
-            onClick={() => setIsLoggedIn(false)}
-            className="px-3.5 py-2 rounded-xl bg-red-950/40 hover:bg-red-900/60 text-red-300 border border-red-800/60 font-bold text-xs transition flex items-center gap-1.5"
-          >
-            <LogOut className="w-4 h-4 text-red-400" />
-            Sign Out
-          </button>
+            <button
+              onClick={() => setAppMode('landing')}
+              className="px-3 py-1.5 rounded bg-emerald-900 hover:bg-emerald-800 text-white font-bold border border-emerald-700 transition"
+            >
+              🌐 Public Portal
+            </button>
 
-          {/* Backend Status */}
-          <div className={`flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-lg border font-medium ${
-            backendOnline 
-              ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30' 
-              : 'bg-amber-500/10 text-amber-400 border-amber-500/30'
-          }`}>
-            <span className={`w-2 h-2 rounded-full ${backendOnline ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'}`}></span>
-            {backendOnline ? 'FastAPI Online' : 'Local Seed Mode'}
+            <button
+              onClick={() => setShowRoleModal(true)}
+              className="px-3 py-1.5 rounded bg-emerald-900 hover:bg-emerald-800 text-white font-bold border border-emerald-700 transition"
+            >
+              👥 Switch Persona
+            </button>
+
+            <button
+              onClick={() => setIsLoggedIn(false)}
+              className="px-3 py-1.5 rounded bg-red-800 hover:bg-red-700 text-white font-bold border border-red-900 transition"
+            >
+              🚪 Sign Out
+            </button>
           </div>
         </div>
+
+        {/* Tricolor Accent Strip */}
+        <div className="h-1 w-full bg-gradient-to-r from-[#ff9933] via-white to-[#138808]" />
       </header>
 
       {/* 2. REAL-TIME METEOROLOGICAL TICKER BAR */}
       {weatherInfo && (
-        <div className="bg-slate-950/80 backdrop-blur-md border-b border-white/5 px-6 py-1.5 text-xs text-slate-300 flex flex-wrap items-center justify-between gap-4 font-mono shadow-inner">
-          <div className="flex items-center gap-4 overflow-x-auto">
-            <span className="text-emerald-400 font-bold flex items-center gap-1 flex-shrink-0">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> LIVE WEATHER ({weatherInfo.city}):
+        <div className="bg-[#0f172a] text-slate-200 border-b border-slate-700 px-6 py-1.5 text-xs flex flex-wrap items-center justify-between font-mono">
+          <div className="flex items-center gap-4">
+            <span className="text-emerald-400 font-bold">
+              LIVE WEATHER ({weatherInfo.city}):
             </span>
-            <span className="text-slate-200 font-semibold">
-              🌡️ Ambient Air: <strong className="text-amber-400">{weatherInfo.ambient_temperature_celsius}°C</strong>
-            </span>
-            <span className="text-slate-200 font-semibold">
-              🔥 Heat Index: <strong className="text-red-400">{weatherInfo.heat_index_celsius}°C</strong>
-            </span>
-            <span className="text-slate-200 font-semibold">
-              💧 Humidity: <strong className="text-cyan-400">{weatherInfo.relative_humidity_pct}%</strong>
-            </span>
-            <span className="text-slate-200 font-semibold">
-              💨 Wind: <strong className="text-slate-100">{weatherInfo.wind_speed_kmh} km/h</strong>
-            </span>
+            <span>Ambient Air: <strong className="text-amber-400">{weatherInfo.ambient_temperature_celsius}°C</strong></span>
+            <span>Heat Index: <strong className="text-red-400">{weatherInfo.heat_index_celsius}°C</strong></span>
+            <span>Humidity: <strong className="text-cyan-400">{weatherInfo.relative_humidity_pct}%</strong></span>
+            <span>Wind Speed: <strong>{weatherInfo.wind_speed_kmh} km/h</strong></span>
           </div>
 
-          <div className="text-[11px] text-slate-400">
-            <span>Satellite Peak LST Delta: <strong className="text-red-400">+{((selectedWard?.heat_analysis?.mean_lst_celsius ?? 44.5) - (weatherInfo.ambient_temperature_celsius ?? 38.5)).toFixed(1)}°C UHI Trap</strong></span>
-          </div>
+          <span className="text-slate-400 text-[11px]">
+            FastAPI Status: <strong className="text-emerald-400">{backendOnline ? 'ONLINE' : 'OFFLINE'}</strong>
+          </span>
         </div>
       )}
 
-      {/* 3. SUB-NAVIGATION TABS */}
-      <nav className="bg-[#0b101d] border-b border-[#1e293b] px-6 py-2 flex items-center gap-1.5 overflow-x-auto text-sm">
+      {/* 3. OFFICIAL NAVY BLUE 7-TAB NAVIGATION BAR */}
+      <nav className="bg-[#0f172a] border-b border-slate-700 px-6 py-1 flex items-center gap-1 overflow-x-auto text-xs font-bold text-slate-300">
         <button
           onClick={() => setActiveTab('map')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl font-bold transition-all ${
-            activeTab === 'map'
-              ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-black shadow-lg shadow-emerald-500/20'
-              : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+          className={`px-4 py-2 rounded-t font-bold transition ${
+            activeTab === 'map' ? 'bg-[#f8fafc] text-[#064e3b] shadow' : 'hover:bg-slate-800 text-slate-200'
           }`}
         >
-          <Compass className="w-4 h-4" />
-          Interactive GIS Map
-        </button>
-
-        <button
-          onClick={() => setActiveTab('wards')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl font-bold transition-all ${
-            activeTab === 'wards'
-              ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-black shadow-lg shadow-emerald-500/20'
-              : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
-          }`}
-        >
-          <Layers className="w-4 h-4" />
-          Ward Data Matrix
-        </button>
-
-        <button
-          onClick={() => setActiveTab('workflow')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl font-bold transition-all ${
-            activeTab === 'workflow'
-              ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-black shadow-lg shadow-emerald-500/20'
-              : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
-          }`}
-        >
-          <Workflow className="w-4 h-4" />
-          System Operational Flow
-        </button>
-
-        <button
-          onClick={() => setActiveTab('llm')}
-          className={`flex items-center gap-2 px-3.5 py-2 rounded-lg font-medium transition-all ${
-            activeTab === 'llm'
-              ? 'bg-purple-600 text-white font-bold shadow-lg shadow-purple-500/25'
-              : 'text-purple-400 hover:text-purple-200 hover:bg-slate-800/50'
-          }`}
-        >
-          <BrainCircuit className="w-4 h-4 text-purple-400" />
-          AI LLM Climate Advisor
+          🏠 Home &amp; Dashboard
         </button>
 
         <button
           onClick={() => setActiveTab('heat')}
-          className={`flex items-center gap-2 px-3.5 py-2 rounded-lg font-medium transition-all ${
-            activeTab === 'heat'
-              ? 'bg-emerald-500 text-slate-950 font-bold shadow-lg shadow-emerald-500/25'
-              : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+          className={`px-4 py-2 rounded-t font-bold transition ${
+            activeTab === 'heat' ? 'bg-[#f8fafc] text-[#064e3b] shadow' : 'hover:bg-slate-800 text-slate-200'
           }`}
         >
-          <Thermometer className="w-4 h-4" />
-          Heat &amp; LST Hotspot Ranking
+          🌡️ Climate Analysis
+        </button>
+
+        <button
+          onClick={() => setActiveTab('wards')}
+          className={`px-4 py-2 rounded-t font-bold transition ${
+            activeTab === 'wards' ? 'bg-[#f8fafc] text-[#064e3b] shadow' : 'hover:bg-slate-800 text-slate-200'
+          }`}
+        >
+          🗺️ Heat Map &amp; Ward Register
         </button>
 
         <button
           onClick={() => setActiveTab('species')}
-          className={`flex items-center gap-2 px-3.5 py-2 rounded-lg font-medium transition-all ${
-            activeTab === 'species'
-              ? 'bg-emerald-500 text-slate-950 font-bold shadow-lg shadow-emerald-500/25'
-              : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+          className={`px-4 py-2 rounded-t font-bold transition ${
+            activeTab === 'species' ? 'bg-[#f8fafc] text-[#064e3b] shadow' : 'hover:bg-slate-800 text-slate-200'
           }`}
         >
-          <Leaf className="w-4 h-4" />
-          Punjab Native Species Matcher
-        </button>
-
-        <button
-          onClick={() => setActiveTab('cooling')}
-          className={`flex items-center gap-2 px-3.5 py-2 rounded-lg font-medium transition-all ${
-            activeTab === 'cooling'
-              ? 'bg-emerald-500 text-slate-950 font-bold shadow-lg shadow-emerald-500/25'
-              : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
-          }`}
-        >
-          <Wind className="w-4 h-4" />
-          Alternative Urban Cooling
+          🌿 Plantation Planning
         </button>
 
         <button
           onClick={() => setActiveTab('trees')}
-          className={`flex items-center gap-2 px-3.5 py-2 rounded-lg font-medium transition-all ${
-            activeTab === 'trees'
-              ? 'bg-emerald-500 text-slate-950 font-bold shadow-lg shadow-emerald-500/25'
-              : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+          className={`px-4 py-2 rounded-t font-bold transition ${
+            activeTab === 'trees' ? 'bg-[#f8fafc] text-[#064e3b] shadow' : 'hover:bg-slate-800 text-slate-200'
           }`}
         >
-          <Trees className="w-4 h-4" />
-          Planted Trees &amp; Field Audits
+          🌳 Tree Monitoring
+        </button>
+
+        <button
+          onClick={() => setActiveTab('workflow')}
+          className={`px-4 py-2 rounded-t font-bold transition ${
+            activeTab === 'workflow' ? 'bg-[#f8fafc] text-[#064e3b] shadow' : 'hover:bg-slate-800 text-slate-200'
+          }`}
+        >
+          📊 Reports &amp; Governance
+        </button>
+
+        <button
+          onClick={() => setActiveTab('llm')}
+          className={`px-4 py-2 rounded-t font-bold transition ${
+            activeTab === 'llm' ? 'bg-[#f8fafc] text-[#064e3b] shadow' : 'hover:bg-slate-800 text-slate-200'
+          }`}
+        >
+          🧠 AI Decision Assistant
         </button>
 
         <button
           onClick={() => setActiveTab('billing')}
-          className={`flex items-center gap-2 px-3.5 py-2 rounded-lg font-medium transition-all ${
-            activeTab === 'billing'
-              ? 'bg-emerald-500 text-slate-950 font-bold shadow-lg shadow-emerald-500/25'
-              : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+          className={`px-4 py-2 rounded-t font-bold transition ${
+            activeTab === 'billing' ? 'bg-[#f8fafc] text-[#064e3b] shadow' : 'hover:bg-slate-800 text-slate-200'
           }`}
         >
-          <CreditCard className="w-4 h-4" />
-          Location Licensing (ABAC)
+          💳 ABAC Location Licenses
         </button>
       </nav>
 
-      {/* 3. MAIN DASHBOARD CONTENT */}
-      <main className="flex-1 p-6 space-y-6 max-w-7xl mx-auto w-full">
+      {/* 4. MAIN GOVERNMENT PORTAL CONTENT CANVAS */}
+      <main className="flex-1 p-6 space-y-4 max-w-7xl mx-auto w-full">
 
         {/* TAB: WARD DATA MATRIX (NEW MULTI-WARD DATA EXPLORER PANEL) */}
         {activeTab === 'wards' && (
           <WardExplorerPanel
             wards={wards}
-            currentUser={currentUser}
             selectedWard={selectedWard}
             onSelectWard={(w) => {
               setSelectedWard(w);
               setActiveTab('map');
             }}
-            onOpenBilling={() => setActiveTab('billing')}
           />
         )}
 
@@ -935,218 +839,21 @@ export function App() {
         {/* TAB: AI LLM CLIMATE DECISION ADVISOR */}
         {activeTab === 'llm' && (
           <LlmDecisionPanel
-            wards={wards}
-            trees={trees}
             selectedWard={selectedWard}
-            currentUser={currentUser}
-            onSelectWard={(w) => setSelectedWard(w)}
           />
         )}
 
-        {/* TAB 1: INTERACTIVE GIS MAP */}
+        {/* TAB 1: INTERACTIVE GIS MAP (VERDICA-INSPIRED FULL WORKSPACE) */}
         {activeTab === 'map' && (
-          <div className="space-y-6">
-            {/* Map Controls & Status Bar */}
-            <div className="flex flex-wrap items-center justify-between gap-4 p-4 rounded-xl bg-slate-900 border border-slate-800">
-              <div className="flex flex-wrap items-center gap-3">
-                <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-                  <Layers className="w-4 h-4 text-emerald-400" />
-                  Satellite Layer:
-                </span>
-                <div className="flex items-center bg-slate-800/80 p-1 rounded-lg border border-slate-700/60 text-xs">
-                  <button
-                    onClick={() => setActiveMapLayer('lst')}
-                    className={`px-3 py-1.5 rounded-md font-medium transition ${
-                      activeMapLayer === 'lst' ? 'bg-red-500 text-white font-bold' : 'text-slate-300 hover:text-white'
-                    }`}
-                  >
-                    🔥 Surface Temp (LST)
-                  </button>
-                  <button
-                    onClick={() => setActiveMapLayer('ndvi')}
-                    className={`px-3 py-1.5 rounded-md font-medium transition ${
-                      activeMapLayer === 'ndvi' ? 'bg-emerald-500 text-slate-950 font-bold' : 'text-slate-300 hover:text-white'
-                    }`}
-                  >
-                    🌿 Vegetation (NDVI)
-                  </button>
-                  <button
-                    onClick={() => setActiveMapLayer('hotspots')}
-                    className={`px-3 py-1.5 rounded-md font-medium transition ${
-                      activeMapLayer === 'hotspots' ? 'bg-amber-500 text-slate-950 font-bold' : 'text-slate-300 hover:text-white'
-                    }`}
-                  >
-                    ⚠️ Hotspots Only
-                  </button>
-                </div>
-
-                <label className="flex items-center gap-2 text-xs text-slate-300 cursor-pointer ml-3 bg-slate-800/80 px-3 py-1.5 rounded-lg border border-slate-700/60">
-                  <input
-                    type="checkbox"
-                    checked={showTreesOnMap}
-                    onChange={(e) => setShowTreesOnMap(e.target.checked)}
-                    className="accent-emerald-500 w-4 h-4 rounded"
-                  />
-                  <span>Show Planted Trees (GPS Pins)</span>
-                </label>
-              </div>
-
-              {/* ABAC Geofence Indicator */}
-              <div className="flex items-center gap-2 text-xs">
-                <span className="text-slate-400">Tenant ABAC Status:</span>
-                <span className="px-2.5 py-1 rounded-md font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 flex items-center gap-1">
-                  <ShieldAlert className="w-3.5 h-3.5" />
-                  {currentUser.role === 'SUPER_ADMIN' ? 'Super Admin Unrestricted' : `Geofenced to ${currentUser.organisation}`}
-                </span>
-              </div>
-            </div>
-
-            {/* Map & Inspector Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* Map Viewport */}
-              <div className="lg:col-span-2">
-                <GisMap
-                  wards={wards}
-                  trees={trees}
-                  selectedWard={selectedWard}
-                  onSelectWard={(w) => setSelectedWard(w)}
-                  activeLayer={activeMapLayer}
-                  showTrees={showTreesOnMap}
-                />
-                <div className="mt-2 text-xs text-slate-500 flex items-center justify-between">
-                  <span>Data Source: USGS Landsat 9 TIRS-2 &amp; Copernicus Sentinel-2 MSI</span>
-                  <span>Spatial Resolution: 30m Thermal / 10m Multispectral</span>
-                </div>
-              </div>
-
-              {/* Selected Ward Inspector Card */}
-              <div className="space-y-4">
-                <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 shadow-xl space-y-4">
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <span className="text-xs font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded">
-                        {selectedWard.code}
-                      </span>
-                      <h3 className="text-lg font-bold text-white mt-1">{selectedWard.name}</h3>
-                      <p className="text-xs text-slate-400 mt-1">{selectedWard.description}</p>
-                    </div>
-                    {selectedWard.is_licensed ? (
-                      <span className="flex items-center gap-1 text-xs font-semibold px-2 py-1 rounded-md bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-                        <Unlock className="w-3.5 h-3.5" /> Licensed
-                      </span>
-                    ) : (
-                      <span className="flex items-center gap-1 text-xs font-semibold px-2 py-1 rounded-md bg-red-500/20 text-red-400 border border-red-500/30">
-                        <Lock className="w-3.5 h-3.5" /> Restricted
-                      </span>
-                    )}
-                  </div>
-
-                  {/* ABAC Check Block */}
-                  {selectedWard.is_licensed ? (
-                    <div className="space-y-4">
-                      {/* Metric Badges */}
-                      <div className="grid grid-cols-2 gap-3">
-                        <div className="p-3 rounded-xl bg-slate-800/60 border border-slate-700/50">
-                          <span className="text-xs text-slate-400 block">Mean Surface Temp</span>
-                          <span className="text-2xl font-black text-red-400">
-                            {selectedWard.heat_analysis?.mean_lst_celsius}°C
-                          </span>
-                          <span className="text-[10px] text-red-500/80 block mt-0.5">
-                            Peak: {selectedWard.heat_analysis?.max_lst_celsius}°C
-                          </span>
-                        </div>
-                        <div className="p-3 rounded-xl bg-slate-800/60 border border-slate-700/50">
-                          <span className="text-xs text-slate-400 block">Green Cover (NDVI)</span>
-                          <span className={`text-2xl font-black ${
-                            (selectedWard.heat_analysis?.mean_ndvi ?? 0) > 0.2 ? 'text-emerald-400' : 'text-amber-400'
-                          }`}>
-                            {selectedWard.heat_analysis?.mean_ndvi}
-                          </span>
-                          <span className="text-[10px] text-slate-400 block mt-0.5">
-                            Deficit: {(1.0 - (selectedWard.heat_analysis?.mean_ndvi ?? 0) * 2.5).toFixed(1)}x
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* Micro-Climate Diagnostics */}
-                      <div className="p-3.5 rounded-xl bg-slate-950/60 border border-slate-800 space-y-2 text-xs">
-                        <div className="flex justify-between text-slate-300">
-                          <span>Urban Heat Island (UHI) Delta:</span>
-                          <span className="font-bold text-red-400">+{selectedWard.heat_analysis?.heat_island_intensity}°C</span>
-                        </div>
-                        <div className="flex justify-between text-slate-300">
-                          <span>Vulnerability Priority Rank:</span>
-                          <span className="font-bold text-amber-400">Rank #{selectedWard.heat_analysis?.vulnerability_rank} in Jalandhar</span>
-                        </div>
-                        <div className="flex justify-between text-slate-300">
-                          <span>Population Density:</span>
-                          <span className="font-bold">{selectedWard.population_density.toLocaleString()} / km²</span>
-                        </div>
-                      </div>
-
-                      {/* Recommended Action */}
-                      <div className="p-3.5 rounded-xl bg-emerald-950/30 border border-emerald-800/50 text-xs">
-                        <span className="font-bold text-emerald-400 block flex items-center gap-1.5">
-                          <CheckCircle2 className="w-4 h-4" /> Recommended Climate Action:
-                        </span>
-                        <p className="text-slate-300 mt-1">
-                          {selectedWard.code === 'JAL-WARD-14' || selectedWard.code === 'JAL-WARD-18' ? (
-                            <strong className="text-amber-300">
-                              Ground tree planting unfeasible due to underground drainage &amp; 3m road width. Implement High-Albedo Cool Roofs (SRI &gt; 82) &amp; suspended shade sails.
-                            </strong>
-                          ) : (
-                            <span>
-                              Suitable for roadside green corridors with native deep-rooted <strong>Neem (Azadirachta indica)</strong> and <strong>Tahli (Dalbergia sissoo)</strong>.
-                            </span>
-                          )}
-                        </p>
-                      </div>
-                    </div>
-                  ) : (
-                    /* Restricted ABAC Notice */
-                    <div className="p-6 rounded-xl bg-red-950/30 border border-red-800/60 text-center space-y-3">
-                      <div className="w-12 h-12 rounded-full bg-red-900/40 text-red-400 flex items-center justify-center mx-auto">
-                        <Lock className="w-6 h-6" />
-                      </div>
-                      <h4 className="font-bold text-red-300">Geographical License Required</h4>
-                      <p className="text-xs text-slate-300">
-                        Customer <strong>{currentUser.organisation}</strong> does not hold a license for <strong>{selectedWard.name}</strong>.
-                      </p>
-                      <button
-                        onClick={() => setActiveTab('billing')}
-                        className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-500 text-white text-xs font-bold transition shadow-lg"
-                      >
-                        Acquire Ward License
-                      </button>
-                    </div>
-                  )}
-                </div>
-
-                {/* Quick Ward Selector Pills */}
-                <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-2 text-xs">
-                  <span className="font-semibold text-slate-400 uppercase tracking-wider block">
-                    Quick Sample Ward Select:
-                  </span>
-                  <div className="flex flex-wrap gap-1.5">
-                    {wards.map((w) => (
-                      <button
-                        key={w.id}
-                        onClick={() => setSelectedWard(w)}
-                        className={`px-2.5 py-1.5 rounded-lg font-medium transition ${
-                          selectedWard.id === w.id
-                            ? 'bg-emerald-500 text-slate-950 font-bold'
-                            : w.is_licensed
-                            ? 'bg-slate-800 hover:bg-slate-700 text-slate-300'
-                            : 'bg-slate-800/40 text-slate-500 line-through'
-                        }`}
-                      >
-                        {w.name.split(' - ')[0]}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
+          <div className="space-y-4">
+            <GisMap
+              wards={wards}
+              trees={trees}
+              selectedWard={selectedWard}
+              onSelectWard={(w) => setSelectedWard(w)}
+              activeLayer="lst"
+              showTrees={true}
+            />
           </div>
         )}
 
