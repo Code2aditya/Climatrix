@@ -439,6 +439,11 @@ export const GisMap: React.FC<GisMapProps> = ({
                 </button>
                 {activeCategory === 'thermal' && (
                   <div className="space-y-2 pt-1 border-t border-[#1e293b] text-[11px]">
+                    {selectedWard && (
+                      <div className="p-2 rounded-xl bg-emerald-950/40 border border-emerald-800/60 font-mono text-[10px] text-emerald-300">
+                        📍 Active Target: <strong>{selectedWard.name}</strong>
+                      </div>
+                    )}
                     <div className="flex justify-between text-slate-300">
                       <span>Layer Opacity:</span>
                       <span className="font-mono font-bold text-emerald-400">{Math.round(lstOpacity * 100)}%</span>
@@ -452,11 +457,19 @@ export const GisMap: React.FC<GisMapProps> = ({
                       onChange={(e) => setLstOpacity(parseFloat(e.target.value))}
                       className="w-full accent-emerald-500 cursor-pointer"
                     />
-                    <div className="p-2 rounded-xl bg-slate-900 border border-[#1e293b] space-y-1">
+                    <div className="p-2.5 rounded-xl bg-slate-900 border border-[#1e293b] space-y-1.5">
+                      <div className="flex justify-between text-[10px] text-slate-400 font-mono">
+                        <span>Ward Mean LST:</span>
+                        <strong className="text-red-400">{selectedWard?.heat_analysis?.mean_lst_celsius ?? 42.5}°C</strong>
+                      </div>
+                      <div className="flex justify-between text-[10px] text-slate-400 font-mono">
+                        <span>UHI Delta Trap:</span>
+                        <strong className="text-amber-400">+{selectedWard?.heat_analysis?.heat_island_intensity ?? 6.5}°C</strong>
+                      </div>
                       <span className="text-[10px] text-slate-400 block font-mono">LST Thermal Scale (°C):</span>
                       <div className="h-2.5 rounded-full bg-gradient-to-r from-blue-500 via-green-500 via-yellow-500 via-orange-500 to-red-500" />
                       <div className="flex justify-between text-[9px] text-slate-400 font-mono">
-                        <span>&lt;35°C</span><span>42°C</span><span>&gt;48°C</span>
+                        <span>&lt;35°C</span><span>38°C</span><span>42°C</span><span>45°C</span><span>&gt;48°C</span>
                       </div>
                     </div>
                   </div>
@@ -472,6 +485,32 @@ export const GisMap: React.FC<GisMapProps> = ({
                   <span className="flex items-center gap-2"><Leaf className="w-4 h-4 text-emerald-400" /> 2. Vegetation NDVI &amp; Canopy Gaps</span>
                   {activeCategory === 'ndvi' ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronRight className="w-3.5 h-3.5" />}
                 </button>
+                {activeCategory === 'ndvi' && (
+                  <div className="space-y-2 pt-1 border-t border-[#1e293b] text-[11px]">
+                    {selectedWard && (
+                      <div className="p-2 rounded-xl bg-emerald-950/40 border border-emerald-800/60 font-mono text-[10px] text-emerald-300">
+                        📍 Active Target: <strong>{selectedWard.name}</strong>
+                      </div>
+                    )}
+                    <div className="p-2.5 rounded-xl bg-slate-900 border border-[#1e293b] space-y-1.5">
+                      <div className="flex justify-between text-[10px] text-slate-400 font-mono">
+                        <span>Sensor: Sentinel-2 MSI</span>
+                        <span className="text-emerald-400">10m Canopy</span>
+                      </div>
+                      <div className="flex justify-between text-[10px] text-slate-300">
+                        <span>Ward NDVI Index:</span>
+                        <strong className="text-amber-400 font-mono">
+                          {selectedWard?.heat_analysis?.mean_ndvi ?? 0.18} ({Math.max(0, Math.round((0.35 - (selectedWard?.heat_analysis?.mean_ndvi ?? 0.18)) / 0.35 * 100))}% Deficit)
+                        </strong>
+                      </div>
+                      <div className="space-y-1 pt-1 border-t border-slate-800 text-[10px]">
+                        <div className="flex items-center justify-between"><span className="text-emerald-400 font-bold">● NDVI &gt; 0.30</span><span className="text-slate-400">Dense Canopy</span></div>
+                        <div className="flex items-center justify-between"><span className="text-lime-400 font-bold">● 0.15 - 0.30</span><span className="text-slate-400">Sparse Canopy</span></div>
+                        <div className="flex items-center justify-between"><span className="text-red-400 font-bold">● NDVI &lt; 0.15</span><span className="text-slate-400">Bare Asphalt Heat Trap</span></div>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Category 3: Infrastructure Constraints */}
@@ -483,6 +522,34 @@ export const GisMap: React.FC<GisMapProps> = ({
                   <span className="flex items-center gap-2"><Building className="w-4 h-4 text-amber-400" /> 3. Infrastructure Conflicts</span>
                   {activeCategory === 'infra' ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronRight className="w-3.5 h-3.5" />}
                 </button>
+                {activeCategory === 'infra' && (
+                  <div className="space-y-2 pt-1 border-t border-[#1e293b] text-[11px]">
+                    {selectedWard && (
+                      <div className="p-2 rounded-xl bg-emerald-950/40 border border-emerald-800/60 font-mono text-[10px] text-emerald-300">
+                        📍 Active Target: <strong>{selectedWard.name}</strong>
+                      </div>
+                    )}
+                    <div className="p-2.5 rounded-xl bg-slate-900 border border-[#1e293b] space-y-1.5 text-[10px]">
+                      <div className="flex justify-between text-slate-300">
+                        <span>Est. Road Clearance:</span>
+                        <strong className="text-emerald-400 font-mono">
+                          {selectedWard?.code === 'JAL-WARD-14' || selectedWard?.code === 'JAL-WARD-18' ? '3.2 meters (Narrow)' : '7.5 meters (Avenue)'}
+                        </strong>
+                      </div>
+                      <div className="space-y-1 pt-1 border-t border-slate-800">
+                        {selectedWard?.code === 'JAL-WARD-14' || selectedWard?.code === 'JAL-WARD-18' ? (
+                          <div className="p-2 rounded bg-red-950/40 border border-red-800/60 text-red-300">
+                            <strong>✕ Restricted Ground Excavation:</strong> Subterranean sewerage grid &amp; narrow 3m alley restrict taproot planting.
+                          </div>
+                        ) : (
+                          <div className="p-2 rounded bg-emerald-950/40 border border-emerald-800/60 text-emerald-300">
+                            <strong>✓ Suitable Zone:</strong> Roadway &ge; 6.0m. Safe for roadside tree excavation.
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Category 4: Native Species */}
@@ -494,6 +561,30 @@ export const GisMap: React.FC<GisMapProps> = ({
                   <span className="flex items-center gap-2"><Trees className="w-4 h-4 text-emerald-400" /> 4. Climate-Adaptive Native Species</span>
                   {activeCategory === 'species' ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronRight className="w-3.5 h-3.5" />}
                 </button>
+                {activeCategory === 'species' && (
+                  <div className="space-y-2 pt-1 border-t border-[#1e293b] text-[11px]">
+                    {selectedWard && (
+                      <div className="p-2 rounded-xl bg-emerald-950/40 border border-emerald-800/60 font-mono text-[10px] text-emerald-300">
+                        📍 Target: <strong>{selectedWard.name}</strong>
+                      </div>
+                    )}
+                    <div className="p-2.5 rounded-xl bg-slate-900 border border-[#1e293b] space-y-1.5 text-[10px]">
+                      <div className="space-y-1">
+                        {selectedWard?.code === 'JAL-WARD-14' || selectedWard?.code === 'JAL-WARD-18' ? (
+                          <div className="p-2 rounded bg-amber-950/40 border border-amber-800/60 text-amber-300">
+                            <strong>Micro-Site Restricted:</strong> Ground excavation limited. Recommend potted vertical greenery or cool roof coatings.
+                          </div>
+                        ) : (
+                          <>
+                            <div className="flex justify-between"><strong className="text-emerald-400">1. Neem (Azadirachta indica)</strong><span className="text-slate-400">96% Match</span></div>
+                            <div className="flex justify-between"><strong className="text-emerald-400">2. Tahli (Dalbergia sissoo)</strong><span className="text-slate-400">92% Match</span></div>
+                            <div className="flex justify-between"><strong className="text-emerald-400">3. Kachnar (Bauhinia variegata)</strong><span className="text-slate-400">94% Match</span></div>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Category 5: Alternative Cooling */}
@@ -505,6 +596,29 @@ export const GisMap: React.FC<GisMapProps> = ({
                   <span className="flex items-center gap-2"><Wind className="w-4 h-4 text-cyan-400" /> 5. Cool Roofs (SRI &gt; 82) &amp; Shades</span>
                   {activeCategory === 'cooling' ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronRight className="w-3.5 h-3.5" />}
                 </button>
+                {activeCategory === 'cooling' && (
+                  <div className="space-y-2 pt-1 border-t border-[#1e293b] text-[11px]">
+                    {selectedWard && (
+                      <div className="p-2 rounded-xl bg-emerald-950/40 border border-emerald-800/60 font-mono text-[10px] text-emerald-300">
+                        📍 Target: <strong>{selectedWard.name}</strong>
+                      </div>
+                    )}
+                    <div className="p-2.5 rounded-xl bg-slate-900 border border-[#1e293b] space-y-1.5 text-[10px]">
+                      <div className="flex justify-between text-slate-300">
+                        <span>Cool Roof Priority:</span>
+                        <span className="text-cyan-400 font-bold">
+                          {selectedWard?.code === 'JAL-WARD-14' || selectedWard?.code === 'JAL-WARD-18' ? 'PRIMARY INTERVENTION' : 'SECONDARY OPTION'}
+                        </span>
+                      </div>
+                      <div className="flex justify-between text-slate-300">
+                        <span>Est. Surface Cooling:</span>
+                        <strong className="text-emerald-400 font-mono">
+                          {selectedWard?.code === 'JAL-WARD-14' || selectedWard?.code === 'JAL-WARD-18' ? '-7.5°C' : '-3.2°C'}
+                        </strong>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           ) : (
