@@ -28,14 +28,6 @@ export const LlmDecisionPanel: React.FC<LlmDecisionPanelProps> = ({
   const [loading, setLoading] = useState<boolean>(false);
   const [llmResult, setLlmResult] = useState<any>(null);
 
-  // Quick Preset Prompts
-  const PRESET_PROMPTS = [
-    `Evaluate ${selectedWard.name} for 48°C extreme heat wave resilience`,
-    `Determine cool roof vs ground tree suitability for ${selectedWard.name}`,
-    `Optimize native Punjab species for 25m deep water table in ${selectedWard.name}`,
-    `Analyze industrial pollution filtering canopy for ${selectedWard.name}`
-  ];
-
   const fetchLlmDecision = async () => {
     setLoading(true);
     try {
@@ -196,20 +188,6 @@ export const LlmDecisionPanel: React.FC<LlmDecisionPanelProps> = ({
                   Execute LLM Reasoning
                 </button>
               </div>
-            </div>
-
-            {/* Quick Prompts */}
-            <div className="flex flex-wrap gap-1.5 items-center">
-              <span className="text-slate-500 font-bold text-[11px]">Suggested Queries:</span>
-              {PRESET_PROMPTS.map((p, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => { setCustomPrompt(p); fetchLlmDecision(); }}
-                  className="px-2.5 py-1 rounded bg-slate-100 border border-slate-300 text-slate-800 text-[11px] font-medium hover:bg-slate-200"
-                >
-                  "{p}"
-                </button>
-              ))}
             </div>
 
             {/* Micro-site Sliders */}
