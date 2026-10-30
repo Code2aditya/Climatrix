@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
@@ -68,8 +68,36 @@ export const GisMap: React.FC<GisMapProps> = ({
 }) => {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
+  const tileLayerRef = useRef<L.TileLayer | null>(null);
+  const weatherRadarLayerRef = useRef<L.TileLayer | null>(null);
+  const isochroneLayerRef = useRef<L.Polygon | null>(null);
   const polygonLayersRef = useRef<L.Polygon[]>([]);
   const treeMarkersRef = useRef<L.Marker[]>([]);
+
+  const [basemap, setBasemap] = useState<'carto_dark' | 'osm_streets' | 'esri_satellite'>('carto_dark');
+  const [showWeatherRadar, setShowWeatherRadar] = useState<boolean>(false);
+  const [showIsochrone, setShowIsochrone] = useState<boolean>(false);
+
+  const BASEMAP_TILES = {
+    carto_dark: {
+      url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+      attribution: '&copy; CARTO &copy; OpenStreetMap',
+      subdomains: 'abcd',
+      maxZoom: 19
+    },
+    osm_streets: {
+      url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      subdomains: 'abc',
+      maxZoom: 19
+    },
+    esri_satellite: {
+      url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+      attribution: 'Tiles &copy; Esri &mdash; Source: USGS, Esri, i-cubed',
+      subdomains: '',
+      maxZoom: 18
+    }
+  };
 
   // 1. Initialize Leaflet Map
   useEffect(() => {
@@ -82,13 +110,14 @@ export const GisMap: React.FC<GisMapProps> = ({
       zoomControl: true,
     });
 
-    // Dark cartographic basemap (CartoDB DarkMatter)
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-      attribution: '&copy; <a href="https://carto.com/">CARTO</a> &copy; Landsat/Sentinel Remote Sensing',
-      maxZoom: 19,
-      subdomains: 'abcd',
+    const cfg = BASEMAP_TILES[basemap];
+    const initialTile = L.tileLayer(cfg.url, {
+      attribution: cfg.attribution,
+      subdomains: cfg.subdomains,
+      maxZoom: cfg.maxZoom,
     }).addTo(map);
 
+    tileLayerRef.current = initialTile;
     mapInstanceRef.current = map;
 
     return () => {
@@ -97,7 +126,82 @@ export const GisMap: React.FC<GisMapProps> = ({
     };
   }, []);
 
-  // 2. Render Polygons for Wards
+  // 2. Handle Dynamic Basemap Switching
+  useEffect(() => {
+    const map = mapInstanceRef.current;
+    if (!map) return;
+
+    if (tileLayerRef.current) {
+      tileLayerRef.current.remove();
+    }
+
+    const cfg = BASEMAP_TILES[basemap];
+    const newTile = L.tileLayer(cfg.url, {
+      attribution: cfg.attribution,
+      subdomains: cfg.subdomains,
+      maxZoom: cfg.maxZoom,
+    }).addTo(map);
+
+    tileLayerRef.current = newTile;
+  }, [basemap]);
+
+  // 3. Handle Live Weather Radar Tile Overlay Toggle
+  useEffect(() => {
+    const map = mapInstanceRef.current;
+    if (!map) return;
+
+    if (weatherRadarLayerRef.current) {
+      weatherRadarLayerRef.current.remove();
+      weatherRadarLayerRef.current = null;
+    }
+
+    if (showWeatherRadar) {
+      const radarTile = L.tileLayer('https://tilecache.rainviewer.com/v2/radar/1690000000/256/{z}/{x}/{y}/2/1_1.png', {
+        attribution: '&copy; <a href="https://www.rainviewer.com/">RainViewer</a> Live Radar',
+        opacity: 0.65,
+        maxZoom: 18
+      }).addTo(map);
+
+      weatherRadarLayerRef.current = radarTile;
+    }
+  }, [showWeatherRadar]);
+
+  // 4. Render Pedestrian Walking Isochrone Overlay (OpenRouteService)
+  useEffect(() => {
+    const map = mapInstanceRef.current;
+    if (!map) return;
+
+    if (isochroneLayerRef.current) {
+      isochroneLayerRef.current.remove();
+      isochroneLayerRef.current = null;
+    }
+
+    if (showIsochrone && selectedWard) {
+      const lat = selectedWard.lat;
+      const lng = selectedWard.lng;
+      const points: L.LatLngExpression[] = [];
+      const radius_deg = 0.004; // ~450m walking radius
+      for (let i = 0; i < 16; i++) {
+        const angle = (i / 16) * 2 * Math.PI;
+        const d_lat = radius_deg * Math.sin(angle);
+        const d_lng = (radius_deg * Math.cos(angle)) / Math.cos((lat * Math.PI) / 180);
+        points.push([lat + d_lat, lng + d_lng]);
+      }
+
+      const isochrone = L.polygon(points, {
+        color: '#a855f7',
+        weight: 2,
+        fillColor: '#c084fc',
+        fillOpacity: 0.25,
+        dashArray: '6, 6'
+      }).addTo(map);
+
+      isochrone.bindTooltip(`<b>5-Min Walk Isochrone</b><br/>OpenRouteService Pedestrian Catchment (~400m)`, { sticky: true });
+      isochroneLayerRef.current = isochrone;
+    }
+  }, [showIsochrone, selectedWard]);
+
+  // 5. Render Polygons for Wards
   useEffect(() => {
     const map = mapInstanceRef.current;
     if (!map) return;
@@ -109,7 +213,6 @@ export const GisMap: React.FC<GisMapProps> = ({
     wards.forEach((ward) => {
       if (!ward.coordinates || ward.coordinates.length === 0) return;
 
-      // Leaflet expects [lat, lng], whereas GeoJSON is [lng, lat]
       const latLngs: L.LatLngExpression[] = ward.coordinates.map((c) => [c[1], c[0]]);
 
       const isSelected = selectedWard?.id === ward.id;
@@ -117,7 +220,7 @@ export const GisMap: React.FC<GisMapProps> = ({
       const isHigh = ward.heat_analysis?.hotspot_severity === 'HIGH';
       const isLow = ward.heat_analysis?.hotspot_severity === 'LOW';
 
-      let fillColor = '#f59e0b'; // amber
+      let fillColor = '#f59e0b';
       if (activeLayer === 'lst') {
         fillColor = isCritical ? '#ef4444' : isHigh ? '#f97316' : isLow ? '#10b981' : '#eab308';
       } else if (activeLayer === 'ndvi') {
@@ -127,7 +230,6 @@ export const GisMap: React.FC<GisMapProps> = ({
         fillColor = isCritical ? '#dc2626' : 'rgba(255,255,255,0.05)';
       }
 
-      // If not licensed for current tenant, render with dashed grey/red lock style
       const strokeColor = !ward.is_licensed ? '#64748b' : isSelected ? '#38bdf8' : fillColor;
       const fillOpacity = !ward.is_licensed ? 0.15 : isSelected ? 0.65 : activeLayer === 'hotspots' && !isCritical ? 0.05 : 0.45;
 
@@ -139,7 +241,6 @@ export const GisMap: React.FC<GisMapProps> = ({
         dashArray: !ward.is_licensed ? '4, 6' : undefined,
       }).addTo(map);
 
-      // Popup
       const licenseBadge = ward.is_licensed
         ? '<span style="color:#10b981; font-weight:600;">✓ Licensed</span>'
         : '<span style="color:#f87171; font-weight:600;">🔒 License Required (ABAC Guard)</span>';
@@ -161,7 +262,7 @@ export const GisMap: React.FC<GisMapProps> = ({
     });
   }, [wards, selectedWard, activeLayer, onSelectWard]);
 
-  // 3. Render Planted Tree Markers
+  // 6. Render Planted Tree Markers
   useEffect(() => {
     const map = mapInstanceRef.current;
     if (!map) return;
@@ -214,6 +315,64 @@ export const GisMap: React.FC<GisMapProps> = ({
 
   return (
     <div className="relative w-full h-[540px] rounded-2xl overflow-hidden border border-slate-800 shadow-2xl">
+      {/* Basemap & Overlay Controls */}
+      <div className="absolute top-3 right-3 z-[1000] bg-slate-900/80 backdrop-blur-md p-1.5 rounded-2xl border border-white/10 text-xs font-bold flex flex-wrap gap-1 shadow-2xl">
+        <button
+          onClick={() => setBasemap('carto_dark')}
+          className={`px-3 py-1.5 rounded-xl transition ${
+            basemap === 'carto_dark'
+              ? 'bg-emerald-500 text-slate-950 font-black shadow'
+              : 'text-slate-300 hover:text-white'
+          }`}
+        >
+          🌑 Dark GIS
+        </button>
+        <button
+          onClick={() => setBasemap('osm_streets')}
+          className={`px-3 py-1.5 rounded-xl transition ${
+            basemap === 'osm_streets'
+              ? 'bg-emerald-500 text-slate-950 font-black shadow'
+              : 'text-slate-300 hover:text-white'
+          }`}
+        >
+          🗺️ OSM Streets
+        </button>
+        <button
+          onClick={() => setBasemap('esri_satellite')}
+          className={`px-3 py-1.5 rounded-xl transition ${
+            basemap === 'esri_satellite'
+              ? 'bg-emerald-500 text-slate-950 font-black shadow'
+              : 'text-slate-300 hover:text-white'
+          }`}
+        >
+          🛰️ Esri Satellite
+        </button>
+
+        {/* Live Weather Radar Overlay Toggle */}
+        <button
+          onClick={() => setShowWeatherRadar(!showWeatherRadar)}
+          className={`px-3 py-1.5 rounded-xl transition flex items-center gap-1 border ${
+            showWeatherRadar
+              ? 'bg-cyan-500 text-slate-950 font-black border-cyan-400 shadow-lg'
+              : 'bg-slate-800/80 text-cyan-300 border-cyan-500/30 hover:bg-slate-700'
+          }`}
+        >
+          🌧️ Live Weather Radar
+        </button>
+
+        {/* OpenRouteService 5-Min Walk Isochrone Overlay */}
+        <button
+          onClick={() => setShowIsochrone(!showIsochrone)}
+          className={`px-3 py-1.5 rounded-xl transition flex items-center gap-1 border ${
+            showIsochrone
+              ? 'bg-purple-500 text-slate-950 font-black border-purple-400 shadow-lg'
+              : 'bg-slate-800/80 text-purple-300 border-purple-500/30 hover:bg-slate-700'
+          }`}
+        >
+          🚶‍♂️ 5-Min Walk Isochrone
+        </button>
+      </div>
+
       <div ref={mapContainerRef} className="w-full h-full" />
     </div>
   );

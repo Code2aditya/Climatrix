@@ -48,6 +48,10 @@ class Settings(BaseSettings):
     LLM_MODEL_NAME: str = "gpt-4o-mini"
     USE_LLM_DECISION_ENGINE: bool = True
 
+    # Real-Time Weather Platform Integration
+    OPENWEATHERMAP_API_KEY: str = ""
+    WEATHER_REFRESH_INTERVAL_MINUTES: int = 15
+
     model_config = {"env_file": ".env", "env_file_encoding": "utf-8", "case_sensitive": True, "extra": "ignore"}
 
 settings = Settings()

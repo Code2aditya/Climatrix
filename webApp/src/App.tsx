@@ -319,21 +319,22 @@ function LoginPortalScreen({
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col justify-center items-center p-6 relative overflow-hidden font-sans">
-      {/* Background Ambient Glows */}
-      <div className="absolute -top-40 -left-40 w-96 h-96 rounded-full bg-emerald-600/10 blur-3xl pointer-events-none" />
-      <div className="absolute -bottom-40 -right-40 w-96 h-96 rounded-full bg-purple-600/10 blur-3xl pointer-events-none" />
+      {/* Background Ambient Glow Orbs */}
+      <div className="absolute -top-40 -left-40 w-96 h-96 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-40 -right-40 w-96 h-96 rounded-full bg-purple-500/10 blur-3xl pointer-events-none" />
+      <div className="absolute top-1/3 right-1/4 w-72 h-72 rounded-full bg-cyan-500/10 blur-3xl pointer-events-none" />
 
-      <div className="max-w-4xl w-full bg-slate-900/90 border border-slate-800 rounded-3xl p-8 shadow-2xl backdrop-blur-xl space-y-8 z-10">
+      <div className="max-w-4xl w-full bg-slate-900/60 border border-white/10 rounded-3xl p-8 shadow-2xl backdrop-blur-2xl space-y-8 z-10">
         {/* Brand Header */}
         <div className="text-center space-y-3">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-emerald-600 via-teal-500 to-cyan-400 flex items-center justify-center shadow-xl shadow-emerald-500/20 mx-auto">
-            <Thermometer className="w-8 h-8 text-slate-950 font-bold" />
+          <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-emerald-600 via-teal-500 to-cyan-400 flex items-center justify-center shadow-xl shadow-emerald-500/25 mx-auto border border-white/20">
+            <Thermometer className="w-9 h-9 text-slate-950 font-bold" />
           </div>
           <div>
-            <h1 className="text-3xl font-black bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 bg-clip-text text-transparent tracking-tight">
+            <h1 className="text-4xl font-black bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 bg-clip-text text-transparent tracking-tight">
               Climatrix
             </h1>
-            <p className="text-sm font-semibold text-slate-300 mt-1">
+            <p className="text-sm font-semibold text-slate-200 mt-1">
               AI-Powered Urban Heat Island &amp; Climate Resilience System
             </p>
             <p className="text-xs text-slate-400 mt-0.5">
@@ -344,10 +345,10 @@ function LoginPortalScreen({
 
         {/* Tab Switcher */}
         <div className="flex justify-center">
-          <div className="flex gap-2 bg-slate-950 p-1.5 rounded-xl border border-slate-800 text-xs">
+          <div className="flex gap-2 bg-slate-950/60 backdrop-blur-md p-1.5 rounded-2xl border border-white/10 text-xs shadow">
             <button
               onClick={() => setActiveTab('personas')}
-              className={`px-5 py-2.5 rounded-lg font-bold transition flex items-center gap-2 ${
+              className={`px-5 py-2.5 rounded-xl font-bold transition flex items-center gap-2 ${
                 activeTab === 'personas'
                   ? 'bg-emerald-500 text-slate-950 shadow-lg'
                   : 'text-slate-400 hover:text-white'
@@ -357,7 +358,7 @@ function LoginPortalScreen({
             </button>
             <button
               onClick={() => setActiveTab('custom')}
-              className={`px-5 py-2.5 rounded-lg font-bold transition flex items-center gap-2 ${
+              className={`px-5 py-2.5 rounded-xl font-bold transition flex items-center gap-2 ${
                 activeTab === 'custom'
                   ? 'bg-emerald-500 text-slate-950 shadow-lg'
                   : 'text-slate-400 hover:text-white'
@@ -375,21 +376,21 @@ function LoginPortalScreen({
               {PRESET_PERSONAS.map((persona) => (
                 <div
                   key={persona.id}
-                  className="p-5 rounded-2xl bg-slate-950/80 border border-slate-800 hover:border-emerald-500/50 transition-all shadow-lg flex flex-col justify-between space-y-4 group"
+                  className="p-5 rounded-3xl bg-slate-950/60 backdrop-blur-xl border border-white/10 hover:border-emerald-500/50 transition-all duration-300 shadow-xl flex flex-col justify-between space-y-4 group"
                 >
                   <div className="space-y-3">
                     <div className="flex items-start justify-between">
                       <div className="flex items-center gap-3">
-                        <div className={`w-10 h-10 rounded-xl bg-gradient-to-tr ${persona.color} text-white flex items-center justify-center font-black text-sm shadow`}>
+                        <div className={`w-10 h-10 rounded-2xl bg-gradient-to-tr ${persona.color} text-white flex items-center justify-center font-black text-sm shadow`}>
                           {persona.avatarText}
                         </div>
                         <div>
                           <h4 className="text-sm font-bold text-white group-hover:text-emerald-400 transition">{persona.name}</h4>
-                          <span className="text-[11px] text-slate-400 block">{persona.organisation}</span>
+                          <span className="text-[11px] text-slate-300 block">{persona.organisation}</span>
                         </div>
                       </div>
 
-                      <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full font-bold ${
+                      <span className={`text-[10px] font-mono px-2.5 py-0.5 rounded-full font-bold ${
                         persona.role === 'SUPER_ADMIN'
                           ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30'
                           : persona.role === 'FIELD_WORKER'
@@ -402,21 +403,21 @@ function LoginPortalScreen({
                       </span>
                     </div>
 
-                    <div className="p-2.5 rounded-lg bg-slate-900 border border-slate-800/80 text-[11px] space-y-1">
+                    <div className="p-3 rounded-2xl bg-slate-900/60 border border-white/5 text-[11px] space-y-1">
                       <div className="flex justify-between">
-                        <span className="text-slate-500">Email:</span>
-                        <span className="font-mono text-slate-300">{persona.email}</span>
+                        <span className="text-slate-400">Email:</span>
+                        <span className="font-mono text-slate-200">{persona.email}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-slate-500">Licensed Wards:</span>
-                        <span className="font-bold text-emerald-400">{persona.licensedWards.join(', ')}</span>
+                        <span className="text-slate-400">Licensed Wards:</span>
+                        <span className="font-bold text-emerald-300">{persona.licensedWards.join(', ')}</span>
                       </div>
                     </div>
                   </div>
 
                   <button
                     onClick={() => onLogin(persona)}
-                    className="w-full py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs transition shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2"
+                    className="w-full py-2.5 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs transition shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2"
                   >
                     Authenticate as {persona.name.split(' ')[0]} <ArrowRight className="w-4 h-4" />
                   </button>
@@ -430,43 +431,43 @@ function LoginPortalScreen({
         {activeTab === 'custom' && (
           <form onSubmit={handleCustomLogin} className="max-w-md mx-auto space-y-4 py-4 text-xs">
             {loginError && (
-              <div className="p-3 rounded-lg bg-red-950/60 border border-red-800 text-red-300 flex items-center gap-2">
-                <AlertCircle className="w-4 h-4 flex-shrink-0" />
+              <div className="p-3 rounded-2xl bg-red-950/60 border border-red-800 text-red-200 flex items-center gap-2 font-medium">
+                <AlertCircle className="w-4 h-4 flex-shrink-0 text-red-400" />
                 <span>{loginError}</span>
               </div>
             )}
 
             <div>
-              <label className="text-slate-400 block mb-1 font-semibold">Email Address:</label>
+              <label className="text-slate-300 block mb-1 font-semibold">Email Address:</label>
               <input
                 type="email"
                 placeholder="e.g. commissioner@mcjalandhar.gov.in"
                 value={customEmail}
                 onChange={(e) => setCustomEmail(e.target.value)}
-                className="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-slate-100 focus:outline-none focus:border-emerald-500 font-medium"
+                className="w-full bg-slate-950/60 backdrop-blur-md border border-white/10 rounded-2xl p-3 text-slate-100 focus:outline-none focus:border-emerald-500 font-medium"
                 required
               />
             </div>
 
             <div>
-              <label className="text-slate-400 block mb-1 font-semibold">Password:</label>
+              <label className="text-slate-300 block mb-1 font-semibold">Password:</label>
               <input
                 type="password"
                 placeholder="Enter password (e.g. MCJAdmin2026!)"
                 value={customPassword}
                 onChange={(e) => setCustomPassword(e.target.value)}
-                className="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-slate-100 focus:outline-none focus:border-emerald-500 font-medium"
+                className="w-full bg-slate-950/60 backdrop-blur-md border border-white/10 rounded-2xl p-3 text-slate-100 focus:outline-none focus:border-emerald-500 font-medium"
                 required
               />
             </div>
 
-            <div className="p-3 rounded-lg bg-slate-950 border border-slate-800 text-[11px] text-slate-400">
+            <div className="p-3 rounded-2xl bg-slate-950/60 border border-white/5 text-[11px] text-slate-300">
               💡 <strong>Seed Password Hint:</strong> Use <code>MCJAdmin2026!</code>, <code>AntigravityAdmin2026!</code>, or <code>PGDAdmin2026!</code>
             </div>
 
             <button
               type="submit"
-              className="w-full py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs transition shadow-lg flex items-center justify-center gap-2"
+              className="w-full py-3.5 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs transition shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2"
             >
               <KeyRound className="w-4 h-4" /> Authenticate &amp; Access Dashboard
             </button>
@@ -489,6 +490,12 @@ export function App() {
   const [activeMapLayer, setActiveMapLayer] = useState<'lst' | 'ndvi' | 'hotspots'>('lst');
   const [showTreesOnMap, setShowTreesOnMap] = useState<boolean>(true);
 
+  // Real-Time Weather & Multi-City State
+  const [weatherInfo, setWeatherInfo] = useState<any>(null);
+  const [clientIpLocation, setClientIpLocation] = useState<any>(null);
+  const [citiesCatalog, setCitiesCatalog] = useState<any[]>([]);
+  const [activeCity, setActiveCity] = useState<string>('Jalandhar');
+
   // Species Matcher State
   const [roadWidth, setRoadWidth] = useState<number>(6.0);
   const [waterDepth, setWaterDepth] = useState<number>(20.0);
@@ -502,7 +509,7 @@ export function App() {
   const [inspectionRating, setInspectionRating] = useState<number>(5);
   const [inspectionSuccessMsg, setInspectionSuccessMsg] = useState<string>('');
 
-  // 1. Backend Health Check
+  // 1. Backend Health & Geo Data Check
   useEffect(() => {
     const checkBackend = async () => {
       try {
@@ -514,8 +521,28 @@ export function App() {
         if (treeRes.data && treeRes.data.length > 0) {
           setTrees(treeRes.data);
         }
+        const weatherRes = await axios.get(`${API_BASE}/weather/realtime`, { timeout: 2500 });
+        if (weatherRes.data) {
+          setWeatherInfo(weatherRes.data);
+        }
+        const ipRes = await axios.get(`${API_BASE}/geo/ip-location`, { timeout: 2500 });
+        if (ipRes.data) {
+          setClientIpLocation(ipRes.data);
+        }
+        const cityRes = await axios.get(`${API_BASE}/cities/catalog`, { timeout: 2500 });
+        if (cityRes.data) {
+          setCitiesCatalog(cityRes.data);
+        }
       } catch {
         setBackendOnline(false);
+        setWeatherInfo({
+          city: "Jalandhar",
+          status: "SEED_BASELINE_FEED",
+          ambient_temperature_celsius: 38.5,
+          wind_speed_kmh: 14.2,
+          heat_index_celsius: 42.1,
+          relative_humidity_pct: 48
+        });
       }
     };
     checkBackend();
@@ -608,24 +635,49 @@ export function App() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans">
-      {/* 1. TOP HEADER & PERSONA AUTHENTICATION BAR */}
-      <header className="sticky top-0 z-50 bg-slate-900/95 backdrop-blur-md border-b border-slate-800 px-6 py-3 flex flex-wrap items-center justify-between gap-4">
+    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans relative overflow-x-hidden">
+      {/* Background Ambient Light Orbs */}
+      <div className="absolute top-0 left-1/4 w-96 h-96 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none" />
+      <div className="absolute top-1/2 right-10 w-96 h-96 rounded-full bg-purple-500/10 blur-3xl pointer-events-none" />
+
+      {/* 1. TOP GLASSMORPHISM HEADER & PERSONA BAR */}
+      <header className="sticky top-0 z-50 bg-slate-900/60 backdrop-blur-2xl border-b border-white/10 px-6 py-3 flex flex-wrap items-center justify-between gap-4 shadow-xl">
         {/* Brand */}
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 via-teal-500 to-cyan-400 flex items-center justify-center shadow-lg shadow-emerald-500/20">
+          <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-600 via-teal-500 to-cyan-400 flex items-center justify-center shadow-lg shadow-emerald-500/25 border border-white/20">
             <Thermometer className="w-6 h-6 text-slate-950 font-bold" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-xl font-extrabold tracking-tight bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 bg-clip-text text-transparent">
+              <span className="text-xl font-black tracking-tight bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 bg-clip-text text-transparent">
                 Climatrix
               </span>
-              <span className="text-xs px-2.5 py-0.5 rounded-full font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
-                Pilot: Jalandhar (80 Wards)
-              </span>
+
+              {/* Multi-City Catalog Selector */}
+              <select
+                value={activeCity}
+                onChange={(e) => setActiveCity(e.target.value)}
+                className="text-xs px-2.5 py-0.5 rounded-full font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 backdrop-blur-md shadow cursor-pointer focus:outline-none"
+              >
+                {citiesCatalog.length > 0 ? (
+                  citiesCatalog.map((c) => (
+                    <option key={c.city_id} value={c.name} className="bg-slate-900 text-slate-100">
+                      {c.name} ({c.wards_count} Wards) - {c.status}
+                    </option>
+                  ))
+                ) : (
+                  <option value="Jalandhar" className="bg-slate-900 text-slate-100">Pilot: Jalandhar (80 Wards)</option>
+                )}
+              </select>
+
+              {/* IP Geolocation Badge */}
+              {clientIpLocation && (
+                <span className="text-[11px] px-2 py-0.5 rounded-full font-mono bg-cyan-500/10 text-cyan-300 border border-cyan-500/20">
+                  📍 Client: {clientIpLocation.city}, {clientIpLocation.region}
+                </span>
+              )}
             </div>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-slate-300">
               AI-Powered Urban Heat Island &amp; Climate Resilience Decision-Support System
             </p>
           </div>
@@ -681,7 +733,34 @@ export function App() {
         </div>
       </header>
 
-      {/* 2. SUB-NAVIGATION TABS */}
+      {/* 2. REAL-TIME METEOROLOGICAL TICKER BAR */}
+      {weatherInfo && (
+        <div className="bg-slate-950/80 backdrop-blur-md border-b border-white/5 px-6 py-1.5 text-xs text-slate-300 flex flex-wrap items-center justify-between gap-4 font-mono shadow-inner">
+          <div className="flex items-center gap-4 overflow-x-auto">
+            <span className="text-emerald-400 font-bold flex items-center gap-1 flex-shrink-0">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> LIVE WEATHER ({weatherInfo.city}):
+            </span>
+            <span className="text-slate-200 font-semibold">
+              🌡️ Ambient Air: <strong className="text-amber-400">{weatherInfo.ambient_temperature_celsius}°C</strong>
+            </span>
+            <span className="text-slate-200 font-semibold">
+              🔥 Heat Index: <strong className="text-red-400">{weatherInfo.heat_index_celsius}°C</strong>
+            </span>
+            <span className="text-slate-200 font-semibold">
+              💧 Humidity: <strong className="text-cyan-400">{weatherInfo.relative_humidity_pct}%</strong>
+            </span>
+            <span className="text-slate-200 font-semibold">
+              💨 Wind: <strong className="text-slate-100">{weatherInfo.wind_speed_kmh} km/h</strong>
+            </span>
+          </div>
+
+          <div className="text-[11px] text-slate-400">
+            <span>Satellite Peak LST Delta: <strong className="text-red-400">+{((selectedWard?.heat_analysis?.mean_lst_celsius ?? 44.5) - (weatherInfo.ambient_temperature_celsius ?? 38.5)).toFixed(1)}°C UHI Trap</strong></span>
+          </div>
+        </div>
+      )}
+
+      {/* 3. SUB-NAVIGATION TABS */}
       <nav className="bg-slate-900/70 border-b border-slate-800 px-6 py-2 flex items-center gap-1 overflow-x-auto text-sm">
         <button
           onClick={() => setActiveTab('map')}

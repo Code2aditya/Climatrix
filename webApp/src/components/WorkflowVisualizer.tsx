@@ -225,26 +225,29 @@ export const WorkflowVisualizer: React.FC = () => {
   ];
 
   return (
-    <div className="p-6 rounded-2xl bg-slate-900 border border-slate-800 shadow-xl space-y-6">
+    <div className="p-6 rounded-3xl bg-slate-900/60 backdrop-blur-xl border border-white/10 shadow-2xl space-y-6 relative overflow-hidden">
+      {/* Ambient Glow */}
+      <div className="absolute -top-20 -left-20 w-64 h-64 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none" />
+
       {/* HEADER & VIEW TOGGLE SWITCH */}
-      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-800 pb-4">
+      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-4 relative z-10">
         <div>
           <span className="text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
-            <Activity className="w-4 h-4" /> System Workflow &amp; Data Pipeline Architecture
+            <Activity className="w-4 h-4 text-emerald-400" /> System Workflow &amp; Data Pipeline Architecture
           </span>
-          <h3 className="text-xl font-black text-white mt-0.5">
+          <h3 className="text-2xl font-black text-white tracking-tight mt-0.5">
             Structured Flow of Data &amp; Operational Lifecycle
           </h3>
-          <p className="text-xs text-slate-400 mt-1">
+          <p className="text-xs text-slate-300 mt-1 max-w-2xl leading-relaxed">
             Explore the technical ingestion, mathematical transformation, ABAC security enforcement, and field verification loops.
           </p>
         </div>
 
         {/* View Switcher Pills */}
-        <div className="flex gap-1.5 bg-slate-950 p-1.5 rounded-xl border border-slate-800 text-xs font-bold">
+        <div className="flex gap-1.5 bg-slate-950/60 backdrop-blur-md p-1.5 rounded-2xl border border-white/10 text-xs font-bold shadow-lg">
           <button
             onClick={() => setViewMode('dataflow')}
-            className={`px-4 py-2 rounded-lg transition flex items-center gap-1.5 ${
+            className={`px-4 py-2 rounded-xl transition flex items-center gap-1.5 ${
               viewMode === 'dataflow'
                 ? 'bg-emerald-500 text-slate-950 shadow-lg'
                 : 'text-slate-400 hover:text-white'
@@ -254,7 +257,7 @@ export const WorkflowVisualizer: React.FC = () => {
           </button>
           <button
             onClick={() => setViewMode('steps')}
-            className={`px-4 py-2 rounded-lg transition flex items-center gap-1.5 ${
+            className={`px-4 py-2 rounded-xl transition flex items-center gap-1.5 ${
               viewMode === 'steps'
                 ? 'bg-emerald-500 text-slate-950 shadow-lg'
                 : 'text-slate-400 hover:text-white'
@@ -267,46 +270,46 @@ export const WorkflowVisualizer: React.FC = () => {
 
       {/* VIEW 1: STRUCTURED TECHNICAL DATA FLOW PIPELINE */}
       {viewMode === 'dataflow' && (
-        <div className="space-y-6">
+        <div className="space-y-6 relative z-10">
           {/* High-Level Pipeline Flow Nodes */}
-          <div className="p-5 rounded-2xl bg-slate-950 border border-slate-800 overflow-x-auto">
+          <div className="p-6 rounded-2xl bg-slate-950/60 backdrop-blur-md border border-white/5 overflow-x-auto shadow-inner">
             <span className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-widest block mb-4">
               High-Level Pipeline Flow Diagram
             </span>
             <div className="flex items-center justify-between min-w-[750px] gap-2 text-xs">
-              <div className="p-3 rounded-xl bg-slate-900 border border-cyan-500/30 text-center space-y-1 flex-1">
+              <div className="p-3.5 rounded-2xl bg-slate-900/80 backdrop-blur-md border border-cyan-500/30 text-center space-y-1 flex-1 shadow">
                 <Satellite className="w-5 h-5 text-cyan-400 mx-auto" />
                 <span className="font-bold text-white block">1. Remote Sensing</span>
                 <span className="text-[10px] text-slate-400 block">Landsat &amp; Sentinel</span>
               </div>
 
-              <ArrowRight className="w-4 h-4 text-slate-600 flex-shrink-0" />
+              <ArrowRight className="w-4 h-4 text-slate-500 flex-shrink-0" />
 
-              <div className="p-3 rounded-xl bg-slate-900 border border-red-500/30 text-center space-y-1 flex-1">
+              <div className="p-3.5 rounded-2xl bg-slate-900/80 backdrop-blur-md border border-red-500/30 text-center space-y-1 flex-1 shadow">
                 <Cpu className="w-5 h-5 text-red-400 mx-auto" />
                 <span className="font-bold text-white block">2. Raster Math</span>
                 <span className="text-[10px] text-slate-400 block">LST, NDVI, NDBI</span>
               </div>
 
-              <ArrowRight className="w-4 h-4 text-slate-600 flex-shrink-0" />
+              <ArrowRight className="w-4 h-4 text-slate-500 flex-shrink-0" />
 
-              <div className="p-3 rounded-xl bg-slate-900 border border-purple-500/30 text-center space-y-1 flex-1">
+              <div className="p-3.5 rounded-2xl bg-slate-900/80 backdrop-blur-md border border-purple-500/30 text-center space-y-1 flex-1 shadow">
                 <Lock className="w-5 h-5 text-purple-400 mx-auto" />
                 <span className="font-bold text-white block">3. ABAC Gate</span>
                 <span className="text-[10px] text-slate-400 block">Location License</span>
               </div>
 
-              <ArrowRight className="w-4 h-4 text-slate-600 flex-shrink-0" />
+              <ArrowRight className="w-4 h-4 text-slate-500 flex-shrink-0" />
 
-              <div className="p-3 rounded-xl bg-slate-900 border border-emerald-500/30 text-center space-y-1 flex-1">
+              <div className="p-3.5 rounded-2xl bg-slate-900/80 backdrop-blur-md border border-emerald-500/30 text-center space-y-1 flex-1 shadow">
                 <GitMerge className="w-5 h-5 text-emerald-400 mx-auto" />
                 <span className="font-bold text-white block">4. Dual AI Engine</span>
                 <span className="text-[10px] text-slate-400 block">Species vs Cool Roofs</span>
               </div>
 
-              <ArrowRight className="w-4 h-4 text-slate-600 flex-shrink-0" />
+              <ArrowRight className="w-4 h-4 text-slate-500 flex-shrink-0" />
 
-              <div className="p-3 rounded-xl bg-slate-900 border border-green-500/30 text-center space-y-1 flex-1">
+              <div className="p-3.5 rounded-2xl bg-slate-900/80 backdrop-blur-md border border-green-500/30 text-center space-y-1 flex-1 shadow">
                 <Camera className="w-5 h-5 text-green-400 mx-auto" />
                 <span className="font-bold text-white block">5. Field Audit</span>
                 <span className="text-[10px] text-slate-400 block">GPS Verification</span>
@@ -321,11 +324,11 @@ export const WorkflowVisualizer: React.FC = () => {
               return (
                 <div
                   key={ps.stage}
-                  className="p-5 rounded-2xl bg-slate-950/70 border border-slate-800 hover:border-slate-700 transition shadow-lg space-y-4"
+                  className="p-6 rounded-3xl bg-slate-900/60 backdrop-blur-xl border border-white/10 hover:border-emerald-500/40 transition-all shadow-xl space-y-4"
                 >
-                  <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800/80 pb-3">
+                  <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-3">
                     <div className="flex items-center gap-3">
-                      <div className={`w-8 h-8 rounded-xl bg-gradient-to-tr ${ps.color} text-white flex items-center justify-center font-bold text-sm shadow`}>
+                      <div className={`w-9 h-9 rounded-2xl bg-gradient-to-tr ${ps.color} text-white flex items-center justify-center font-bold text-sm shadow`}>
                         {ps.stage}
                       </div>
                       <div>
@@ -341,7 +344,7 @@ export const WorkflowVisualizer: React.FC = () => {
                     <div className="flex items-center gap-1.5 text-xs text-slate-400 font-mono">
                       <span>Database Entities:</span>
                       {ps.entities.map((ent, eIdx) => (
-                        <span key={eIdx} className="px-2 py-0.5 rounded bg-slate-800 text-emerald-400 font-bold">
+                        <span key={eIdx} className="px-2.5 py-0.5 rounded-full bg-slate-800/80 text-emerald-300 font-bold border border-white/5">
                           {ent}
                         </span>
                       ))}
@@ -350,11 +353,11 @@ export const WorkflowVisualizer: React.FC = () => {
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
                     {/* Input Sources */}
-                    <div className="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 space-y-2">
+                    <div className="p-4 rounded-2xl bg-slate-950/60 backdrop-blur-md border border-white/5 space-y-2">
                       <span className="font-bold text-slate-300 block uppercase tracking-wider text-[10px]">
                         📥 Input Data Sources:
                       </span>
-                      <ul className="space-y-1.5 text-slate-400">
+                      <ul className="space-y-1.5 text-slate-300">
                         {ps.inputs.map((inp, idx) => (
                           <li key={idx} className="flex items-start gap-1.5">
                             <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 mt-1 flex-shrink-0"></span>
@@ -365,11 +368,11 @@ export const WorkflowVisualizer: React.FC = () => {
                     </div>
 
                     {/* Mathematical & Algorithmic Transformations */}
-                    <div className="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 space-y-2">
+                    <div className="p-4 rounded-2xl bg-slate-950/60 backdrop-blur-md border border-white/5 space-y-2">
                       <span className="font-bold text-slate-300 block uppercase tracking-wider text-[10px]">
                         ⚙️ Key Transformations &amp; Formulas:
                       </span>
-                      <ul className="space-y-1.5 text-slate-400">
+                      <ul className="space-y-1.5 text-slate-300">
                         {ps.transformations.map((trans, idx) => (
                           <li key={idx} className="flex items-start gap-1.5">
                             <span className="w-1.5 h-1.5 rounded-full bg-amber-400 mt-1 flex-shrink-0"></span>
@@ -380,7 +383,7 @@ export const WorkflowVisualizer: React.FC = () => {
                     </div>
 
                     {/* Output Deliverable */}
-                    <div className="p-3.5 rounded-xl bg-emerald-950/20 border border-emerald-800/40 space-y-2">
+                    <div className="p-4 rounded-2xl bg-emerald-950/30 backdrop-blur-md border border-emerald-800/40 space-y-2">
                       <span className="font-bold text-emerald-400 block uppercase tracking-wider text-[10px]">
                         📤 Output Deliverable:
                       </span>
@@ -398,26 +401,26 @@ export const WorkflowVisualizer: React.FC = () => {
 
       {/* VIEW 2: 11-STEP OPERATIONAL WORKFLOW */}
       {viewMode === 'steps' && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 relative z-10">
           {steps.map((s) => {
             const Icon = s.icon;
             return (
               <div
                 key={s.step}
-                className={`p-4 rounded-xl bg-slate-950/70 border ${s.border} hover:border-emerald-500/50 transition relative group`}
+                className={`p-5 rounded-3xl bg-slate-900/60 backdrop-blur-xl border ${s.border} hover:border-emerald-500/50 transition-all shadow-xl relative group`}
               >
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-[10px] font-mono font-extrabold px-2 py-0.5 rounded bg-slate-800 text-slate-300">
+                <div className="flex items-center justify-between mb-2.5">
+                  <span className="text-[10px] font-mono font-extrabold px-2.5 py-0.5 rounded-full bg-slate-800/80 text-slate-300 border border-white/5">
                     STEP 0{s.step}
                   </span>
-                  <div className={`w-7 h-7 rounded-lg bg-gradient-to-tr ${s.color} text-slate-950 flex items-center justify-center font-bold`}>
+                  <div className={`w-8 h-8 rounded-xl bg-gradient-to-tr ${s.color} text-slate-950 flex items-center justify-center font-bold shadow`}>
                     <Icon className="w-4 h-4" />
                   </div>
                 </div>
                 <h4 className={`text-sm font-bold ${s.accent} leading-snug`}>
                   {s.title}
                 </h4>
-                <p className="text-xs text-slate-400 mt-1.5 leading-relaxed">
+                <p className="text-xs text-slate-300 mt-2 leading-relaxed">
                   {s.desc}
                 </p>
               </div>
@@ -427,7 +430,7 @@ export const WorkflowVisualizer: React.FC = () => {
       )}
 
       {/* FOOTER NOTICE */}
-      <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-300 flex items-center justify-between">
+      <div className="p-4 rounded-2xl bg-slate-950/60 backdrop-blur-md border border-white/10 text-xs text-slate-300 flex items-center justify-between relative z-10">
         <span className="text-slate-400">
           Core SaaS Commercial Principle: <strong className="text-white">Strict Geographical Licensing (ABAC)</strong> prevents unauthorized cross-ward or cross-customer data leakage.
         </span>
