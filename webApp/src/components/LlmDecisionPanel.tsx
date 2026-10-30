@@ -342,7 +342,7 @@ export const LlmDecisionPanel: React.FC<LlmDecisionPanelProps> = ({
                   <Compass className="w-4 h-4 text-emerald-400" /> Select Target Ward for Spatial Reasoning:
                 </span>
                 <div className="flex flex-wrap gap-1">
-                  {wards.map((w) => (
+                  {wards.filter(w => w.is_licensed).map((w) => (
                     <button
                       key={w.id}
                       onClick={() => onSelectWard(w)}

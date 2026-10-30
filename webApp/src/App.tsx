@@ -116,7 +116,7 @@ const INITIAL_WARDS: WardData[] = [
     population_density: 4100,
     coordinates: [[75.535, 31.342], [75.555, 31.342], [75.555, 31.362], [75.535, 31.362], [75.535, 31.342]],
     description: "Heavy manufacturing hub with boiler emissions. Ideal for boundary buffer plantations of Neem and Kikar.",
-    is_licensed: false,
+    is_licensed: true,
     heat_analysis: {
       mean_lst_celsius: 48.4,
       max_lst_celsius: 51.2,
@@ -137,7 +137,7 @@ const INITIAL_WARDS: WardData[] = [
     population_density: 4800,
     coordinates: [[75.520, 31.330], [75.544, 31.330], [75.544, 31.350], [75.520, 31.350], [75.520, 31.330]],
     description: "Industrial tanning and freight corridor. Extreme daytime surface heating. High priority for air pollution filtering trees.",
-    is_licensed: false,
+    is_licensed: true,
     heat_analysis: {
       mean_lst_celsius: 47.2,
       max_lst_celsius: 50.1,
@@ -548,7 +548,7 @@ export function App() {
     checkBackend();
   }, []);
 
-  // 2. Adjust Wards License Access Dynamically Based on Current Persona
+  // 2. Adjust Wards License Access Dynamically Based on Current Persona & ABAC Geography
   useEffect(() => {
     const updated = INITIAL_WARDS.map((w) => {
       if (currentUser.role === 'SUPER_ADMIN') {
@@ -558,6 +558,10 @@ export function App() {
         // PGD purchased ONLY Ward 22 and Ward 68
         return { ...w, is_licensed: w.code === 'JAL-WARD-22' || w.code === 'JAL-WARD-68' };
       }
+      if (currentUser.role === 'FIELD_WORKER') {
+        // Field worker assigned ONLY Ward 4 and Ward 55
+        return { ...w, is_licensed: w.code === 'JAL-WARD-04' || w.code === 'JAL-WARD-55' };
+      }
       if (currentUser.orgSlug === 'mcjalandhar') {
         // MCJ owns civic wards: 4, 14, 18, 37, 44, 55, 68; Ward 22 & 28 are private industrial
         return { ...w, is_licensed: w.code !== 'JAL-WARD-22' && w.code !== 'JAL-WARD-28' };
@@ -566,8 +570,15 @@ export function App() {
     });
 
     setWards(updated);
-    const match = updated.find((w) => w.code === selectedWard?.code);
-    if (match) setSelectedWard(match);
+
+    // Auto-select first licensed ward if current selection is unlicensed for this persona
+    const match = updated.find((w) => w.code === selectedWard?.code && w.is_licensed);
+    if (match) {
+      setSelectedWard(match);
+    } else {
+      const firstLicensed = updated.find((w) => w.is_licensed);
+      if (firstLicensed) setSelectedWard(firstLicensed);
+    }
   }, [currentUser]);
 
   // 3. Fetch Species Recommendations
@@ -1164,7 +1175,7 @@ export function App() {
 
               <div className="h-72 w-full">
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={wards.map(w => ({
+                  <BarChart data={wards.filter(w => w.is_licensed).map(w => ({
                     name: w.code.replace('JAL-WARD-', 'W-'),
                     lst: w.heat_analysis?.mean_lst_celsius ?? 0,
                     ndvi_scaled: (w.heat_analysis?.mean_ndvi ?? 0) * 100,
@@ -1204,7 +1215,7 @@ export function App() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-800">
-                    {wards.map((w) => (
+                    {wards.filter(w => w.is_licensed).map((w) => (
                       <tr key={w.id} className="hover:bg-slate-800/40 transition">
                         <td className="py-3.5 px-4 font-bold text-emerald-400">
                           #{w.heat_analysis?.vulnerability_rank}
@@ -1673,7 +1684,7 @@ export function App() {
 
       {/* 5. FIELD INSPECTION MODAL */}
       {showInspectionModal && (
-        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[99999] bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="text-base font-bold text-white flex items-center gap-2">

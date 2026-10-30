@@ -80,22 +80,25 @@ export const GisMap: React.FC<GisMapProps> = ({
 
   const BASEMAP_TILES = {
     carto_dark: {
-      url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
-      attribution: '&copy; CARTO &copy; OpenStreetMap',
-      subdomains: 'abcd',
-      maxZoom: 19
+      url: 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Base/MapServer/tile/{z}/{y}/{x}',
+      attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
+      subdomains: '',
+      maxZoom: 19,
+      maxNativeZoom: 15
     },
     osm_streets: {
       url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
       subdomains: 'abc',
-      maxZoom: 19
+      maxZoom: 19,
+      maxNativeZoom: 19
     },
     esri_satellite: {
       url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
       attribution: 'Tiles &copy; Esri &mdash; Source: USGS, Esri, i-cubed',
       subdomains: '',
-      maxZoom: 18
+      maxZoom: 19,
+      maxNativeZoom: 15
     }
   };
 
@@ -115,6 +118,7 @@ export const GisMap: React.FC<GisMapProps> = ({
       attribution: cfg.attribution,
       subdomains: cfg.subdomains,
       maxZoom: cfg.maxZoom,
+      maxNativeZoom: cfg.maxNativeZoom,
     }).addTo(map);
 
     tileLayerRef.current = initialTile;
@@ -140,6 +144,7 @@ export const GisMap: React.FC<GisMapProps> = ({
       attribution: cfg.attribution,
       subdomains: cfg.subdomains,
       maxZoom: cfg.maxZoom,
+      maxNativeZoom: cfg.maxNativeZoom,
     }).addTo(map);
 
     tileLayerRef.current = newTile;
@@ -211,6 +216,7 @@ export const GisMap: React.FC<GisMapProps> = ({
     polygonLayersRef.current = [];
 
     wards.forEach((ward) => {
+      if (!ward.is_licensed) return; // Strict ABAC Geographical Isolation: Render ONLY licensed wards
       if (!ward.coordinates || ward.coordinates.length === 0) return;
 
       const latLngs: L.LatLngExpression[] = ward.coordinates.map((c) => [c[1], c[0]]);
@@ -230,20 +236,17 @@ export const GisMap: React.FC<GisMapProps> = ({
         fillColor = isCritical ? '#dc2626' : 'rgba(255,255,255,0.05)';
       }
 
-      const strokeColor = !ward.is_licensed ? '#64748b' : isSelected ? '#38bdf8' : fillColor;
-      const fillOpacity = !ward.is_licensed ? 0.15 : isSelected ? 0.65 : activeLayer === 'hotspots' && !isCritical ? 0.05 : 0.45;
+      const strokeColor = isSelected ? '#38bdf8' : fillColor;
+      const fillOpacity = isSelected ? 0.65 : activeLayer === 'hotspots' && !isCritical ? 0.08 : 0.45;
 
       const polygon = L.polygon(latLngs, {
         color: strokeColor,
         weight: isSelected ? 3 : 1.5,
         fillColor: fillColor,
         fillOpacity: fillOpacity,
-        dashArray: !ward.is_licensed ? '4, 6' : undefined,
       }).addTo(map);
 
-      const licenseBadge = ward.is_licensed
-        ? '<span style="color:#10b981; font-weight:600;">✓ Licensed</span>'
-        : '<span style="color:#f87171; font-weight:600;">🔒 License Required (ABAC Guard)</span>';
+      const licenseBadge = '<span style="color:#10b981; font-weight:600;">✓ Active Ward Layer</span>';
 
       polygon.bindTooltip(
         `<div style="font-size:12px; font-family:sans-serif;">

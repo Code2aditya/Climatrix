@@ -146,7 +146,7 @@ export const RoleLoginModal: React.FC<RoleLoginModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-xl flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-[99999] bg-slate-950/85 backdrop-blur-xl flex items-center justify-center p-4">
       <div className="bg-slate-900/90 border border-white/10 rounded-3xl max-w-4xl w-full p-8 shadow-2xl backdrop-blur-2xl space-y-6 max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-white/10 pb-4">

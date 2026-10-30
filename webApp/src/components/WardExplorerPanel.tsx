@@ -54,8 +54,8 @@ export const WardExplorerPanel: React.FC<WardExplorerPanelProps> = ({
     }
   };
 
-  // Filter wards
-  const filteredWards = wards.filter((w) => {
+  // Filter wards (Strict ABAC Geographical Isolation)
+  const filteredWards = wards.filter((w) => w.is_licensed).filter((w) => {
     const matchesSearch =
       w.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       w.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
