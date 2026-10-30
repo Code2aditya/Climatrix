@@ -27,7 +27,6 @@ import {
 import { GisMap, type WardData, type TreeData } from './components/GisMap';
 import { RoleLoginModal, PRESET_PERSONAS, type UserPersona } from './components/RoleLoginModal';
 import { WardExplorerPanel } from './components/WardExplorerPanel';
-import { WorkflowVisualizer } from './components/WorkflowVisualizer';
 import { LlmDecisionPanel } from './components/LlmDecisionPanel';
 import { LandingPage } from './components/LandingPage';
 
@@ -661,9 +660,6 @@ export function App() {
               <h1 className="text-lg font-extrabold tracking-tight text-white">
                 Smart Urban Heat &amp; Climate Resilience Platform
               </h1>
-              <p className="text-xs text-emerald-200">
-                Department of Local Government &amp; Municipal Affairs | Govt of Punjab
-              </p>
             </div>
           </div>
 
@@ -789,15 +785,6 @@ export function App() {
         </button>
 
         <button
-          onClick={() => setActiveTab('workflow')}
-          className={`px-4 py-2 rounded-t font-bold transition ${
-            activeTab === 'workflow' ? 'bg-[#f8fafc] text-[#064e3b] shadow' : 'hover:bg-slate-800 text-slate-200'
-          }`}
-        >
-          📊 Reports &amp; Governance
-        </button>
-
-        <button
           onClick={() => setActiveTab('llm')}
           className={`px-4 py-2 rounded-t font-bold transition ${
             activeTab === 'llm' ? 'bg-[#f8fafc] text-[#064e3b] shadow' : 'hover:bg-slate-800 text-slate-200'
@@ -829,11 +816,6 @@ export function App() {
               setActiveTab('map');
             }}
           />
-        )}
-
-        {/* TAB: SYSTEM OPERATIONAL FLOW (NEW WORKFLOW VISUALIZER) */}
-        {activeTab === 'workflow' && (
-          <WorkflowVisualizer />
         )}
 
         {/* TAB: AI LLM CLIMATE DECISION ADVISOR */}
