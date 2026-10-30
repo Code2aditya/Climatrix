@@ -317,14 +317,14 @@ export const GisMap: React.FC<GisMapProps> = ({
   }, [selectedWard]);
 
   return (
-    <div className="relative w-full h-[540px] rounded-2xl overflow-hidden border border-slate-800 shadow-2xl">
-      {/* Basemap & Overlay Controls */}
-      <div className="absolute top-3 right-3 z-[1000] bg-slate-900/80 backdrop-blur-md p-1.5 rounded-2xl border border-white/10 text-xs font-bold flex flex-wrap gap-1 shadow-2xl">
+    <div className="relative w-full h-[540px] rounded-3xl overflow-hidden border border-[#1e293b] shadow-2xl">
+      {/* Aranyix Basemap & Overlay Controls */}
+      <div className="absolute top-3 right-3 z-[1000] bg-[#030712]/90 backdrop-blur-xl p-1.5 rounded-2xl border border-[#1e293b] text-xs font-bold flex flex-wrap gap-1 shadow-2xl">
         <button
           onClick={() => setBasemap('carto_dark')}
           className={`px-3 py-1.5 rounded-xl transition ${
             basemap === 'carto_dark'
-              ? 'bg-emerald-500 text-slate-950 font-black shadow'
+              ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-black shadow-lg shadow-emerald-500/20'
               : 'text-slate-300 hover:text-white'
           }`}
         >
@@ -334,7 +334,7 @@ export const GisMap: React.FC<GisMapProps> = ({
           onClick={() => setBasemap('osm_streets')}
           className={`px-3 py-1.5 rounded-xl transition ${
             basemap === 'osm_streets'
-              ? 'bg-emerald-500 text-slate-950 font-black shadow'
+              ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-black shadow-lg shadow-emerald-500/20'
               : 'text-slate-300 hover:text-white'
           }`}
         >
@@ -344,7 +344,7 @@ export const GisMap: React.FC<GisMapProps> = ({
           onClick={() => setBasemap('esri_satellite')}
           className={`px-3 py-1.5 rounded-xl transition ${
             basemap === 'esri_satellite'
-              ? 'bg-emerald-500 text-slate-950 font-black shadow'
+              ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-black shadow-lg shadow-emerald-500/20'
               : 'text-slate-300 hover:text-white'
           }`}
         >
@@ -357,7 +357,7 @@ export const GisMap: React.FC<GisMapProps> = ({
           className={`px-3 py-1.5 rounded-xl transition flex items-center gap-1 border ${
             showWeatherRadar
               ? 'bg-cyan-500 text-slate-950 font-black border-cyan-400 shadow-lg'
-              : 'bg-slate-800/80 text-cyan-300 border-cyan-500/30 hover:bg-slate-700'
+              : 'bg-slate-900/80 text-cyan-300 border-cyan-500/30 hover:bg-slate-800'
           }`}
         >
           🌧️ Live Weather Radar
@@ -369,7 +369,7 @@ export const GisMap: React.FC<GisMapProps> = ({
           className={`px-3 py-1.5 rounded-xl transition flex items-center gap-1 border ${
             showIsochrone
               ? 'bg-purple-500 text-slate-950 font-black border-purple-400 shadow-lg'
-              : 'bg-slate-800/80 text-purple-300 border-purple-500/30 hover:bg-slate-700'
+              : 'bg-slate-900/80 text-purple-300 border-purple-500/30 hover:bg-slate-800'
           }`}
         >
           🚶‍♂️ 5-Min Walk Isochrone

@@ -225,19 +225,18 @@ export const LlmDecisionPanel: React.FC<LlmDecisionPanelProps> = ({
 
   return (
     <div className="space-y-6">
-      {/* 1. TOP GLASSMORPHISM BANNER & VIEW TOGGLE SWITCH */}
-      <div className="p-6 rounded-3xl bg-slate-900/60 backdrop-blur-2xl border border-white/10 shadow-2xl space-y-5 relative overflow-hidden">
+      {/* 1. TOP ARANYIX AI BANNER & PROMPT INPUT */}
+      <div className="p-6 rounded-3xl bg-[#0b101d] border border-[#1e293b] shadow-2xl space-y-5 relative overflow-hidden">
         {/* Ambient Light Glow Orbs */}
-        <div className="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-purple-500/10 blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-20 -left-20 w-64 h-64 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none" />
+        <div className="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none" />
 
         <div className="flex flex-wrap items-center justify-between gap-4 relative z-10">
           <div>
-            <span className="text-xs font-bold text-purple-400 uppercase tracking-wider flex items-center gap-1.5">
-              <BrainCircuit className="w-4 h-4 text-purple-400" /> Cognitive AI Decision &amp; Fine-Tuning Engine
+            <span className="font-mono tracking-widest text-[10px] uppercase font-bold text-emerald-400 flex items-center gap-1.5">
+              <BrainCircuit className="w-4 h-4 text-emerald-400" /> Cognitive AI Decision &amp; Fine-Tuning Engine
             </span>
             <h3 className="text-2xl font-black text-white tracking-tight mt-0.5">
-              LLM Municipal Climate Decision Assistant
+              Aranyix Bio-Intelligence Workspace
             </h3>
             <p className="text-xs text-slate-300 mt-1 max-w-2xl leading-relaxed">
               Trained on 80 Jalandhar ward microclimate scenarios to deliver deterministic agro-climatic species scoring and cool roof SRI calculations.
@@ -246,12 +245,12 @@ export const LlmDecisionPanel: React.FC<LlmDecisionPanelProps> = ({
 
           <div className="flex flex-wrap items-center gap-2">
             {/* View Switcher Pills */}
-            <div className="flex gap-1 bg-slate-950/60 backdrop-blur-md p-1 rounded-2xl border border-white/10 text-xs font-bold">
+            <div className="flex gap-1 bg-[#030712] p-1 rounded-2xl border border-[#1e293b] text-xs font-bold shadow">
               <button
                 onClick={() => setActiveView('advisor')}
-                className={`px-3.5 py-1.5 rounded-xl transition flex items-center gap-1.5 ${
+                className={`px-3.5 py-1.5 rounded-xl transition ${
                   activeView === 'advisor'
-                    ? 'bg-purple-600 text-white shadow-lg'
+                    ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-black shadow-lg'
                     : 'text-slate-400 hover:text-white'
                 }`}
               >
@@ -259,9 +258,9 @@ export const LlmDecisionPanel: React.FC<LlmDecisionPanelProps> = ({
               </button>
               <button
                 onClick={() => setActiveView('training')}
-                className={`px-3.5 py-1.5 rounded-xl transition flex items-center gap-1.5 ${
+                className={`px-3.5 py-1.5 rounded-xl transition ${
                   activeView === 'training'
-                    ? 'bg-purple-600 text-white shadow-lg'
+                    ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-black shadow-lg'
                     : 'text-slate-400 hover:text-white'
                 }`}
               >
@@ -273,12 +272,12 @@ export const LlmDecisionPanel: React.FC<LlmDecisionPanelProps> = ({
             <select
               value={selectedModel}
               onChange={(e) => setSelectedModel(e.target.value)}
-              className="text-xs px-3 py-1.5 rounded-full font-mono font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30 backdrop-blur-md shadow cursor-pointer focus:outline-none"
+              className="text-xs px-3 py-1.5 rounded-full font-mono font-bold bg-[#030712] text-emerald-300 border border-emerald-500/30 shadow cursor-pointer focus:outline-none"
             >
-              <option value="ft:gpt-4o-mini:climatrix-jalandhar-v1" className="bg-slate-900 text-slate-100">
+              <option value="ft:gpt-4o-mini:climatrix-jalandhar-v1" className="bg-[#030712] text-slate-100">
                 ✨ Custom Model: ft:gpt-4o-mini:climatrix-jalandhar-v1 (Fine-Tuned 98.4%)
               </option>
-              <option value="gpt-4o-mini" className="bg-slate-900 text-slate-100">
+              <option value="gpt-4o-mini" className="bg-[#030712] text-slate-100">
                 🤖 Base Model: gpt-4o-mini
               </option>
             </select>
@@ -298,12 +297,12 @@ export const LlmDecisionPanel: React.FC<LlmDecisionPanelProps> = ({
                   value={customPrompt}
                   onChange={(e) => setCustomPrompt(e.target.value)}
                   placeholder="e.g. Evaluate Rainak Bazaar Ward 14 for 48°C heat wave intervention..."
-                  className="flex-1 bg-slate-950/60 backdrop-blur-md border border-white/10 rounded-2xl px-4 py-3 text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-purple-500 font-medium transition shadow-inner"
+                  className="flex-1 bg-[#030712] border border-[#1e293b] rounded-2xl px-4 py-3 text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-emerald-500 font-medium transition shadow-inner"
                 />
                 <button
                   onClick={fetchLlmDecision}
                   disabled={loading}
-                  className="px-6 py-3 rounded-2xl bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-700 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-xs transition shadow-xl shadow-purple-500/25 flex items-center gap-2 flex-shrink-0"
+                  className="px-6 py-3 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-extrabold text-xs transition shadow-xl shadow-emerald-500/20 flex items-center gap-2 flex-shrink-0"
                 >
                   {loading ? (
                     <>
@@ -327,7 +326,7 @@ export const LlmDecisionPanel: React.FC<LlmDecisionPanelProps> = ({
                       setCustomPrompt(promptText);
                       fetchLlmDecision();
                     }}
-                    className="text-[10px] px-3 py-1 rounded-xl bg-slate-800/60 hover:bg-slate-700/80 backdrop-blur-md border border-white/5 text-slate-200 transition"
+                    className="text-[10px] px-3 py-1 rounded-xl bg-[#030712] hover:bg-slate-800 border border-[#1e293b] text-slate-200 transition"
                   >
                     "{promptText}"
                   </button>
@@ -336,22 +335,20 @@ export const LlmDecisionPanel: React.FC<LlmDecisionPanelProps> = ({
             </div>
 
             {/* Ward Sliders */}
-            <div className="space-y-3 pt-3 border-t border-white/10 relative z-10">
+            <div className="space-y-3 pt-3 border-t border-[#1e293b] relative z-10">
               <div className="flex flex-wrap items-center justify-between gap-2">
-                <span className="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-1.5">
+                <span className="font-mono tracking-widest text-[10px] uppercase font-bold text-slate-200 flex items-center gap-1.5">
                   <Compass className="w-4 h-4 text-emerald-400" /> Select Target Ward for Spatial Reasoning:
                 </span>
-                <div className="flex flex-wrap gap-1">
+                <div className="flex flex-wrap gap-1 font-mono">
                   {wards.filter(w => w.is_licensed).map((w) => (
                     <button
                       key={w.id}
                       onClick={() => onSelectWard(w)}
-                      className={`px-3 py-1 rounded-xl text-xs font-bold transition backdrop-blur-md ${
+                      className={`px-3 py-1 rounded-xl text-xs font-bold transition ${
                         selectedWard.id === w.id
-                          ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/30 border border-purple-400/50'
-                          : w.is_licensed
-                          ? 'bg-slate-800/60 text-slate-300 hover:bg-slate-700/80 border border-white/5'
-                          : 'bg-slate-800/30 text-slate-500 line-through border border-white/5'
+                          ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 shadow-lg shadow-emerald-500/20'
+                          : 'bg-[#030712] text-slate-300 hover:bg-slate-800 border border-[#1e293b]'
                       }`}
                     >
                       {w.code.replace('JAL-WARD-', 'W-')}
@@ -361,7 +358,7 @@ export const LlmDecisionPanel: React.FC<LlmDecisionPanelProps> = ({
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-5 text-xs">
-                <div className="p-3.5 rounded-2xl bg-slate-950/40 backdrop-blur-md border border-white/5 space-y-1">
+                <div className="p-3.5 rounded-2xl bg-[#030712] border border-[#1e293b] space-y-1">
                   <label className="font-semibold text-slate-300 block mb-1">
                     Road Right-of-Way Width: <span className="text-emerald-400 font-bold">{roadWidth}m</span>
                   </label>
@@ -372,11 +369,11 @@ export const LlmDecisionPanel: React.FC<LlmDecisionPanelProps> = ({
                     step="0.5"
                     value={roadWidth}
                     onChange={(e) => setRoadWidth(parseFloat(e.target.value))}
-                    className="w-full accent-purple-500 cursor-pointer"
+                    className="w-full accent-emerald-500 cursor-pointer"
                   />
                 </div>
 
-                <div className="p-3.5 rounded-2xl bg-slate-950/40 backdrop-blur-md border border-white/5 space-y-1">
+                <div className="p-3.5 rounded-2xl bg-[#030712] border border-[#1e293b] space-y-1">
                   <label className="font-semibold text-slate-300 block mb-1">
                     Groundwater Table Depth: <span className="text-cyan-400 font-bold">{waterDepth}m</span>
                   </label>
@@ -391,14 +388,14 @@ export const LlmDecisionPanel: React.FC<LlmDecisionPanelProps> = ({
                   />
                 </div>
 
-                <div className="p-3.5 rounded-2xl bg-slate-950/40 backdrop-blur-md border border-white/5 space-y-1">
+                <div className="p-3.5 rounded-2xl bg-[#030712] border border-[#1e293b] space-y-1">
                   <label className="font-semibold text-slate-300 block mb-1">
                     Site Typology:
                   </label>
                   <select
                     value={siteType}
                     onChange={(e) => setSiteType(e.target.value)}
-                    className="w-full bg-slate-800/80 border border-white/10 rounded-xl px-3 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-purple-500 cursor-pointer font-medium"
+                    className="w-full bg-[#030712] border border-[#1e293b] rounded-xl px-3 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-emerald-500 cursor-pointer font-medium"
                   >
                     <option value="ROADSIDE_STRIP">Avenue / Roadside Strip</option>
                     <option value="RESIDENTIAL_STREET">Narrow Residential Street</option>
@@ -423,10 +420,10 @@ export const LlmDecisionPanel: React.FC<LlmDecisionPanelProps> = ({
           )}
 
           {/* Model Status Card */}
-          <div className="p-6 rounded-3xl bg-slate-900/60 backdrop-blur-xl border border-white/10 shadow-2xl space-y-4">
-            <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-4">
+          <div className="p-6 rounded-3xl bg-[#0b101d] border border-[#1e293b] shadow-2xl space-y-4">
+            <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#1e293b] pb-4">
               <div>
-                <span className="text-xs font-mono font-bold text-purple-400 bg-purple-500/10 px-2.5 py-0.5 rounded-full border border-purple-500/30">
+                <span className="font-mono text-xs font-bold text-emerald-300 bg-emerald-500/20 px-2.5 py-0.5 rounded-full border border-emerald-500/30">
                   {trainingStatus?.fine_tuned_model_id || 'ft:gpt-4o-mini:climatrix-jalandhar-v1'}
                 </span>
                 <h4 className="text-lg font-extrabold text-white mt-1">
@@ -437,47 +434,47 @@ export const LlmDecisionPanel: React.FC<LlmDecisionPanelProps> = ({
               <button
                 onClick={handleStartFineTuning}
                 disabled={isStartingJob}
-                className="px-5 py-2.5 rounded-2xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs transition shadow-lg shadow-purple-500/20 flex items-center gap-2"
+                className="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-extrabold text-xs transition shadow-lg shadow-emerald-500/20 flex items-center gap-2"
               >
                 {isStartingJob ? <Loader2 className="w-4 h-4 animate-spin" /> : <GraduationCap className="w-4 h-4" />}
                 Trigger Fine-Tuning Training Job
               </button>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs">
-              <div className="p-4 rounded-2xl bg-slate-950/60 backdrop-blur-md border border-white/5 space-y-1">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs font-mono">
+              <div className="p-4 rounded-2xl bg-[#030712] border border-[#1e293b] space-y-1">
                 <span className="text-slate-400 text-[10px] uppercase font-bold block">Validation Accuracy</span>
                 <span className="font-extrabold text-emerald-400 text-2xl block">98.4%</span>
                 <span className="text-emerald-300 text-[10px] block font-semibold">Loss convergence: 0.04</span>
               </div>
 
-              <div className="p-4 rounded-2xl bg-slate-950/60 backdrop-blur-md border border-white/5 space-y-1">
+              <div className="p-4 rounded-2xl bg-[#030712] border border-[#1e293b] space-y-1">
                 <span className="text-slate-400 text-[10px] uppercase font-bold block">Trained Tokens</span>
                 <span className="font-extrabold text-purple-300 text-2xl block">142,500</span>
                 <span className="text-slate-400 text-[10px] block">50 Domain Examples</span>
               </div>
 
-              <div className="p-4 rounded-2xl bg-slate-950/60 backdrop-blur-md border border-white/5 space-y-1">
+              <div className="p-4 rounded-2xl bg-[#030712] border border-[#1e293b] space-y-1">
                 <span className="text-slate-400 text-[10px] uppercase font-bold block">Training Epochs</span>
                 <span className="font-extrabold text-cyan-400 text-2xl block">3 / 3</span>
                 <span className="text-cyan-300 text-[10px] block font-semibold">100% Completed</span>
               </div>
 
-              <div className="p-4 rounded-2xl bg-slate-950/60 backdrop-blur-md border border-white/5 space-y-1">
+              <div className="p-4 rounded-2xl bg-[#030712] border border-[#1e293b] space-y-1">
                 <span className="text-slate-400 text-[10px] uppercase font-bold block">Fine-Tuning Job ID</span>
-                <span className="font-extrabold text-amber-400 text-xs font-mono block mt-1">ftjob-climatrix-2026</span>
+                <span className="font-extrabold text-amber-400 text-xs block mt-1">ftjob-climatrix-2026</span>
                 <span className="text-emerald-400 text-[10px] block font-bold">STATUS: SUCCEEDED</span>
               </div>
             </div>
 
             {/* Loss Curve Table */}
             <div className="space-y-2 pt-2">
-              <span className="text-xs font-bold text-slate-300 uppercase tracking-wider block">
+              <span className="font-mono tracking-widest text-[10px] font-bold text-slate-300 uppercase block">
                 📈 Fine-Tuning Loss Curve &amp; Epoch Progress:
               </span>
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs text-slate-300 font-mono">
-                  <thead className="bg-slate-950/80 uppercase text-slate-400 border-b border-white/10">
+                  <thead className="bg-[#030712] uppercase text-slate-400 border-b border-[#1e293b]">
                     <tr>
                       <th className="py-2 px-3">Step</th>
                       <th className="py-2 px-3">Epoch</th>
@@ -486,7 +483,7 @@ export const LlmDecisionPanel: React.FC<LlmDecisionPanelProps> = ({
                       <th className="py-2 px-3">Convergence</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-white/5">
+                  <tbody className="divide-y divide-[#1e293b]">
                     {trainingStatus?.training_loss_curve?.map((lc: any, idx: number) => (
                       <tr key={idx} className="hover:bg-slate-800/40 transition">
                         <td className="py-2 px-3 text-slate-400">Step {lc.step}</td>
@@ -511,18 +508,18 @@ export const LlmDecisionPanel: React.FC<LlmDecisionPanelProps> = ({
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left Column: Interactive GIS Map */}
           <div className="lg:col-span-1 space-y-3">
-            <div className="p-5 rounded-3xl bg-slate-900/60 backdrop-blur-xl border border-white/10 shadow-2xl space-y-4">
+            <div className="p-5 rounded-3xl bg-[#0b101d] border border-[#1e293b] shadow-2xl space-y-4">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold text-white flex items-center gap-1.5">
                   <Compass className="w-4 h-4 text-emerald-400" /> Target Spatial Boundary Map
                 </span>
-                <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 font-bold border border-purple-500/30">
+                <span className="font-mono text-[10px] px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/30">
                   {selectedWard.code}
                 </span>
               </div>
 
               {/* Map Layer Controls */}
-              <div className="flex items-center gap-1 bg-slate-950/60 backdrop-blur-md p-1 rounded-2xl border border-white/10 text-[11px] font-semibold">
+              <div className="flex items-center gap-1 bg-[#030712] p-1 rounded-2xl border border-[#1e293b] text-[11px] font-semibold">
                 <button
                   onClick={() => setActiveMapLayer('lst')}
                   className={`flex-1 py-1.5 rounded-xl transition ${
@@ -550,7 +547,7 @@ export const LlmDecisionPanel: React.FC<LlmDecisionPanelProps> = ({
               </div>
 
               {/* GIS Map Viewport */}
-              <div className="rounded-2xl overflow-hidden border border-white/10 shadow-xl">
+              <div className="rounded-2xl overflow-hidden border border-[#1e293b] shadow-xl">
                 <GisMap
                   wards={wards}
                   trees={trees}
@@ -561,18 +558,18 @@ export const LlmDecisionPanel: React.FC<LlmDecisionPanelProps> = ({
                 />
               </div>
 
-              <div className="p-3.5 rounded-2xl bg-slate-950/60 backdrop-blur-md border border-white/5 text-[11px] space-y-1.5">
+              <div className="p-3.5 rounded-2xl bg-[#030712] border border-[#1e293b] text-[11px] space-y-1.5">
                 <div className="flex justify-between">
                   <span className="text-slate-400">Mean Surface LST:</span>
-                  <span className="font-bold text-red-400">{selectedWard.heat_analysis?.mean_lst_celsius}°C</span>
+                  <span className="font-bold text-red-400 font-mono">{selectedWard.heat_analysis?.mean_lst_celsius}°C</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-400">Vegetation NDVI:</span>
-                  <span className="font-bold text-emerald-400">{selectedWard.heat_analysis?.mean_ndvi}</span>
+                  <span className="font-bold text-emerald-400 font-mono">{selectedWard.heat_analysis?.mean_ndvi}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-400">Priority Vulnerability:</span>
-                  <span className="font-bold text-amber-400">Rank #{selectedWard.heat_analysis?.vulnerability_rank}</span>
+                  <span className="font-bold text-amber-400 font-mono">Rank #{selectedWard.heat_analysis?.vulnerability_rank}</span>
                 </div>
               </div>
             </div>
@@ -580,18 +577,18 @@ export const LlmDecisionPanel: React.FC<LlmDecisionPanelProps> = ({
 
           {/* Right Column: Executive LLM Advisory & Rationale */}
           <div className="lg:col-span-2 space-y-6">
-            <div className="p-6 rounded-3xl bg-slate-900/60 backdrop-blur-xl border border-white/10 shadow-2xl space-y-4">
-              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-3">
+            <div className="p-6 rounded-3xl bg-[#0b101d] border border-[#1e293b] shadow-2xl space-y-4">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#1e293b] pb-3">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-9 h-9 rounded-2xl bg-purple-500/20 text-purple-300 flex items-center justify-center font-bold border border-purple-500/30 shadow">
-                    <BrainCircuit className="w-5 h-5" />
+                  <div className="w-9 h-9 rounded-2xl bg-emerald-500/20 text-emerald-300 flex items-center justify-center font-bold border border-emerald-500/30 shadow">
+                    <BrainCircuit className="w-5 h-5 text-emerald-400" />
                   </div>
                   <div>
-                    <span className="text-[10px] font-mono font-bold text-purple-300 bg-purple-500/20 px-2 py-0.5 rounded border border-purple-500/30">
+                    <span className="font-mono text-[10px] font-bold text-emerald-300 bg-emerald-500/20 px-2 py-0.5 rounded border border-emerald-500/30">
                       {llmResult.advisory?.ward_code}
                     </span>
                     <h4 className="text-base font-extrabold text-white mt-0.5">
-                      LLM Decision Advisory: {llmResult.advisory?.ward_name}
+                      Aranyix Decision Advisory: {llmResult.advisory?.ward_name}
                     </h4>
                   </div>
                 </div>
@@ -601,15 +598,15 @@ export const LlmDecisionPanel: React.FC<LlmDecisionPanelProps> = ({
                 </span>
               </div>
 
-              <p className="text-xs text-slate-200 leading-relaxed italic bg-slate-950/60 backdrop-blur-md p-4 rounded-2xl border border-white/5 shadow-inner">
+              <p className="text-xs text-slate-200 leading-relaxed italic bg-[#030712] p-4 rounded-2xl border border-[#1e293b] shadow-inner">
                 "{llmResult.advisory?.executive_summary}"
               </p>
 
               {/* Main Decision Spec */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-                <div className="p-4 rounded-2xl bg-slate-950/60 backdrop-blur-md border border-white/5 space-y-1">
-                  <span className="text-slate-400 text-[10px] uppercase font-bold block">Recommended Primary Strategy:</span>
-                  <span className="font-extrabold text-purple-300 text-sm block">
+                <div className="p-4 rounded-2xl bg-[#030712] border border-[#1e293b] space-y-1">
+                  <span className="text-slate-400 text-[10px] uppercase font-bold block font-mono">Recommended Primary Strategy:</span>
+                  <span className="font-extrabold text-emerald-400 text-sm block">
                     {llmResult.advisory?.recommended_strategy}
                   </span>
                   <span className="text-slate-300 block text-[11px] mt-1 font-semibold leading-snug">
@@ -617,16 +614,16 @@ export const LlmDecisionPanel: React.FC<LlmDecisionPanelProps> = ({
                   </span>
                 </div>
 
-                <div className="p-4 rounded-2xl bg-slate-950/60 backdrop-blur-md border border-white/5 space-y-1">
-                  <span className="text-slate-400 text-[10px] uppercase font-bold block">Urban Heat Island Delta:</span>
+                <div className="p-4 rounded-2xl bg-[#030712] border border-[#1e293b] space-y-1">
+                  <span className="text-slate-400 text-[10px] uppercase font-bold block font-mono">Urban Heat Island Delta:</span>
                   <span className="font-extrabold text-red-400 text-2xl block">
                     +{llmResult.advisory?.uhi_intensity_delta_celsius}°C
                   </span>
                   <span className="text-slate-400 text-[10px] block">Above rural background reference</span>
                 </div>
 
-                <div className="p-4 rounded-2xl bg-emerald-950/30 backdrop-blur-md border border-emerald-800/50 space-y-1">
-                  <span className="text-emerald-400 text-[10px] uppercase font-bold block">Projected Temp Drop:</span>
+                <div className="p-4 rounded-2xl bg-emerald-950/30 border border-emerald-800/50 space-y-1">
+                  <span className="text-emerald-400 text-[10px] uppercase font-bold block font-mono">Projected Temp Drop:</span>
                   <span className="font-extrabold text-emerald-300 text-2xl block">
                     -{llmResult.advisory?.projected_surface_cooling_celsius}°C
                   </span>
@@ -637,9 +634,9 @@ export const LlmDecisionPanel: React.FC<LlmDecisionPanelProps> = ({
               </div>
 
               {/* In-depth LLM Rationale */}
-              <div className="p-4 rounded-2xl bg-slate-950/60 backdrop-blur-md border border-white/5 space-y-2 text-xs">
+              <div className="p-4 rounded-2xl bg-[#030712] border border-[#1e293b] space-y-2 text-xs">
                 <span className="font-bold text-white flex items-center gap-1.5">
-                  <Sparkles className="w-4 h-4 text-purple-400" />
+                  <Sparkles className="w-4 h-4 text-emerald-400" />
                   LLM Cognitive Rationale:
                 </span>
                 <p className="text-slate-300 leading-relaxed">
@@ -649,10 +646,10 @@ export const LlmDecisionPanel: React.FC<LlmDecisionPanelProps> = ({
 
               {/* Action Items */}
               <div className="space-y-1.5 text-xs">
-                <span className="font-bold text-slate-400 block mb-1">Key Action Directives Generated by LLM:</span>
+                <span className="font-bold text-slate-400 block mb-1 font-mono text-[10px] uppercase">Key Action Directives Generated by LLM:</span>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5">
                   {llmResult.advisory?.key_actions?.map((act: string, aIdx: number) => (
-                    <div key={aIdx} className="p-3 rounded-xl bg-slate-950/60 backdrop-blur-md border border-white/5 text-slate-300 flex items-center gap-2 font-medium">
+                    <div key={aIdx} className="p-3 rounded-xl bg-[#030712] border border-[#1e293b] text-slate-300 flex items-center gap-2 font-medium">
                       <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
                       <span>{act}</span>
                     </div>
@@ -674,7 +671,7 @@ export const LlmDecisionPanel: React.FC<LlmDecisionPanelProps> = ({
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {llmResult.species_recommendations?.map((rec: any, sIdx: number) => (
-              <div key={sIdx} className="p-6 rounded-3xl bg-slate-900/60 backdrop-blur-xl border border-white/10 hover:border-purple-500/40 transition-all shadow-xl space-y-3.5">
+              <div key={sIdx} className="p-6 rounded-3xl bg-[#0b101d] border border-[#1e293b] hover:border-emerald-500/40 transition-all shadow-xl space-y-3.5">
                 <div className="flex items-start justify-between">
                   <div>
                     <span className="text-xs font-bold text-emerald-400 block">
@@ -686,10 +683,10 @@ export const LlmDecisionPanel: React.FC<LlmDecisionPanelProps> = ({
                   </div>
 
                   <div className="text-right">
-                    <span className="text-2xl font-black text-purple-400 block">
+                    <span className="text-2xl font-black text-emerald-400 block">
                       {rec.suitability_score}%
                     </span>
-                    <span className="text-[9px] font-extrabold uppercase px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                    <span className="font-mono text-[9px] font-extrabold uppercase px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
                       {rec.suitability_level}
                     </span>
                   </div>
@@ -699,8 +696,8 @@ export const LlmDecisionPanel: React.FC<LlmDecisionPanelProps> = ({
                   {rec.species?.description}
                 </p>
 
-                <div className="space-y-1.5 text-xs pt-3 border-t border-white/10">
-                  <span className="text-[10px] font-bold text-slate-400 uppercase block">LLM Match Rationales:</span>
+                <div className="space-y-1.5 text-xs pt-3 border-t border-[#1e293b]">
+                  <span className="font-mono text-[10px] font-bold text-slate-400 uppercase block">LLM Match Rationales:</span>
                   {rec.match_reasons?.map((reason: string, rIdx: number) => (
                     <div key={rIdx} className="text-emerald-300 flex items-start gap-1.5 text-[11px]">
                       <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0 mt-0.5" />
@@ -716,7 +713,7 @@ export const LlmDecisionPanel: React.FC<LlmDecisionPanelProps> = ({
                   ))}
                 </div>
 
-                <div className="p-3 rounded-2xl bg-slate-950/60 backdrop-blur-md border border-white/5 text-[10px] text-slate-400">
+                <div className="p-3 rounded-2xl bg-[#030712] border border-[#1e293b] text-[10px] text-slate-400">
                   💡 <strong>Planting Guidance:</strong> {rec.planting_guidance}
                 </div>
               </div>

@@ -128,8 +128,8 @@ export const WorkflowVisualizer: React.FC = () => {
   const pipelineStages = [
     {
       stage: 1,
-      title: "Spatial & Remote Sensing Ingestion",
-      category: "INPUT & RAW RASTERS",
+      title: "Spatial & Remote Sensing Ingestion Layer",
+      category: "LAYER 01 · SENSOR FUSION",
       icon: Satellite,
       color: "from-blue-600 to-cyan-600",
       accent: "text-cyan-400",
@@ -148,9 +148,9 @@ export const WorkflowVisualizer: React.FC = () => {
     },
     {
       stage: 2,
-      title: "Microclimate Matrix & Raster Analysis",
+      title: "Microclimate Matrix & Spatial Analysis Layer",
       icon: Cpu,
-      category: "COMPUTATIONAL ALGORITHMS",
+      category: "LAYER 02 · RASTER ALGORITHMS",
       color: "from-red-600 to-amber-600",
       accent: "text-red-400",
       inputs: [
@@ -168,9 +168,9 @@ export const WorkflowVisualizer: React.FC = () => {
     },
     {
       stage: 3,
-      title: "Zero-Trust ABAC Security Gate",
+      title: "Multi-Tenant ABAC Security Layer",
       icon: ShieldAlert,
-      category: "DATA PROTECTION & ABAC",
+      category: "LAYER 03 · SECURITY & ISOLATION",
       color: "from-purple-600 to-indigo-600",
       accent: "text-purple-400",
       inputs: [
@@ -186,9 +186,9 @@ export const WorkflowVisualizer: React.FC = () => {
     },
     {
       stage: 4,
-      title: "Dual AI Climate Intervention Engine",
+      title: "Dual AI Decision Support Layer",
       icon: GitMerge,
-      category: "DECISION SUPPORT SYSTEM",
+      category: "LAYER 04 · HYBRID COOLING SOLVER",
       color: "from-emerald-600 to-teal-600",
       accent: "text-emerald-400",
       inputs: [
@@ -205,9 +205,9 @@ export const WorkflowVisualizer: React.FC = () => {
     },
     {
       stage: 5,
-      title: "Field Audit & Post-Planting Verification",
+      title: "Field Verification & Tree Passport Layer",
       icon: Camera,
-      category: "GROUND TRUTH FEEDBACK LOOP",
+      category: "LAYER 05 · GROUND TRUTH AUDIT",
       color: "from-green-600 to-emerald-700",
       accent: "text-green-400",
       inputs: [
@@ -220,20 +220,20 @@ export const WorkflowVisualizer: React.FC = () => {
         "GPS Verification Gate: Distance <= 15m tolerance for valid audit",
         "Tree Survival State Escalation: Rating <= 1 -> CRITICAL, Rating >= 4 -> THRIVING"
       ],
-      outputPayload: "Tamper-Evident Sapling Survival Audit & Growth Timeline"
+      outputPayload: "Tamper-Evident Sapling Survival Audit & Tree Passport Timeline"
     }
   ];
 
   return (
-    <div className="p-6 rounded-3xl bg-slate-900/60 backdrop-blur-xl border border-white/10 shadow-2xl space-y-6 relative overflow-hidden">
+    <div className="p-6 rounded-3xl bg-[#0b101d] border border-[#1e293b] shadow-2xl space-y-6 relative overflow-hidden">
       {/* Ambient Glow */}
       <div className="absolute -top-20 -left-20 w-64 h-64 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none" />
 
       {/* HEADER & VIEW TOGGLE SWITCH */}
-      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-4 relative z-10">
+      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#1e293b] pb-4 relative z-10">
         <div>
-          <span className="text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
-            <Activity className="w-4 h-4 text-emerald-400" /> System Workflow &amp; Data Pipeline Architecture
+          <span className="font-mono tracking-widest text-[10px] uppercase font-bold text-emerald-400 flex items-center gap-1.5">
+            <Activity className="w-4 h-4 text-emerald-400" /> Climatrix Intelligence Stack: Five Layers
           </span>
           <h3 className="text-2xl font-black text-white tracking-tight mt-0.5">
             Structured Flow of Data &amp; Operational Lifecycle
@@ -244,22 +244,22 @@ export const WorkflowVisualizer: React.FC = () => {
         </div>
 
         {/* View Switcher Pills */}
-        <div className="flex gap-1.5 bg-slate-950/60 backdrop-blur-md p-1.5 rounded-2xl border border-white/10 text-xs font-bold shadow-lg">
+        <div className="flex gap-1.5 bg-[#030712] p-1.5 rounded-2xl border border-[#1e293b] text-xs font-bold shadow-lg">
           <button
             onClick={() => setViewMode('dataflow')}
-            className={`px-4 py-2 rounded-xl transition flex items-center gap-1.5 ${
+            className={`px-4 py-2 rounded-xl transition ${
               viewMode === 'dataflow'
-                ? 'bg-emerald-500 text-slate-950 shadow-lg'
+                ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-black shadow-lg shadow-emerald-500/20'
                 : 'text-slate-400 hover:text-white'
             }`}
           >
-            <Layers className="w-4 h-4" /> Technical Data Flow Pipeline
+            <Layers className="w-4 h-4" /> Intelligence Stack (5 Layers)
           </button>
           <button
             onClick={() => setViewMode('steps')}
-            className={`px-4 py-2 rounded-xl transition flex items-center gap-1.5 ${
+            className={`px-4 py-2 rounded-xl transition ${
               viewMode === 'steps'
-                ? 'bg-emerald-500 text-slate-950 shadow-lg'
+                ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-black shadow-lg shadow-emerald-500/20'
                 : 'text-slate-400 hover:text-white'
             }`}
           >
@@ -272,47 +272,47 @@ export const WorkflowVisualizer: React.FC = () => {
       {viewMode === 'dataflow' && (
         <div className="space-y-6 relative z-10">
           {/* High-Level Pipeline Flow Nodes */}
-          <div className="p-6 rounded-2xl bg-slate-950/60 backdrop-blur-md border border-white/5 overflow-x-auto shadow-inner">
-            <span className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-widest block mb-4">
-              High-Level Pipeline Flow Diagram
+          <div className="p-6 rounded-2xl bg-[#030712] border border-[#1e293b] overflow-x-auto shadow-inner">
+            <span className="font-mono tracking-widest text-[10px] uppercase font-bold text-slate-400 block mb-4">
+              Intelligence Stack Architecture Flow
             </span>
-            <div className="flex items-center justify-between min-w-[750px] gap-2 text-xs">
-              <div className="p-3.5 rounded-2xl bg-slate-900/80 backdrop-blur-md border border-cyan-500/30 text-center space-y-1 flex-1 shadow">
+            <div className="flex items-center justify-between min-w-[750px] gap-2 text-xs font-mono">
+              <div className="p-3.5 rounded-2xl bg-[#0b101d] border border-cyan-500/30 text-center space-y-1 flex-1 shadow">
                 <Satellite className="w-5 h-5 text-cyan-400 mx-auto" />
-                <span className="font-bold text-white block">1. Remote Sensing</span>
-                <span className="text-[10px] text-slate-400 block">Landsat &amp; Sentinel</span>
+                <span className="font-bold text-white block">Layer 01</span>
+                <span className="text-[10px] text-slate-400 block">Sensor Fusion</span>
               </div>
 
-              <ArrowRight className="w-4 h-4 text-slate-500 flex-shrink-0" />
+              <ArrowRight className="w-4 h-4 text-slate-600 flex-shrink-0" />
 
-              <div className="p-3.5 rounded-2xl bg-slate-900/80 backdrop-blur-md border border-red-500/30 text-center space-y-1 flex-1 shadow">
+              <div className="p-3.5 rounded-2xl bg-[#0b101d] border border-red-500/30 text-center space-y-1 flex-1 shadow">
                 <Cpu className="w-5 h-5 text-red-400 mx-auto" />
-                <span className="font-bold text-white block">2. Raster Math</span>
-                <span className="text-[10px] text-slate-400 block">LST, NDVI, NDBI</span>
+                <span className="font-bold text-white block">Layer 02</span>
+                <span className="text-[10px] text-slate-400 block">Raster Math</span>
               </div>
 
-              <ArrowRight className="w-4 h-4 text-slate-500 flex-shrink-0" />
+              <ArrowRight className="w-4 h-4 text-slate-600 flex-shrink-0" />
 
-              <div className="p-3.5 rounded-2xl bg-slate-900/80 backdrop-blur-md border border-purple-500/30 text-center space-y-1 flex-1 shadow">
+              <div className="p-3.5 rounded-2xl bg-[#0b101d] border border-purple-500/30 text-center space-y-1 flex-1 shadow">
                 <Lock className="w-5 h-5 text-purple-400 mx-auto" />
-                <span className="font-bold text-white block">3. ABAC Gate</span>
-                <span className="text-[10px] text-slate-400 block">Location License</span>
+                <span className="font-bold text-white block">Layer 03</span>
+                <span className="text-[10px] text-slate-400 block">ABAC Gate</span>
               </div>
 
-              <ArrowRight className="w-4 h-4 text-slate-500 flex-shrink-0" />
+              <ArrowRight className="w-4 h-4 text-slate-600 flex-shrink-0" />
 
-              <div className="p-3.5 rounded-2xl bg-slate-900/80 backdrop-blur-md border border-emerald-500/30 text-center space-y-1 flex-1 shadow">
+              <div className="p-3.5 rounded-2xl bg-[#0b101d] border border-emerald-500/30 text-center space-y-1 flex-1 shadow">
                 <GitMerge className="w-5 h-5 text-emerald-400 mx-auto" />
-                <span className="font-bold text-white block">4. Dual AI Engine</span>
-                <span className="text-[10px] text-slate-400 block">Species vs Cool Roofs</span>
+                <span className="font-bold text-white block">Layer 04</span>
+                <span className="text-[10px] text-slate-400 block">AI Hybrid Solver</span>
               </div>
 
-              <ArrowRight className="w-4 h-4 text-slate-500 flex-shrink-0" />
+              <ArrowRight className="w-4 h-4 text-slate-600 flex-shrink-0" />
 
-              <div className="p-3.5 rounded-2xl bg-slate-900/80 backdrop-blur-md border border-green-500/30 text-center space-y-1 flex-1 shadow">
+              <div className="p-3.5 rounded-2xl bg-[#0b101d] border border-green-500/30 text-center space-y-1 flex-1 shadow">
                 <Camera className="w-5 h-5 text-green-400 mx-auto" />
-                <span className="font-bold text-white block">5. Field Audit</span>
-                <span className="text-[10px] text-slate-400 block">GPS Verification</span>
+                <span className="font-bold text-white block">Layer 05</span>
+                <span className="text-[10px] text-slate-400 block">Tree Passports</span>
               </div>
             </div>
           </div>
@@ -324,16 +324,16 @@ export const WorkflowVisualizer: React.FC = () => {
               return (
                 <div
                   key={ps.stage}
-                  className="p-6 rounded-3xl bg-slate-900/60 backdrop-blur-xl border border-white/10 hover:border-emerald-500/40 transition-all shadow-xl space-y-4"
+                  className="p-6 rounded-3xl bg-[#030712] border border-[#1e293b] hover:border-emerald-500/40 transition-all shadow-xl space-y-4"
                 >
-                  <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-3">
+                  <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#1e293b] pb-3">
                     <div className="flex items-center gap-3">
                       <div className={`w-9 h-9 rounded-2xl bg-gradient-to-tr ${ps.color} text-white flex items-center justify-center font-bold text-sm shadow`}>
-                        {ps.stage}
+                        0{ps.stage}
                       </div>
                       <div>
-                        <span className="text-[10px] font-mono font-extrabold text-slate-400 tracking-wider">
-                          STAGE 0{ps.stage} · {ps.category}
+                        <span className="font-mono tracking-widest text-[10px] font-bold text-slate-400 uppercase">
+                          {ps.category}
                         </span>
                         <h4 className={`text-base font-bold ${ps.accent}`}>
                           {ps.title}
@@ -344,7 +344,7 @@ export const WorkflowVisualizer: React.FC = () => {
                     <div className="flex items-center gap-1.5 text-xs text-slate-400 font-mono">
                       <span>Database Entities:</span>
                       {ps.entities.map((ent, eIdx) => (
-                        <span key={eIdx} className="px-2.5 py-0.5 rounded-full bg-slate-800/80 text-emerald-300 font-bold border border-white/5">
+                        <span key={eIdx} className="px-2.5 py-0.5 rounded-full bg-[#0b101d] text-emerald-300 font-bold border border-[#1e293b]">
                           {ent}
                         </span>
                       ))}
@@ -353,8 +353,8 @@ export const WorkflowVisualizer: React.FC = () => {
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
                     {/* Input Sources */}
-                    <div className="p-4 rounded-2xl bg-slate-950/60 backdrop-blur-md border border-white/5 space-y-2">
-                      <span className="font-bold text-slate-300 block uppercase tracking-wider text-[10px]">
+                    <div className="p-4 rounded-2xl bg-[#0b101d] border border-[#1e293b] space-y-2">
+                      <span className="font-bold text-slate-300 block uppercase tracking-wider text-[10px] font-mono">
                         📥 Input Data Sources:
                       </span>
                       <ul className="space-y-1.5 text-slate-300">
@@ -368,8 +368,8 @@ export const WorkflowVisualizer: React.FC = () => {
                     </div>
 
                     {/* Mathematical & Algorithmic Transformations */}
-                    <div className="p-4 rounded-2xl bg-slate-950/60 backdrop-blur-md border border-white/5 space-y-2">
-                      <span className="font-bold text-slate-300 block uppercase tracking-wider text-[10px]">
+                    <div className="p-4 rounded-2xl bg-[#0b101d] border border-[#1e293b] space-y-2">
+                      <span className="font-bold text-slate-300 block uppercase tracking-wider text-[10px] font-mono">
                         ⚙️ Key Transformations &amp; Formulas:
                       </span>
                       <ul className="space-y-1.5 text-slate-300">
@@ -383,8 +383,8 @@ export const WorkflowVisualizer: React.FC = () => {
                     </div>
 
                     {/* Output Deliverable */}
-                    <div className="p-4 rounded-2xl bg-emerald-950/30 backdrop-blur-md border border-emerald-800/40 space-y-2">
-                      <span className="font-bold text-emerald-400 block uppercase tracking-wider text-[10px]">
+                    <div className="p-4 rounded-2xl bg-emerald-950/30 border border-emerald-800/40 space-y-2">
+                      <span className="font-bold text-emerald-400 block uppercase tracking-wider text-[10px] font-mono">
                         📤 Output Deliverable:
                       </span>
                       <p className="text-emerald-300 font-semibold leading-relaxed">
@@ -407,10 +407,10 @@ export const WorkflowVisualizer: React.FC = () => {
             return (
               <div
                 key={s.step}
-                className={`p-5 rounded-3xl bg-slate-900/60 backdrop-blur-xl border ${s.border} hover:border-emerald-500/50 transition-all shadow-xl relative group`}
+                className={`p-5 rounded-3xl bg-[#030712] border ${s.border} hover:border-emerald-500/50 transition-all shadow-xl relative group`}
               >
                 <div className="flex items-center justify-between mb-2.5">
-                  <span className="text-[10px] font-mono font-extrabold px-2.5 py-0.5 rounded-full bg-slate-800/80 text-slate-300 border border-white/5">
+                  <span className="font-mono text-[10px] font-extrabold px-2.5 py-0.5 rounded-full bg-[#0b101d] text-slate-300 border border-[#1e293b]">
                     STEP 0{s.step}
                   </span>
                   <div className={`w-8 h-8 rounded-xl bg-gradient-to-tr ${s.color} text-slate-950 flex items-center justify-center font-bold shadow`}>
@@ -430,11 +430,11 @@ export const WorkflowVisualizer: React.FC = () => {
       )}
 
       {/* FOOTER NOTICE */}
-      <div className="p-4 rounded-2xl bg-slate-950/60 backdrop-blur-md border border-white/10 text-xs text-slate-300 flex items-center justify-between relative z-10">
+      <div className="p-4 rounded-2xl bg-[#030712] border border-[#1e293b] text-xs text-slate-300 flex items-center justify-between relative z-10">
         <span className="text-slate-400">
           Core SaaS Commercial Principle: <strong className="text-white">Strict Geographical Licensing (ABAC)</strong> prevents unauthorized cross-ward or cross-customer data leakage.
         </span>
-        <span className="text-emerald-400 font-bold">100% Backend-Enforced</span>
+        <span className="text-emerald-400 font-bold font-mono">100% Backend-Enforced</span>
       </div>
     </div>
   );

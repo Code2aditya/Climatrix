@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import {
   Thermometer,
   Search,
@@ -13,7 +14,6 @@ import {
   ArrowUpRight,
   SlidersHorizontal
 } from 'lucide-react';
-import axios from 'axios';
 import { type WardData } from './GisMap';
 import { type UserPersona } from './RoleLoginModal';
 
@@ -76,14 +76,14 @@ export const WardExplorerPanel: React.FC<WardExplorerPanelProps> = ({
 
   return (
     <div className="space-y-6">
-      {/* 1. TOP GLASSMORPHISM SEARCH & FILTER BAR */}
-      <div className="p-6 rounded-3xl bg-slate-900/60 backdrop-blur-xl border border-white/10 shadow-2xl space-y-4 relative overflow-hidden">
+      {/* 1. TOP ARANYIX SEARCH & FILTER BAR */}
+      <div className="p-6 rounded-3xl bg-[#0b101d] border border-[#1e293b] shadow-2xl space-y-4 relative overflow-hidden">
         {/* Ambient Light Orbs */}
         <div className="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none" />
 
         <div className="flex flex-wrap items-center justify-between gap-4 relative z-10">
           <div>
-            <span className="text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
+            <span className="font-mono tracking-widest text-[10px] uppercase font-bold text-emerald-400 flex items-center gap-1.5">
               <Layers className="w-4 h-4 text-emerald-400" /> Comprehensive Multi-Ward Environmental Matrix
             </span>
             <h3 className="text-2xl font-black text-white tracking-tight mt-0.5">
@@ -96,7 +96,7 @@ export const WardExplorerPanel: React.FC<WardExplorerPanelProps> = ({
 
           <div className="flex items-center gap-2 relative z-10">
             <span className="text-xs text-slate-400 font-medium">Logged in as:</span>
-            <span className="text-xs font-bold px-3 py-1.5 rounded-full bg-slate-800/80 backdrop-blur-md border border-white/10 text-slate-200 shadow">
+            <span className="text-xs font-bold px-3 py-1.5 rounded-full bg-[#030712] border border-[#1e293b] text-slate-200 shadow">
               {currentUser.name} ({currentUser.organisation})
             </span>
           </div>
@@ -114,13 +114,13 @@ export const WardExplorerPanel: React.FC<WardExplorerPanelProps> = ({
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyDown={(e) => { if (e.key === 'Enter') handleGeocodeSearch(); }}
-                className="w-full bg-slate-950/60 backdrop-blur-md border border-white/10 rounded-2xl pl-10 pr-3 py-2.5 text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-emerald-500 font-medium transition"
+                className="w-full bg-[#030712] border border-[#1e293b] rounded-2xl pl-10 pr-3 py-2.5 text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-emerald-500 font-medium transition"
               />
             </div>
             <button
               onClick={handleGeocodeSearch}
               disabled={isGeocoding}
-              className="px-3 py-2.5 rounded-2xl bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 font-bold text-[11px] border border-emerald-500/30 transition flex-shrink-0"
+              className="px-3.5 py-2.5 rounded-2xl bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 font-bold text-[11px] border border-emerald-500/30 transition flex-shrink-0"
             >
               {isGeocoding ? 'Geocoding...' : '📍 Geocode'}
             </button>
@@ -132,7 +132,7 @@ export const WardExplorerPanel: React.FC<WardExplorerPanelProps> = ({
             <select
               value={selectedSeverity}
               onChange={(e) => setSelectedSeverity(e.target.value)}
-              className="w-full bg-slate-950/60 backdrop-blur-md border border-white/10 rounded-2xl px-3 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-emerald-500 cursor-pointer font-medium"
+              className="w-full bg-[#030712] border border-[#1e293b] rounded-2xl px-3 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-emerald-500 cursor-pointer font-medium"
             >
               <option value="ALL">All Heat Severities</option>
               <option value="CRITICAL">Critical Hotspots (&gt; 46°C)</option>
@@ -148,9 +148,9 @@ export const WardExplorerPanel: React.FC<WardExplorerPanelProps> = ({
             <select
               value={selectedLicenseFilter}
               onChange={(e) => setSelectedLicenseFilter(e.target.value as any)}
-              className="w-full bg-slate-950/60 backdrop-blur-md border border-white/10 rounded-2xl px-3 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-emerald-500 cursor-pointer font-medium"
+              className="w-full bg-[#030712] border border-[#1e293b] rounded-2xl px-3 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-emerald-500 cursor-pointer font-medium"
             >
-              <option value="ALL">All Wards (Show Locked &amp; Unlocked)</option>
+              <option value="ALL">All Wards (Show Active Wards)</option>
               <option value="LICENSED">Licensed to My Organization Only</option>
               <option value="LOCKED">Requires Additional License (ABAC)</option>
             </select>
@@ -158,7 +158,7 @@ export const WardExplorerPanel: React.FC<WardExplorerPanelProps> = ({
         </div>
       </div>
 
-      {/* 2. WARDS GLASS GRID */}
+      {/* 2. ARANYIX WARDS GRID */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {filteredWards.map((w) => {
           const isSelected = selectedWard?.id === w.id;
@@ -166,19 +166,19 @@ export const WardExplorerPanel: React.FC<WardExplorerPanelProps> = ({
           return (
             <div
               key={w.id}
-              className={`p-6 rounded-3xl border transition-all duration-300 relative flex flex-col justify-between backdrop-blur-xl ${
+              className={`p-6 rounded-3xl border transition-all duration-300 relative flex flex-col justify-between ${
                 !w.is_licensed
-                  ? 'bg-slate-950/40 border-white/5 hover:border-slate-700'
+                  ? 'bg-[#030712]/40 border-[#1e293b] hover:border-slate-700'
                   : isSelected
-                  ? 'bg-slate-900/80 border-emerald-500 shadow-2xl shadow-emerald-500/10 ring-1 ring-emerald-500'
-                  : 'bg-slate-900/60 border-white/10 hover:border-emerald-500/40 shadow-xl'
+                  ? 'bg-[#0b101d] border-emerald-500 shadow-2xl shadow-emerald-500/10 ring-1 ring-emerald-500'
+                  : 'bg-[#0b101d] border-[#1e293b] hover:border-emerald-500/40 shadow-xl'
               }`}
             >
               <div className="space-y-3.5">
                 {/* Header */}
                 <div className="flex items-start justify-between">
                   <div>
-                    <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full font-bold bg-slate-800/80 text-slate-300 border border-white/5">
+                    <span className="font-mono text-[10px] px-2.5 py-0.5 rounded-full font-bold bg-[#030712] text-slate-300 border border-[#1e293b]">
                       {w.code}
                     </span>
                     <h4 className="text-base font-extrabold text-white mt-1.5 leading-snug">
@@ -187,11 +187,11 @@ export const WardExplorerPanel: React.FC<WardExplorerPanelProps> = ({
                   </div>
 
                   {w.is_licensed ? (
-                    <span className="flex items-center gap-1 text-[11px] font-semibold px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 shadow">
+                    <span className="flex items-center gap-1 font-mono text-[10px] font-semibold px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 shadow">
                       <Unlock className="w-3 h-3 text-emerald-400" /> Licensed
                     </span>
                   ) : (
-                    <span className="flex items-center gap-1 text-[11px] font-semibold px-3 py-1 rounded-full bg-red-500/20 text-red-300 border border-red-500/30 shadow">
+                    <span className="flex items-center gap-1 font-mono text-[10px] font-semibold px-3 py-1 rounded-full bg-red-500/20 text-red-300 border border-red-500/30 shadow">
                       <Lock className="w-3 h-3 text-red-400" /> Locked
                     </span>
                   )}
@@ -204,20 +204,20 @@ export const WardExplorerPanel: React.FC<WardExplorerPanelProps> = ({
                 {/* Metrics Matrix */}
                 {w.is_licensed ? (
                   <div className="grid grid-cols-3 gap-2 text-center text-xs py-1">
-                    <div className="p-2.5 rounded-2xl bg-slate-950/60 backdrop-blur-md border border-white/5">
-                      <span className="text-[10px] text-slate-400 block">Mean LST</span>
+                    <div className="p-2.5 rounded-2xl bg-[#030712] border border-[#1e293b]">
+                      <span className="text-[10px] text-slate-400 block font-mono">Mean LST</span>
                       <span className="font-black text-red-400 text-sm">
                         {w.heat_analysis?.mean_lst_celsius}°C
                       </span>
                     </div>
-                    <div className="p-2.5 rounded-2xl bg-slate-950/60 backdrop-blur-md border border-white/5">
-                      <span className="text-[10px] text-slate-400 block">Green NDVI</span>
+                    <div className="p-2.5 rounded-2xl bg-[#030712] border border-[#1e293b]">
+                      <span className="text-[10px] text-slate-400 block font-mono">NDVI Canopy</span>
                       <span className="font-black text-emerald-400 text-sm">
                         {w.heat_analysis?.mean_ndvi}
                       </span>
                     </div>
-                    <div className="p-2.5 rounded-2xl bg-slate-950/60 backdrop-blur-md border border-white/5">
-                      <span className="text-[10px] text-slate-400 block">Priority</span>
+                    <div className="p-2.5 rounded-2xl bg-[#030712] border border-[#1e293b]">
+                      <span className="text-[10px] text-slate-400 block font-mono">Priority</span>
                       <span className="font-bold text-amber-400 text-xs">
                         Rank #{w.heat_analysis?.vulnerability_rank}
                       </span>
@@ -225,7 +225,7 @@ export const WardExplorerPanel: React.FC<WardExplorerPanelProps> = ({
                   </div>
                 ) : (
                   /* Locked Notice for Unlicensed Customer */
-                  <div className="p-3.5 rounded-2xl bg-slate-950/80 backdrop-blur-md border border-red-900/40 text-center space-y-1.5">
+                  <div className="p-3.5 rounded-2xl bg-[#030712] border border-red-900/40 text-center space-y-1.5">
                     <div className="flex items-center justify-center gap-1.5 text-xs font-bold text-red-400">
                       <Lock className="w-3.5 h-3.5" /> ABAC Protected Data
                     </div>
@@ -255,18 +255,18 @@ export const WardExplorerPanel: React.FC<WardExplorerPanelProps> = ({
               </div>
 
               {/* Action Buttons */}
-              <div className="pt-4 mt-3 border-t border-white/10 flex items-center justify-between gap-2">
+              <div className="pt-4 mt-3 border-t border-[#1e293b] flex items-center justify-between gap-2">
                 {w.is_licensed ? (
                   <>
                     <button
                       onClick={() => onSelectWard(w)}
-                      className="px-3.5 py-2 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 text-slate-200 text-xs font-semibold transition border border-white/5"
+                      className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition border border-[#1e293b]"
                     >
                       View on Map
                     </button>
                     <button
                       onClick={() => setDetailWard(w)}
-                      className="px-3.5 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold transition flex items-center gap-1 shadow-lg shadow-emerald-500/20"
+                      className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 text-xs font-extrabold transition flex items-center gap-1 shadow-lg shadow-emerald-500/20"
                     >
                       Deep Dive <ArrowUpRight className="w-3.5 h-3.5" />
                     </button>
@@ -274,7 +274,7 @@ export const WardExplorerPanel: React.FC<WardExplorerPanelProps> = ({
                 ) : (
                   <button
                     onClick={onOpenBilling}
-                    className="w-full py-2.5 rounded-2xl bg-red-950/40 hover:bg-red-900/60 text-red-300 border border-red-700/50 text-xs font-bold transition flex items-center justify-center gap-1.5 backdrop-blur-md"
+                    className="w-full py-2.5 rounded-2xl bg-red-950/40 hover:bg-red-900/60 text-red-300 border border-red-700/50 text-xs font-bold transition flex items-center justify-center gap-1.5"
                   >
                     <Lock className="w-3.5 h-3.5" /> License This Ward
                   </button>
@@ -285,13 +285,13 @@ export const WardExplorerPanel: React.FC<WardExplorerPanelProps> = ({
         })}
       </div>
 
-      {/* 3. FROSTED GLASS WARD DEEP DIVE MODAL */}
+      {/* 3. ARANYIX WARD DEEP DIVE MODAL */}
       {detailWard && (
-        <div className="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-xl flex items-center justify-center p-4">
-          <div className="bg-slate-900/90 border border-white/10 rounded-3xl max-w-2xl w-full p-8 shadow-2xl space-y-5 backdrop-blur-2xl">
-            <div className="flex items-start justify-between border-b border-white/10 pb-4">
+        <div className="fixed inset-0 z-50 bg-[#030712]/90 backdrop-blur-xl flex items-center justify-center p-4">
+          <div className="bg-[#0b101d] border border-[#1e293b] rounded-3xl max-w-2xl w-full p-8 shadow-2xl space-y-5">
+            <div className="flex items-start justify-between border-b border-[#1e293b] pb-4">
               <div>
-                <span className="text-xs font-mono font-bold text-emerald-300 bg-emerald-500/20 px-2.5 py-0.5 rounded-full border border-emerald-500/30">
+                <span className="font-mono text-xs font-bold text-emerald-300 bg-emerald-500/20 px-2.5 py-0.5 rounded-full border border-emerald-500/30">
                   {detailWard.code}
                 </span>
                 <h3 className="text-xl font-black text-white mt-1">{detailWard.name}</h3>
@@ -299,7 +299,7 @@ export const WardExplorerPanel: React.FC<WardExplorerPanelProps> = ({
               </div>
               <button
                 onClick={() => setDetailWard(null)}
-                className="w-8 h-8 rounded-full bg-slate-800/80 hover:bg-slate-700 text-slate-300 flex items-center justify-center font-bold border border-white/10"
+                className="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center font-bold border border-[#1e293b]"
               >
                 ✕
               </button>
@@ -307,26 +307,26 @@ export const WardExplorerPanel: React.FC<WardExplorerPanelProps> = ({
 
             {/* Diagnostic Metrics */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-center text-xs">
-              <div className="p-3.5 rounded-2xl bg-slate-950/60 border border-white/5">
-                <span className="text-[10px] text-slate-400 block">Mean Surface LST</span>
+              <div className="p-3.5 rounded-2xl bg-[#030712] border border-[#1e293b]">
+                <span className="text-[10px] text-slate-400 block font-mono">Mean Surface LST</span>
                 <span className="text-xl font-black text-red-400">{detailWard.heat_analysis?.mean_lst_celsius}°C</span>
               </div>
-              <div className="p-3.5 rounded-2xl bg-slate-950/60 border border-white/5">
-                <span className="text-[10px] text-slate-400 block">Peak Thermal Spot</span>
+              <div className="p-3.5 rounded-2xl bg-[#030712] border border-[#1e293b]">
+                <span className="text-[10px] text-slate-400 block font-mono">Peak Thermal Spot</span>
                 <span className="text-xl font-black text-red-500">{detailWard.heat_analysis?.max_lst_celsius}°C</span>
               </div>
-              <div className="p-3.5 rounded-2xl bg-slate-950/60 border border-white/5">
-                <span className="text-[10px] text-slate-400 block">NDVI Vegetation</span>
+              <div className="p-3.5 rounded-2xl bg-[#030712] border border-[#1e293b]">
+                <span className="text-[10px] text-slate-400 block font-mono">NDVI Canopy</span>
                 <span className="text-xl font-black text-emerald-400">{detailWard.heat_analysis?.mean_ndvi}</span>
               </div>
-              <div className="p-3.5 rounded-2xl bg-slate-950/60 border border-white/5">
-                <span className="text-[10px] text-slate-400 block">NDBI Built Density</span>
+              <div className="p-3.5 rounded-2xl bg-[#030712] border border-[#1e293b]">
+                <span className="text-[10px] text-slate-400 block font-mono">NDBI Density</span>
                 <span className="text-xl font-black text-amber-400">{detailWard.heat_analysis?.mean_ndbi}</span>
               </div>
             </div>
 
             {/* In-depth Analysis Section */}
-            <div className="p-4 rounded-2xl bg-slate-950/60 border border-white/5 space-y-2 text-xs">
+            <div className="p-4 rounded-2xl bg-[#030712] border border-[#1e293b] space-y-2 text-xs">
               <h4 className="font-bold text-white flex items-center gap-1.5">
                 <Thermometer className="w-4 h-4 text-red-400" />
                 Urban Heat Island &amp; Microclimate Diagnosis:
@@ -360,13 +360,13 @@ export const WardExplorerPanel: React.FC<WardExplorerPanelProps> = ({
               </p>
             </div>
 
-            <div className="flex justify-end gap-2 pt-2 border-t border-white/10">
+            <div className="flex justify-end gap-2 pt-2 border-t border-[#1e293b]">
               <button
                 onClick={() => {
                   onSelectWard(detailWard);
                   setDetailWard(null);
                 }}
-                className="px-5 py-2.5 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold transition shadow-lg shadow-emerald-500/20"
+                className="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 text-xs font-extrabold transition shadow-lg shadow-emerald-500/20"
               >
                 Inspect on GIS Map
               </button>

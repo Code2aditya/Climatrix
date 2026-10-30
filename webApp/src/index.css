@@ -1,33 +1,57 @@
 @import "tailwindcss";
 @import "leaflet/dist/leaflet.css";
 
-/* Design system variables & base styling */
+/* Aranyix Nature-Tech Design System Variables & Tokens */
 :root {
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --bg-obsidian: #030712;
+  --bg-card: #0b101d;
+  --border-card: #1e293b;
+  --accent-emerald: #10b981;
+  --accent-cyan: #06b6d4;
   color-scheme: dark;
 }
 
 body {
-  background-color: #020617;
+  background-color: var(--bg-obsidian);
   color: #f8fafc;
   font-family: var(--font-sans);
   margin: 0;
   min-height: 100vh;
+  overflow-x: hidden;
 }
 
-/* Glassmorphism utility classes */
-.glass-panel {
-  background: rgba(15, 23, 42, 0.75);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+/* Aranyix Utility Classes */
+.aranyix-card {
+  background: #0b101d;
+  border: 1px solid #1e293b;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.glass-panel-subtle {
-  background: rgba(30, 41, 59, 0.45);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+.aranyix-card:hover {
+  border-color: rgba(16, 185, 129, 0.4);
+}
+
+.aranyix-badge {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.aranyix-btn-primary {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: #030712;
+  font-weight: 800;
+  box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.25);
+  transition: all 0.2s ease;
+}
+
+.aranyix-btn-primary:hover {
+  background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+  box-shadow: 0 12px 30px -5px rgba(16, 185, 129, 0.4);
 }
 
 /* Custom Scrollbars */
@@ -37,32 +61,32 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(15, 23, 42, 0.6);
+  background: #030712;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(51, 65, 85, 0.7);
+  background: #1e293b;
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(71, 85, 105, 0.9);
+  background: #059669;
 }
 
-/* Leaflet Map overrides for dark theme */
+/* Leaflet Map overrides for Aranyix dark theme */
 .leaflet-container {
-  background: #020617 !important;
+  background: #030712 !important;
   font-family: inherit;
 }
 
 .leaflet-popup-content-wrapper {
-  background: #0f172a !important;
+  background: #0b101d !important;
   color: #f8fafc !important;
-  border-radius: 10px !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5) !important;
+  border-radius: 12px !important;
+  border: 1px solid #1e293b !important;
+  box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.8) !important;
 }
 
 .leaflet-popup-tip {
-  background: #0f172a !important;
+  background: #0b101d !important;
 }

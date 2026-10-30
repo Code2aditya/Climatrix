@@ -21,7 +21,15 @@ import {
   Shield,
   ArrowRight,
   KeyRound,
-  AlertCircle
+  AlertCircle,
+  Menu,
+  X,
+  Home,
+  Globe,
+  ChevronRight,
+  Sparkles,
+  Building,
+  GraduationCap
 } from 'lucide-react';
 import {
   BarChart,
@@ -38,6 +46,7 @@ import { RoleLoginModal, PRESET_PERSONAS, type UserPersona } from './components/
 import { WardExplorerPanel } from './components/WardExplorerPanel';
 import { WorkflowVisualizer } from './components/WorkflowVisualizer';
 import { LlmDecisionPanel } from './components/LlmDecisionPanel';
+import { LandingPage } from './components/LandingPage';
 
 const API_BASE = 'http://localhost:8000/api/v1';
 
@@ -318,39 +327,43 @@ function LoginPortalScreen({
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col justify-center items-center p-6 relative overflow-hidden font-sans">
+    <div className="min-h-screen bg-[#030712] text-slate-100 flex flex-col justify-center items-center p-6 relative overflow-hidden font-sans">
       {/* Background Ambient Glow Orbs */}
       <div className="absolute -top-40 -left-40 w-96 h-96 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none" />
-      <div className="absolute -bottom-40 -right-40 w-96 h-96 rounded-full bg-purple-500/10 blur-3xl pointer-events-none" />
-      <div className="absolute top-1/3 right-1/4 w-72 h-72 rounded-full bg-cyan-500/10 blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-40 -right-40 w-96 h-96 rounded-full bg-teal-500/10 blur-3xl pointer-events-none" />
 
-      <div className="max-w-4xl w-full bg-slate-900/60 border border-white/10 rounded-3xl p-8 shadow-2xl backdrop-blur-2xl space-y-8 z-10">
+      <div className="max-w-4xl w-full bg-[#0b101d] border border-[#1e293b] rounded-3xl p-8 shadow-2xl space-y-8 z-10">
         {/* Brand Header */}
         <div className="text-center space-y-3">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-emerald-600 via-teal-500 to-cyan-400 flex items-center justify-center shadow-xl shadow-emerald-500/25 mx-auto border border-white/20">
+          <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-emerald-600 via-teal-500 to-emerald-400 flex items-center justify-center shadow-xl shadow-emerald-500/20 mx-auto border border-white/20">
             <Thermometer className="w-9 h-9 text-slate-950 font-bold" />
           </div>
           <div>
-            <h1 className="text-4xl font-black bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 bg-clip-text text-transparent tracking-tight">
+            <span className="font-mono tracking-widest text-[10px] uppercase font-bold text-emerald-400 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+              Environmental Intelligence From Field to Audit Room
+            </span>
+            <h1 className="text-4xl font-black bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 bg-clip-text text-transparent tracking-tight mt-2">
               Climatrix
             </h1>
-            <p className="text-sm font-semibold text-slate-200 mt-1">
+            <p className="text-sm font-semibold text-slate-300 mt-1">
               AI-Powered Urban Heat Island &amp; Climate Resilience System
             </p>
-            <p className="text-xs text-slate-400 mt-0.5">
-              Pilot City: <strong>Jalandhar Municipal Corporation (80 Wards)</strong> · Attribute-Based Access Control (ABAC)
-            </p>
+            <div className="flex flex-wrap items-center justify-center gap-2 mt-2 font-mono text-[10px]">
+              <span className="px-2.5 py-0.5 rounded-full bg-[#030712] text-slate-300 border border-[#1e293b]">SAR + NDVI Satellite Fusion</span>
+              <span className="px-2.5 py-0.5 rounded-full bg-[#030712] text-emerald-300 border border-emerald-500/20">Tree Passports</span>
+              <span className="px-2.5 py-0.5 rounded-full bg-[#030712] text-slate-300 border border-[#1e293b]">Sub-5m GPS Verification</span>
+            </div>
           </div>
         </div>
 
         {/* Tab Switcher */}
         <div className="flex justify-center">
-          <div className="flex gap-2 bg-slate-950/60 backdrop-blur-md p-1.5 rounded-2xl border border-white/10 text-xs shadow">
+          <div className="flex gap-2 bg-[#030712] p-1.5 rounded-2xl border border-[#1e293b] text-xs shadow">
             <button
               onClick={() => setActiveTab('personas')}
               className={`px-5 py-2.5 rounded-xl font-bold transition flex items-center gap-2 ${
                 activeTab === 'personas'
-                  ? 'bg-emerald-500 text-slate-950 shadow-lg'
+                  ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-black shadow-lg'
                   : 'text-slate-400 hover:text-white'
               }`}
             >
@@ -360,7 +373,7 @@ function LoginPortalScreen({
               onClick={() => setActiveTab('custom')}
               className={`px-5 py-2.5 rounded-xl font-bold transition flex items-center gap-2 ${
                 activeTab === 'custom'
-                  ? 'bg-emerald-500 text-slate-950 shadow-lg'
+                  ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-black shadow-lg'
                   : 'text-slate-400 hover:text-white'
               }`}
             >
@@ -376,7 +389,7 @@ function LoginPortalScreen({
               {PRESET_PERSONAS.map((persona) => (
                 <div
                   key={persona.id}
-                  className="p-5 rounded-3xl bg-slate-950/60 backdrop-blur-xl border border-white/10 hover:border-emerald-500/50 transition-all duration-300 shadow-xl flex flex-col justify-between space-y-4 group"
+                  className="p-5 rounded-3xl bg-[#030712] border border-[#1e293b] hover:border-emerald-500/50 transition-all duration-300 shadow-xl flex flex-col justify-between space-y-4 group"
                 >
                   <div className="space-y-3">
                     <div className="flex items-start justify-between">
@@ -390,34 +403,26 @@ function LoginPortalScreen({
                         </div>
                       </div>
 
-                      <span className={`text-[10px] font-mono px-2.5 py-0.5 rounded-full font-bold ${
-                        persona.role === 'SUPER_ADMIN'
-                          ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30'
-                          : persona.role === 'FIELD_WORKER'
-                          ? 'bg-green-500/20 text-green-300 border border-green-500/30'
-                          : persona.orgSlug === 'pgd-infra'
-                          ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
-                          : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
-                      }`}>
+                      <span className="font-mono text-[10px] uppercase px-2.5 py-0.5 rounded-full font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
                         {persona.role}
                       </span>
                     </div>
 
-                    <div className="p-3 rounded-2xl bg-slate-900/60 border border-white/5 text-[11px] space-y-1">
+                    <div className="p-3 rounded-2xl bg-[#0b101d] border border-[#1e293b] text-[11px] space-y-1">
                       <div className="flex justify-between">
                         <span className="text-slate-400">Email:</span>
                         <span className="font-mono text-slate-200">{persona.email}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-slate-400">Licensed Wards:</span>
-                        <span className="font-bold text-emerald-300">{persona.licensedWards.join(', ')}</span>
+                        <span className="font-bold text-emerald-400">{persona.licensedWards.join(', ')}</span>
                       </div>
                     </div>
                   </div>
 
                   <button
                     onClick={() => onLogin(persona)}
-                    className="w-full py-2.5 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs transition shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2"
+                    className="w-full py-2.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-extrabold text-xs transition shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2"
                   >
                     Authenticate as {persona.name.split(' ')[0]} <ArrowRight className="w-4 h-4" />
                   </button>
@@ -479,6 +484,8 @@ function LoginPortalScreen({
 }
 
 export function App() {
+  const [appMode, setAppMode] = useState<'landing' | 'app'>('landing');
+  const [sidebarOpen, setSidebarOpen] = useState<boolean>(true);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<'map' | 'wards' | 'workflow' | 'llm' | 'heat' | 'species' | 'cooling' | 'trees' | 'billing'>('map');
   const [currentUser, setCurrentUser] = useState<UserPersona>(PRESET_PERSONAS[1]); // Default: MCJ Commissioner
@@ -634,6 +641,18 @@ export function App() {
     }, 2000);
   };
 
+  if (appMode === 'landing') {
+    return (
+      <LandingPage
+        onOpenApp={() => setAppMode('app')}
+        onOpenLogin={() => {
+          setAppMode('app');
+          setIsLoggedIn(false);
+        }}
+      />
+    );
+  }
+
   if (!isLoggedIn) {
     return (
       <LoginPortalScreen
@@ -646,13 +665,13 @@ export function App() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans relative overflow-x-hidden">
+    <div className="min-h-screen bg-[#030712] text-slate-100 flex flex-col font-sans relative overflow-x-hidden">
       {/* Background Ambient Light Orbs */}
       <div className="absolute top-0 left-1/4 w-96 h-96 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none" />
-      <div className="absolute top-1/2 right-10 w-96 h-96 rounded-full bg-purple-500/10 blur-3xl pointer-events-none" />
+      <div className="absolute top-1/2 right-10 w-96 h-96 rounded-full bg-teal-500/10 blur-3xl pointer-events-none" />
 
-      {/* 1. TOP GLASSMORPHISM HEADER & PERSONA BAR */}
-      <header className="sticky top-0 z-50 bg-slate-900/60 backdrop-blur-2xl border-b border-white/10 px-6 py-3 flex flex-wrap items-center justify-between gap-4 shadow-xl">
+      {/* 1. TOP ARANYIX HEADER & PERSONA BAR */}
+      <header className="sticky top-0 z-50 bg-[#030712]/90 backdrop-blur-2xl border-b border-[#1e293b] px-6 py-3 flex flex-wrap items-center justify-between gap-4 shadow-xl">
         {/* Brand */}
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-600 via-teal-500 to-cyan-400 flex items-center justify-center shadow-lg shadow-emerald-500/25 border border-white/20">
@@ -714,10 +733,19 @@ export function App() {
             </div>
           </div>
 
+          {/* Public Landing Portal Toggle */}
+          <button
+            onClick={() => setAppMode('landing')}
+            className="px-3.5 py-2 rounded-xl bg-[#0b101d] hover:bg-slate-800 text-slate-200 font-bold text-xs transition border border-[#1e293b] flex items-center gap-1.5"
+          >
+            <Globe className="w-4 h-4 text-emerald-400" />
+            Public Portal
+          </button>
+
           {/* Role Switcher Button */}
           <button
             onClick={() => setShowRoleModal(true)}
-            className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs transition border border-slate-700 flex items-center gap-1.5"
+            className="px-3.5 py-2 rounded-xl bg-[#0b101d] hover:bg-slate-800 text-slate-200 font-bold text-xs transition border border-[#1e293b] flex items-center gap-1.5"
           >
             <Users className="w-4 h-4 text-emerald-400" />
             Switch Role
@@ -772,12 +800,12 @@ export function App() {
       )}
 
       {/* 3. SUB-NAVIGATION TABS */}
-      <nav className="bg-slate-900/70 border-b border-slate-800 px-6 py-2 flex items-center gap-1 overflow-x-auto text-sm">
+      <nav className="bg-[#0b101d] border-b border-[#1e293b] px-6 py-2 flex items-center gap-1.5 overflow-x-auto text-sm">
         <button
           onClick={() => setActiveTab('map')}
-          className={`flex items-center gap-2 px-3.5 py-2 rounded-lg font-medium transition-all ${
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl font-bold transition-all ${
             activeTab === 'map'
-              ? 'bg-emerald-500 text-slate-950 font-bold shadow-lg shadow-emerald-500/25'
+              ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-black shadow-lg shadow-emerald-500/20'
               : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
           }`}
         >
@@ -787,9 +815,9 @@ export function App() {
 
         <button
           onClick={() => setActiveTab('wards')}
-          className={`flex items-center gap-2 px-3.5 py-2 rounded-lg font-medium transition-all ${
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl font-bold transition-all ${
             activeTab === 'wards'
-              ? 'bg-emerald-500 text-slate-950 font-bold shadow-lg shadow-emerald-500/25'
+              ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-black shadow-lg shadow-emerald-500/20'
               : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
           }`}
         >
@@ -799,9 +827,9 @@ export function App() {
 
         <button
           onClick={() => setActiveTab('workflow')}
-          className={`flex items-center gap-2 px-3.5 py-2 rounded-lg font-medium transition-all ${
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl font-bold transition-all ${
             activeTab === 'workflow'
-              ? 'bg-emerald-500 text-slate-950 font-bold shadow-lg shadow-emerald-500/25'
+              ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-black shadow-lg shadow-emerald-500/20'
               : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
           }`}
         >
