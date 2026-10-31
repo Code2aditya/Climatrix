@@ -4,6 +4,9 @@ import '../../core/theme/glassmorphism_theme.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/climate_provider.dart';
 import '../../providers/tree_provider.dart';
+import '../../widgets/glass_bottom_nav_bar.dart';
+import '../customer/interactive_gis_map_screen.dart';
+import '../customer/reports_screen.dart';
 import '../common/settings_screen.dart';
 
 class ManagerDashboardScreen extends StatefulWidget {
@@ -14,6 +17,8 @@ class ManagerDashboardScreen extends StatefulWidget {
 }
 
 class _ManagerDashboardScreenState extends State<ManagerDashboardScreen> {
+  int _currentIndex = 0;
+
   @override
   void initState() {
     super.initState();
@@ -35,185 +40,214 @@ class _ManagerDashboardScreenState extends State<ManagerDashboardScreen> {
     final criticalCount = tree.trees.where((t) => t.status == 'CRITICAL' || t.status == 'DISTRESSED').length;
     final survivalRate = tree.trees.isNotEmpty ? ((thrivingCount / tree.trees.length) * 100).round() : 94;
 
+    final List<Widget> pages = [
+      _buildHomeContent(context, auth, climate, tree, thrivingCount, criticalCount, survivalRate),
+      const InteractiveGisMapScreen(),
+      const ReportsScreen(),
+      const SettingsScreen(),
+    ];
+
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
           gradient: GlassmorphismTheme.spaceBackgroundGradient,
         ),
         child: SafeArea(
-          child: ListView(
-            padding: const EdgeInsets.all(16),
-            children: [
-              // Header Bar
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: pages[_currentIndex],
+        ),
+      ),
+      bottomNavigationBar: GlassBottomNavBar(
+        currentIndex: _currentIndex,
+        onTap: (idx) => setState(() => _currentIndex = idx),
+        items: const [
+          GlassBottomNavItem(icon: Icons.admin_panel_settings_rounded, label: 'Overview'),
+          GlassBottomNavItem(icon: Icons.map_rounded, label: 'GIS Map'),
+          GlassBottomNavItem(icon: Icons.description_rounded, label: 'Reports'),
+          GlassBottomNavItem(icon: Icons.settings, label: 'Settings'),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHomeContent(
+    BuildContext context,
+    AuthProvider auth,
+    ClimateProvider climate,
+    TreeProvider tree,
+    int thrivingCount,
+    int criticalCount,
+    int survivalRate,
+  ) {
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        // Header Bar
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Executive Manager Portal',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        Text(
-                          'Tenant: ${auth.selectedTenant?.name ?? "Jalandhar Municipal Corp"}',
-                          style: const TextStyle(color: Color(0xFF10B981), fontSize: 12),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
+                  const Text(
+                    'Executive Manager Portal',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
                     ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  IconButton(
-                    icon: GlassCard(
-                      borderRadius: 12,
-                      padding: const EdgeInsets.all(8),
-                      opacity: 0.2,
-                      child: const Icon(Icons.settings, color: Colors.white, size: 20),
-                    ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => const SettingsScreen()),
-                      );
-                    },
+                  Text(
+                    'Tenant: ${auth.selectedTenant?.name ?? "Jalandhar Municipal Corp"}',
+                    style: const TextStyle(color: Color(0xFF10B981), fontSize: 12),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),
-              const SizedBox(height: 20),
-
-              // KPI Summary Cards
-              Row(
-                children: [
-                  Expanded(
-                    child: MetricBadge(
-                      label: 'Sapling Survival Rate',
-                      value: '$survivalRate%',
-                      icon: Icons.trending_up,
-                      accentColor: const Color(0xFF10B981),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: MetricBadge(
-                      label: 'Monitored Trees',
-                      value: '${tree.trees.length}',
-                      icon: Icons.park,
-                      accentColor: const Color(0xFF38BDF8),
-                    ),
-                  ),
-                ],
+            ),
+            IconButton(
+              icon: GlassCard(
+                borderRadius: 12,
+                padding: const EdgeInsets.all(8),
+                opacity: 0.2,
+                child: const Icon(Icons.settings, color: Colors.white, size: 20),
               ),
-              const SizedBox(height: 10),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const SettingsScreen()),
+                );
+              },
+            ),
+          ],
+        ),
+        const SizedBox(height: 20),
 
-              Row(
-                children: [
-                  Expanded(
-                    child: MetricBadge(
-                      label: 'Thriving Saplings',
-                      value: '$thrivingCount',
-                      icon: Icons.eco,
-                      accentColor: const Color(0xFF10B981),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: MetricBadge(
-                      label: 'Requires Attention',
-                      value: '$criticalCount',
-                      icon: Icons.warning_amber,
-                      accentColor: const Color(0xFFEF4444),
-                    ),
-                  ),
-                ],
+        // KPI Summary Cards
+        Row(
+          children: [
+            Expanded(
+              child: MetricBadge(
+                label: 'Sapling Survival Rate',
+                value: '$survivalRate%',
+                icon: Icons.trending_up,
+                accentColor: const Color(0xFF10B981),
               ),
-              const SizedBox(height: 24),
-
-              // Executive Wards Summary
-              const Text(
-                'Organisation Ward Licensing Overview',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: MetricBadge(
+                label: 'Monitored Trees',
+                value: '${tree.trees.length}',
+                icon: Icons.park,
+                accentColor: const Color(0xFF38BDF8),
               ),
-              const SizedBox(height: 12),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
 
-              Column(
-                children: climate.wards.map((ward) {
-                  return Container(
-                    margin: const EdgeInsets.only(bottom: 12),
-                    child: GlassCard(
-                      borderRadius: 18,
-                      padding: const EdgeInsets.all(16),
-                      opacity: 0.15,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
+        Row(
+          children: [
+            Expanded(
+              child: MetricBadge(
+                label: 'Thriving Saplings',
+                value: '$thrivingCount',
+                icon: Icons.eco,
+                accentColor: const Color(0xFF10B981),
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: MetricBadge(
+                label: 'Requires Attention',
+                value: '$criticalCount',
+                icon: Icons.warning_amber,
+                accentColor: const Color(0xFFEF4444),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 24),
+
+        // Executive Wards Summary
+        const Text(
+          'Organisation Ward Licensing Overview',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 12),
+
+        Column(
+          children: climate.wards.map((ward) {
+            return Container(
+              margin: const EdgeInsets.only(bottom: 12),
+              child: GlassCard(
+                borderRadius: 18,
+                padding: const EdgeInsets.all(16),
+                opacity: 0.15,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  ward.name,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                const SizedBox(height: 2),
-                                Text(
-                                  'Population Density: ${ward.populationDensity} / sq.km',
-                                  style: const TextStyle(color: Colors.white60, fontSize: 12),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ],
+                          Text(
+                            ward.name,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
                             ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
-                          const SizedBox(width: 8),
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                            decoration: BoxDecoration(
-                              color: ward.isLicensed
-                                  ? const Color(0xFF10B981).withValues(alpha: 0.2)
-                                  : const Color(0xFFEF4444).withValues(alpha: 0.2),
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(
-                                color: ward.isLicensed ? const Color(0xFF10B981) : const Color(0xFFEF4444),
-                              ),
-                            ),
-                            child: Text(
-                              ward.isLicensed ? 'LICENSED' : 'UNLICENSED',
-                              style: TextStyle(
-                                color: ward.isLicensed ? const Color(0xFFA7F3D0) : const Color(0xFFFCA5A5),
-                                fontWeight: FontWeight.bold,
-                                fontSize: 11,
-                              ),
-                            ),
+                          const SizedBox(height: 2),
+                          Text(
+                            'Population Density: ${ward.populationDensity} / sq.km',
+                            style: const TextStyle(color: Colors.white60, fontSize: 12),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ],
                       ),
                     ),
-                  );
-                }).toList(),
+                    const SizedBox(width: 8),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: ward.isLicensed
+                            ? const Color(0xFF10B981).withValues(alpha: 0.2)
+                            : const Color(0xFFEF4444).withValues(alpha: 0.2),
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(
+                          color: ward.isLicensed ? const Color(0xFF10B981) : const Color(0xFFEF4444),
+                        ),
+                      ),
+                      child: Text(
+                        ward.isLicensed ? 'LICENSED' : 'UNLICENSED',
+                        style: TextStyle(
+                          color: ward.isLicensed ? const Color(0xFFA7F3D0) : const Color(0xFFFCA5A5),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 11,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ],
-          ),
+            );
+          }).toList(),
         ),
-      ),
+      ],
     );
   }
 }

@@ -8,6 +8,7 @@ import '../../core/theme/glassmorphism_theme.dart';
 import '../../models/ward_model.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/climate_provider.dart';
+import '../../providers/tree_provider.dart';
 
 class InteractiveGisMapScreen extends StatefulWidget {
   const InteractiveGisMapScreen({super.key});
@@ -19,7 +20,7 @@ class InteractiveGisMapScreen extends StatefulWidget {
 class _InteractiveGisMapScreenState extends State<InteractiveGisMapScreen> {
   final MapController _mapController = MapController();
 
-  // Collapsible Panel States (matching GisMap.tsx)
+  // Collapsible Panel States
   bool _leftSidebarOpen = false;
   bool _rightPanelOpen = false;
 
@@ -27,7 +28,6 @@ class _InteractiveGisMapScreenState extends State<InteractiveGisMapScreen> {
   String _activeBasemap = 'ESRI_DARK'; // ESRI_DARK, OSM_STREETS, ESRI_SATELLITE
   bool _showRadarOverlay = false;
   bool _showIsochroneOverlay = false;
-  bool _showTreesOnMap = true;
   double _layerOpacity = 0.65;
 
   // Active Expandable Category (0 to 4)
@@ -162,6 +162,7 @@ class _InteractiveGisMapScreenState extends State<InteractiveGisMapScreen> {
   Widget build(BuildContext context) {
     final auth = Provider.of<AuthProvider>(context);
     final climate = Provider.of<ClimateProvider>(context);
+    final tree = Provider.of<TreeProvider>(context);
     final selectedWard = climate.selectedWard ?? (climate.wards.isNotEmpty ? climate.wards.first : null);
 
     final centerLatLng = const LatLng(31.3260, 75.5762);
@@ -230,6 +231,74 @@ class _InteractiveGisMapScreenState extends State<InteractiveGisMapScreen> {
 
               // Candidate Pin Markers
               MarkerLayer(markers: _candidatePinMarkers),
+
+              // Geotagged Planted Tree Pin Markers (THRIVING vs DISTRESSED) - ALWAYS RENDERED
+              MarkerLayer(
+                markers: tree.trees.map((t) {
+                  final isThriving = t.status == 'THRIVING';
+                  final markerColor = isThriving ? const Color(0xFF10B981) : const Color(0xFFEF4444);
+
+                  return Marker(
+                    point: LatLng(t.lat, t.lng),
+                    width: 32,
+                    height: 32,
+                    child: GestureDetector(
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (_) => AlertDialog(
+                            backgroundColor: const Color(0xFF0B101D),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+                            title: Row(
+                              children: [
+                                Icon(Icons.park, color: markerColor),
+                                const SizedBox(width: 8),
+                                Text(t.treeUniqueTag, style: const TextStyle(color: Colors.white, fontSize: 15)),
+                              ],
+                            ),
+                            content: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('Species: ${t.speciesName} (${t.botanicalName})', style: const TextStyle(color: Colors.white70, fontSize: 12)),
+                                const SizedBox(height: 6),
+                                Text('Status: ${t.status}', style: TextStyle(color: markerColor, fontWeight: FontWeight.bold, fontSize: 12)),
+                                const SizedBox(height: 4),
+                                Text('Height: ${t.initialHeightCm} cm', style: const TextStyle(color: Colors.white, fontSize: 12)),
+                              ],
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: const Text('Close', style: TextStyle(color: Color(0xFF10B981))),
+                              )
+                            ],
+                          ),
+                        );
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: markerColor,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.white, width: 2),
+                          boxShadow: [
+                            BoxShadow(
+                              color: markerColor.withValues(alpha: 0.6),
+                              blurRadius: 10,
+                              spreadRadius: 2,
+                            )
+                          ],
+                        ),
+                        child: const Icon(
+                          Icons.park,
+                          color: Colors.white,
+                          size: 16,
+                        ),
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
 
               // Ward Boundary Markers
               MarkerLayer(

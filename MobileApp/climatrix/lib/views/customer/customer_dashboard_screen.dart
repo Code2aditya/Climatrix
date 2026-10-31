@@ -4,11 +4,13 @@ import '../../core/theme/glassmorphism_theme.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/climate_provider.dart';
 import '../../providers/language_provider.dart';
+import '../../widgets/glass_bottom_nav_bar.dart';
 import 'interactive_gis_map_screen.dart';
 import 'ai_recommendations_screen.dart';
 import 'reports_screen.dart';
 import 'ward_explorer_view.dart';
 import 'llm_decision_view.dart';
+import 'tree_planner_view.dart';
 import '../common/workflow_visualizer_view.dart';
 import '../common/settings_screen.dart';
 
@@ -32,9 +34,166 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
     });
   }
 
+  void _openModuleMenu(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (_) {
+        return GlassCard(
+          borderRadius: 24,
+          padding: const EdgeInsets.all(20),
+          opacity: 0.95,
+          child: SafeArea(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Climatrix All Modules & Tools',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close, color: Colors.white70),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                GridView.count(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  crossAxisCount: 2,
+                  childAspectRatio: 1.6,
+                  crossAxisSpacing: 12,
+                  mainAxisSpacing: 12,
+                  children: [
+                    _menuTile(
+                      title: 'Tree Plantation Planner',
+                      subtitle: 'Density & Carbon Simulator',
+                      icon: Icons.nature_people_rounded,
+                      color: const Color(0xFF10B981),
+                      onTap: () {
+                        Navigator.pop(context);
+                        setState(() => _currentIndex = 7);
+                      },
+                    ),
+                    _menuTile(
+                      title: 'Ward Data Matrix',
+                      subtitle: '80 Ward Diagnostics',
+                      icon: Icons.layers_rounded,
+                      color: const Color(0xFF38BDF8),
+                      onTap: () {
+                        Navigator.pop(context);
+                        setState(() => _currentIndex = 2);
+                      },
+                    ),
+                    _menuTile(
+                      title: 'AI LLM Advisor',
+                      subtitle: 'Cognitive Reasoning',
+                      icon: Icons.psychology_rounded,
+                      color: const Color(0xFFA855F7),
+                      onTap: () {
+                        Navigator.pop(context);
+                        setState(() => _currentIndex = 3);
+                      },
+                    ),
+                    _menuTile(
+                      title: 'Pipeline Flow',
+                      subtitle: '5-Stage Data Visualizer',
+                      icon: Icons.account_tree_rounded,
+                      color: const Color(0xFF06B6D4),
+                      onTap: () {
+                        Navigator.pop(context);
+                        setState(() => _currentIndex = 4);
+                      },
+                    ),
+                    _menuTile(
+                      title: 'Species Matcher',
+                      subtitle: 'Punjab Native Trees',
+                      icon: Icons.eco_rounded,
+                      color: const Color(0xFF34D399),
+                      onTap: () {
+                        Navigator.pop(context);
+                        setState(() => _currentIndex = 5);
+                      },
+                    ),
+                    _menuTile(
+                      title: 'Reports & Licensing',
+                      subtitle: 'PDFs & Subscriptions',
+                      icon: Icons.description_rounded,
+                      color: const Color(0xFFF59E0B),
+                      onTap: () {
+                        Navigator.pop(context);
+                        setState(() => _currentIndex = 6);
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _menuTile({
+    required String title,
+    required String subtitle,
+    required IconData icon,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
+    return GlassCard(
+      borderRadius: 16,
+      padding: const EdgeInsets.all(12),
+      opacity: 0.15,
+      border: Border.all(color: color.withValues(alpha: 0.4)),
+      onTap: onTap,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Row(
+            children: [
+              Icon(icon, color: color, size: 20),
+              const SizedBox(width: 6),
+              Expanded(
+                child: Text(
+                  title,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 13,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          Text(
+            subtitle,
+            style: const TextStyle(color: Colors.white60, fontSize: 10),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final lang = Provider.of<LanguageProvider>(context);
     final climate = Provider.of<ClimateProvider>(context);
 
     final List<Widget> pages = [
@@ -50,6 +209,7 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
       const WorkflowVisualizerView(),
       const AiRecommendationsScreen(),
       const ReportsScreen(),
+      const TreePlannerView(),
     ];
 
     return Scaffold(
@@ -61,53 +221,21 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
           child: pages[_currentIndex],
         ),
       ),
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          color: GlassmorphismTheme.cardDarkBackground.withValues(alpha: 0.95),
-          border: Border(
-            top: BorderSide(color: Colors.white.withValues(alpha: 0.15), width: 1),
-          ),
-        ),
-        child: BottomNavigationBar(
-          currentIndex: _currentIndex,
-          onTap: (idx) => setState(() => _currentIndex = idx),
-          backgroundColor: Colors.transparent,
-          selectedItemColor: const Color(0xFF10B981),
-          unselectedItemColor: Colors.white60,
-          type: BottomNavigationBarType.fixed,
-          selectedFontSize: 10,
-          unselectedFontSize: 10,
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.dashboard_rounded),
-              label: 'Overview',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.map_rounded),
-              label: 'GIS Map',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.layers_rounded),
-              label: 'Matrix',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.psychology_rounded),
-              label: 'AI Advisor',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.account_tree_rounded),
-              label: 'Pipeline',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.eco_rounded),
-              label: 'Species',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.description_rounded),
-              label: 'Reports',
-            ),
-          ],
-        ),
+      bottomNavigationBar: GlassBottomNavBar(
+        currentIndex: _currentIndex > 3 ? 3 : _currentIndex,
+        onTap: (idx) {
+          if (idx == 3) {
+            _openModuleMenu(context);
+          } else {
+            setState(() => _currentIndex = idx);
+          }
+        },
+        items: const [
+          GlassBottomNavItem(icon: Icons.dashboard_rounded, label: 'Overview'),
+          GlassBottomNavItem(icon: Icons.map_rounded, label: 'GIS Map'),
+          GlassBottomNavItem(icon: Icons.psychology_rounded, label: 'AI Advisor'),
+          GlassBottomNavItem(icon: Icons.grid_view_rounded, label: 'All Modules'),
+        ],
       ),
     );
   }
