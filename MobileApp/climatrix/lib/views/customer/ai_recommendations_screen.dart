@@ -108,28 +108,36 @@ class _AiRecommendationsScreenState extends State<AiRecommendationsScreen> with 
                                     children: [
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
-                                          Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                sp.commonNamePunjabi,
-                                                style: const TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.bold,
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  sp.commonNamePunjabi,
+                                                  style: const TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 18,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                  maxLines: 1,
+                                                  overflow: TextOverflow.ellipsis,
                                                 ),
-                                              ),
-                                              Text(
-                                                sp.botanicalName,
-                                                style: const TextStyle(
-                                                  color: Color(0xFF38BDF8),
-                                                  fontSize: 13,
-                                                  fontStyle: FontStyle.italic,
+                                                Text(
+                                                  sp.botanicalName,
+                                                  style: const TextStyle(
+                                                    color: Color(0xFF38BDF8),
+                                                    fontSize: 13,
+                                                    fontStyle: FontStyle.italic,
+                                                  ),
+                                                  maxLines: 1,
+                                                  overflow: TextOverflow.ellipsis,
                                                 ),
-                                              ),
-                                            ],
+                                              ],
+                                            ),
                                           ),
+                                          const SizedBox(width: 8),
                                           Container(
                                             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                                             decoration: BoxDecoration(
@@ -157,12 +165,12 @@ class _AiRecommendationsScreenState extends State<AiRecommendationsScreen> with 
                                         ),
                                       ),
                                       const SizedBox(height: 12),
-                                      Row(
+                                      Wrap(
+                                        spacing: 6,
+                                        runSpacing: 6,
                                         children: [
                                           _chip('Drought: ${sp.droughtToleranceRating}/5', Icons.water_drop_outlined),
-                                          const SizedBox(width: 8),
                                           _chip('Canopy: ${sp.matureCanopyRadiusM}m', Icons.nature),
-                                          const SizedBox(width: 8),
                                           _chip('APTI Index: ${sp.airPollutionToleranceIndex}', Icons.air),
                                         ],
                                       ),

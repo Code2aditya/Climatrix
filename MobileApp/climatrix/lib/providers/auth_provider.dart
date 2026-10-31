@@ -3,6 +3,25 @@ import '../core/auth/auth_service.dart';
 import '../core/services/api_service.dart';
 import '../models/user_model.dart';
 
+final List<TenantModel> SEED_TENANTS = [
+  TenantModel(
+    id: 'mcjalandhar',
+    name: 'Municipal Corporation Jalandhar (MCJ)',
+    slug: 'mcjalandhar',
+    orgType: 'MUNICIPAL',
+    contactEmail: 'commissioner@mcjalandhar.gov.in',
+    licensedLocationIds: ['ward-04', 'ward-14', 'ward-18', 'ward-37', 'ward-55', 'ward-68'],
+  ),
+  TenantModel(
+    id: 'pgd-infra',
+    name: 'Punjab Green Developers Ltd (PGD)',
+    slug: 'pgd-infra',
+    orgType: 'DEVELOPER',
+    contactEmail: 'sustainability@pgd-infra.in',
+    licensedLocationIds: ['ward-22', 'ward-68'],
+  ),
+];
+
 class AuthProvider with ChangeNotifier {
   final ApiService _apiService = ApiService();
 
@@ -15,10 +34,10 @@ class AuthProvider with ChangeNotifier {
   UserPersona _activePersona = PRESET_PERSONAS[1]; // Harpreet Kaur IAS
   UserPersona get activePersona => _activePersona;
 
-  List<TenantModel> _tenants = [];
+  List<TenantModel> _tenants = List.from(SEED_TENANTS);
   List<TenantModel> get tenants => _tenants;
 
-  TenantModel? _selectedTenant;
+  TenantModel? _selectedTenant = SEED_TENANTS.first;
   TenantModel? get selectedTenant => _selectedTenant;
 
   String _currentRole = 'ANALYST';
@@ -26,27 +45,38 @@ class AuthProvider with ChangeNotifier {
 
   bool get isAuthenticated => _currentUser != null;
 
+  AuthProvider() {
+    _tenants = List.from(SEED_TENANTS);
+    _selectedTenant = _tenants.first;
+  }
+
   Future<void> initAuth() async {
     _isLoading = true;
     notifyListeners();
 
     try {
-      _tenants = await _apiService.fetchTenants();
-      if (_tenants.isNotEmpty) {
+      final fetched = await _apiService.fetchTenants();
+      if (fetched.isNotEmpty) {
+        _tenants = fetched;
         _selectedTenant = _tenants.first;
       }
+    } catch (_) {
+      if (_tenants.isEmpty) {
+        _tenants = List.from(SEED_TENANTS);
+        _selectedTenant = _tenants.first;
+      }
+    }
 
+    try {
       final savedUser = await AuthService.getUser();
       if (savedUser != null) {
         _currentUser = savedUser;
         _currentRole = savedUser.role;
       }
-    } catch (e) {
-      debugPrint('Auth init error: $e');
-    } finally {
-      _isLoading = false;
-      notifyListeners();
-    }
+    } catch (_) {}
+
+    _isLoading = false;
+    notifyListeners();
   }
 
   void selectTenant(TenantModel tenant) {

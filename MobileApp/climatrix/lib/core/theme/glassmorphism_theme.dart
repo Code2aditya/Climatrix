@@ -1,18 +1,26 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class GlassmorphismTheme {
-  // Brand & Palette Gradients
-  static const Color darkBackground = Color(0xFF0F172A);
-  static const Color cardDarkBackground = Color(0xFF1E293B);
+  // Deep Obsidian Backdrop Palette
+  static const Color darkBackground = Color(0xFF030712);
+  static const Color cardDarkBackground = Color(0xFF0B101D);
+
+  // Accent Colors
+  static const Color bioGreenEmerald = Color(0xFF10B981);
+  static const Color satelliteAqua = Color(0xFF06B6D4);
+  static const Color criticalRed = Color(0xFFEF4444);
+  static const Color highOrange = Color(0xFFF97316);
+  static const Color moderateYellow = Color(0xFFEAB308);
 
   static const LinearGradient spaceBackgroundGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
     colors: [
-      Color(0xFF0B132B),
-      Color(0xFF1C2541),
-      Color(0xFF0B2B26),
+      Color(0xFF030712),
+      Color(0xFF0B101D),
+      Color(0xFF022C22),
     ],
   );
 
@@ -25,34 +33,34 @@ class GlassmorphismTheme {
   static const LinearGradient heatCrisisGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [Color(0xFF991B1B), Color(0xFFDC2626), Color(0xFFF87171)],
+    colors: [Color(0xFF991B1B), Color(0xFFEF4444), Color(0xFFF87171)],
   );
 
   static const LinearGradient cyberAmberGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [Color(0xFFD97706), Color(0xFFF59E0B), Color(0xFFFBBF24)],
+    colors: [Color(0xFFD97706), Color(0xFFF97316), Color(0xFFFBBF24)],
   );
 
   static const LinearGradient auroraBlueGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [Color(0xFF0284C7), Color(0xFF0EA5E9), Color(0xFF38BDF8)],
+    colors: [Color(0xFF0284C7), Color(0xFF06B6D4), Color(0xFF38BDF8)],
   );
 
-  // Text Theme
+  // Text Theme using GoogleFonts Inter & JetBrainsMono
   static ThemeData get themeData {
     return ThemeData(
       brightness: Brightness.dark,
-      primaryColor: const Color(0xFF10B981),
+      primaryColor: bioGreenEmerald,
       scaffoldBackgroundColor: darkBackground,
       colorScheme: const ColorScheme.dark(
-        primary: Color(0xFF10B981),
-        secondary: Color(0xFF38BDF8),
-        surface: Color(0xFF1E293B),
-        error: Color(0xFFEF4444),
+        primary: bioGreenEmerald,
+        secondary: satelliteAqua,
+        surface: cardDarkBackground,
+        error: criticalRed,
       ),
-      fontFamily: 'Roboto',
+      textTheme: GoogleFonts.interTextTheme(ThemeData.dark().textTheme),
       useMaterial3: true,
     );
   }
@@ -73,9 +81,9 @@ class GlassCard extends StatelessWidget {
     super.key,
     required this.child,
     this.borderRadius = 20.0,
-    this.blurSigma = 14.0,
+    this.blurSigma = 12.0,
     this.opacityColor,
-    this.opacity = 0.12,
+    this.opacity = 0.75,
     this.padding = const EdgeInsets.all(16.0),
     this.margin = EdgeInsets.zero,
     this.border,
@@ -86,7 +94,7 @@ class GlassCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final effectiveBorder = border ??
         Border.all(
-          color: Colors.white.withValues(alpha: 0.2),
+          color: const Color(0xFF1E293B),
           width: 1.2,
         );
 
@@ -99,12 +107,12 @@ class GlassCard extends StatelessWidget {
           child: Container(
             padding: padding,
             decoration: BoxDecoration(
-              color: opacityColor ?? Colors.white.withValues(alpha: opacity),
+              color: opacityColor ?? const Color(0xFF0B101D).withValues(alpha: opacity),
               borderRadius: BorderRadius.circular(borderRadius),
               border: effectiveBorder,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.25),
+                  color: Colors.black.withValues(alpha: 0.35),
                   blurRadius: 16,
                   spreadRadius: 1,
                   offset: const Offset(0, 6),
@@ -185,7 +193,7 @@ class GlassButton extends StatelessWidget {
                 ],
                 Text(
                   text,
-                  style: const TextStyle(
+                  style: GoogleFonts.inter(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                     fontSize: 15,
@@ -215,27 +223,27 @@ class HeatStatusBadge extends StatelessWidget {
 
     switch (status.toUpperCase()) {
       case 'CRITICAL':
-        bg = const Color(0xFF7F1D1D).withValues(alpha: 0.8);
+        bg = const Color(0xFF7F1D1D).withValues(alpha: 0.85);
         border = const Color(0xFFEF4444);
         text = const Color(0xFFFCA5A5);
         icon = Icons.local_fire_department;
         break;
       case 'HIGH':
-        bg = const Color(0xFF78350F).withValues(alpha: 0.8);
-        border = const Color(0xFFF59E0B);
-        text = const Color(0xFFFDE68A);
+        bg = const Color(0xFF78350F).withValues(alpha: 0.85);
+        border = const Color(0xFFF97316);
+        text = const Color(0xFFFDBA74);
         icon = Icons.warning_amber_rounded;
         break;
       case 'MODERATE':
-        bg = const Color(0xFF1E3A8A).withValues(alpha: 0.8);
-        border = const Color(0xFF38BDF8);
-        text = const Color(0xFFBAE6FD);
+        bg = const Color(0xFF713F12).withValues(alpha: 0.85);
+        border = const Color(0xFFEAB308);
+        text = const Color(0xFFFEF08A);
         icon = Icons.thermostat;
         break;
       case 'THRIVING':
       case 'LOW':
       default:
-        bg = const Color(0xFF064E3B).withValues(alpha: 0.8);
+        bg = const Color(0xFF064E3B).withValues(alpha: 0.85);
         border = const Color(0xFF10B981);
         text = const Color(0xFFA7F3D0);
         icon = Icons.eco;
@@ -262,9 +270,9 @@ class HeatStatusBadge extends StatelessWidget {
           const SizedBox(width: 4),
           Text(
             status.toUpperCase(),
-            style: TextStyle(
+            style: GoogleFonts.jetBrainsMono(
               color: text,
-              fontSize: 11,
+              fontSize: 10,
               fontWeight: FontWeight.bold,
               letterSpacing: 0.5,
             ),
@@ -296,9 +304,9 @@ class MetricBadge extends StatelessWidget {
     return GlassCard(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
       borderRadius: 14,
-      opacity: 0.15,
+      opacity: 0.75,
       border: Border.all(
-        color: accentColor.withValues(alpha: 0.3),
+        color: accentColor.withValues(alpha: 0.35),
         width: 1,
       ),
       child: Column(
@@ -312,8 +320,8 @@ class MetricBadge extends StatelessWidget {
               Expanded(
                 child: Text(
                   label,
-                  style: TextStyle(
-                    color: Colors.white.withValues(alpha: 0.7),
+                  style: GoogleFonts.inter(
+                    color: Colors.white.withValues(alpha: 0.75),
                     fontSize: 10,
                     fontWeight: FontWeight.w500,
                   ),
@@ -333,7 +341,7 @@ class MetricBadge extends StatelessWidget {
               children: [
                 Text(
                   value,
-                  style: const TextStyle(
+                  style: GoogleFonts.jetBrainsMono(
                     color: Colors.white,
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -343,7 +351,7 @@ class MetricBadge extends StatelessWidget {
                   const SizedBox(width: 2),
                   Text(
                     unit!,
-                    style: TextStyle(
+                    style: GoogleFonts.jetBrainsMono(
                       color: accentColor,
                       fontSize: 11,
                       fontWeight: FontWeight.w600,

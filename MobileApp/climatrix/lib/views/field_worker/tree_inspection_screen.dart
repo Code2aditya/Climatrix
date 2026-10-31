@@ -1,4 +1,6 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../../core/theme/glassmorphism_theme.dart';
 import '../../core/services/location_service.dart';
@@ -25,20 +27,33 @@ class _TreeInspectionScreenState extends State<TreeInspectionScreen> {
 
   double _gpsLat = 31.3260;
   double _gpsLng = 75.5762;
-  double _distanceDeviationM = 1.2;
+  double _haversineDistanceM = 1.2;
 
   @override
   void initState() {
     super.initState();
     _gpsLat = widget.tree.lat;
     _gpsLng = widget.tree.lng;
-    _checkGpsDistance();
+    _checkHaversineGpsDistance();
   }
 
-  Future<void> _checkGpsDistance() async {
+  // Exact Haversine GPS Distance Calculation in meters
+  double _computeHaversineDistance(double lat1, double lon1, double lat2, double lon2) {
+    const double r = 6371000; // Earth radius in meters
+    final dLat = _toRadians(lat2 - lat1);
+    final dLon = _toRadians(lon2 - lon1);
+    final a = sin(dLat / 2) * sin(dLat / 2) +
+        cos(_toRadians(lat1)) * cos(_toRadians(lat2)) * sin(dLon / 2) * sin(dLon / 2);
+    final c = 2 * atan2(sqrt(a), sqrt(1 - a));
+    return r * c;
+  }
+
+  double _toRadians(double degree) => degree * pi / 180.0;
+
+  Future<void> _checkHaversineGpsDistance() async {
     final pos = await LocationService.getCurrentLocation();
     if (pos != null && mounted) {
-      final dist = LocationService.calculateDistanceMeters(
+      final dist = _computeHaversineDistance(
         widget.tree.lat,
         widget.tree.lng,
         pos.latitude,
@@ -47,7 +62,7 @@ class _TreeInspectionScreenState extends State<TreeInspectionScreen> {
       setState(() {
         _gpsLat = pos.latitude;
         _gpsLng = pos.longitude;
-        _distanceDeviationM = dist;
+        _haversineDistanceM = dist;
       });
     }
   }
@@ -56,6 +71,8 @@ class _TreeInspectionScreenState extends State<TreeInspectionScreen> {
   Widget build(BuildContext context) {
     final auth = Provider.of<AuthProvider>(context);
     final treeProvider = Provider.of<TreeProvider>(context);
+
+    final bool isGpsVerified = _haversineDistanceM <= 15.0;
 
     return Scaffold(
       body: Container(
@@ -80,8 +97,8 @@ class _TreeInspectionScreenState extends State<TreeInspectionScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Inspection: ${widget.tree.treeUniqueTag}',
-                            style: const TextStyle(
+                            'Digital Passport: ${widget.tree.treeUniqueTag}',
+                            style: GoogleFonts.inter(
                               color: Colors.white,
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -89,7 +106,7 @@ class _TreeInspectionScreenState extends State<TreeInspectionScreen> {
                           ),
                           Text(
                             widget.tree.speciesName,
-                            style: const TextStyle(color: Color(0xFF10B981), fontSize: 12),
+                            style: GoogleFonts.jetBrainsMono(color: const Color(0xFF10B981), fontSize: 12),
                           ),
                         ],
                       ),
@@ -102,14 +119,12 @@ class _TreeInspectionScreenState extends State<TreeInspectionScreen> {
                 child: ListView(
                   padding: const EdgeInsets.all(16),
                   children: [
-                    // GPS Distance Verification Card
+                    // Haversine GPS Distance Verification Card (sub-15m Gate)
                     GlassCard(
                       borderRadius: 20,
-                      opacity: 0.18,
+                      opacity: 0.75,
                       border: Border.all(
-                        color: _distanceDeviationM <= 15.0
-                            ? const Color(0xFF10B981)
-                            : const Color(0xFFEF4444),
+                        color: isGpsVerified ? const Color(0xFF10B981) : const Color(0xFFEF4444),
                         width: 1.5,
                       ),
                       child: Column(
@@ -121,39 +136,35 @@ class _TreeInspectionScreenState extends State<TreeInspectionScreen> {
                               Row(
                                 children: [
                                   Icon(
-                                    _distanceDeviationM <= 15.0 ? Icons.verified : Icons.warning,
-                                    color: _distanceDeviationM <= 15.0
-                                        ? const Color(0xFF10B981)
-                                        : const Color(0xFFEF4444),
+                                    isGpsVerified ? Icons.verified : Icons.warning,
+                                    color: isGpsVerified ? const Color(0xFF10B981) : const Color(0xFFEF4444),
                                     size: 20,
                                   ),
                                   const SizedBox(width: 8),
-                                  const Text(
-                                    'Sub-5m GPS Audit',
-                                    style: TextStyle(
+                                  Text(
+                                    'Haversine GPS Drift Audit Gate',
+                                    style: GoogleFonts.inter(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 15,
+                                      fontSize: 14,
                                     ),
                                   ),
                                 ],
                               ),
                               Text(
-                                _distanceDeviationM <= 15.0 ? 'VERIFIED' : 'DISTANCE ALERT',
-                                style: TextStyle(
-                                  color: _distanceDeviationM <= 15.0
-                                      ? const Color(0xFFA7F3D0)
-                                      : const Color(0xFFFCA5A5),
+                                isGpsVerified ? 'PASSED (d ≤ 15m)' : 'FAILED (d > 15m)',
+                                style: GoogleFonts.jetBrainsMono(
+                                  color: isGpsVerified ? const Color(0xFFA7F3D0) : const Color(0xFFFCA5A5),
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 11,
+                                  fontSize: 10,
                                 ),
                               ),
                             ],
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            'Distance from registered planting site: ${_distanceDeviationM.toStringAsFixed(1)} meters',
-                            style: const TextStyle(color: Colors.white70, fontSize: 12),
+                            'Calculated Haversine Distance Drift: ${_haversineDistanceM.toStringAsFixed(2)} meters',
+                            style: GoogleFonts.jetBrainsMono(color: Colors.white70, fontSize: 11),
                           ),
                         ],
                       ),
@@ -163,16 +174,16 @@ class _TreeInspectionScreenState extends State<TreeInspectionScreen> {
                     // Form
                     GlassCard(
                       borderRadius: 20,
-                      opacity: 0.15,
+                      opacity: 0.75,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text('Milestone Stage', style: TextStyle(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
+                          Text('Milestone Audit Stage', style: GoogleFonts.inter(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
                           const SizedBox(height: 8),
                           DropdownButtonFormField<String>(
                             value: _selectedMilestone,
-                            dropdownColor: const Color(0xFF1E293B),
-                            style: const TextStyle(color: Colors.white),
+                            dropdownColor: const Color(0xFF0B101D),
+                            style: GoogleFonts.inter(color: Colors.white),
                             decoration: InputDecoration(
                               filled: true,
                               fillColor: Colors.white.withValues(alpha: 0.08),
@@ -194,7 +205,7 @@ class _TreeInspectionScreenState extends State<TreeInspectionScreen> {
                           ),
                           const SizedBox(height: 16),
 
-                          const Text('Health Rating (1 to 5 Stars)', style: TextStyle(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
+                          Text('Health Rating (1 to 5 Stars)', style: GoogleFonts.inter(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
                           const SizedBox(height: 8),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -215,10 +226,10 @@ class _TreeInspectionScreenState extends State<TreeInspectionScreen> {
                           TextField(
                             controller: _heightController,
                             keyboardType: TextInputType.number,
-                            style: const TextStyle(color: Colors.white),
+                            style: GoogleFonts.jetBrainsMono(color: Colors.white),
                             decoration: InputDecoration(
                               labelText: 'Current Measured Height (cm)',
-                              labelStyle: const TextStyle(color: Colors.white70),
+                              labelStyle: GoogleFonts.inter(color: Colors.white70),
                               filled: true,
                               fillColor: Colors.white.withValues(alpha: 0.08),
                               border: OutlineInputBorder(
@@ -232,10 +243,10 @@ class _TreeInspectionScreenState extends State<TreeInspectionScreen> {
                           TextField(
                             controller: _notesController,
                             maxLines: 2,
-                            style: const TextStyle(color: Colors.white),
+                            style: GoogleFonts.inter(color: Colors.white),
                             decoration: InputDecoration(
-                              labelText: 'Inspector Remarks',
-                              labelStyle: const TextStyle(color: Colors.white70),
+                              labelText: 'Field Auditor Remarks',
+                              labelStyle: GoogleFonts.inter(color: Colors.white70),
                               filled: true,
                               fillColor: Colors.white.withValues(alpha: 0.08),
                               border: OutlineInputBorder(
@@ -247,7 +258,7 @@ class _TreeInspectionScreenState extends State<TreeInspectionScreen> {
                           const SizedBox(height: 24),
 
                           GlassButton(
-                            text: 'Submit Tamper-Evident Inspection',
+                            text: 'Submit GPS Verified Audit',
                             icon: Icons.check_circle_outline,
                             onPressed: () async {
                               final height = double.tryParse(_heightController.text) ?? 145.0;

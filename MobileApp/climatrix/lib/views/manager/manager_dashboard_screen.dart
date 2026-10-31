@@ -48,22 +48,28 @@ class _ManagerDashboardScreenState extends State<ManagerDashboardScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Executive Manager Portal',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Executive Manager Portal',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                      ),
-                      Text(
-                        'Tenant: ${auth.selectedTenant?.name ?? "Jalandhar Municipal Corp"}',
-                        style: const TextStyle(color: Color(0xFF10B981), fontSize: 12),
-                      ),
-                    ],
+                        Text(
+                          'Tenant: ${auth.selectedTenant?.name ?? "Jalandhar Municipal Corp"}',
+                          style: const TextStyle(color: Color(0xFF10B981), fontSize: 12),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
                   ),
                   IconButton(
                     icon: GlassCard(
@@ -151,24 +157,33 @@ class _ManagerDashboardScreenState extends State<ManagerDashboardScreen> {
                       opacity: 0.15,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                ward.name,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  ward.name,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
-                              ),
-                              Text(
-                                'Population Density: ${ward.populationDensity} / sq.km',
-                                style: const TextStyle(color: Colors.white60, fontSize: 12),
-                              ),
-                            ],
+                                const SizedBox(height: 2),
+                                Text(
+                                  'Population Density: ${ward.populationDensity} / sq.km',
+                                  style: const TextStyle(color: Colors.white60, fontSize: 12),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ],
+                            ),
                           ),
+                          const SizedBox(width: 8),
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                             decoration: BoxDecoration(

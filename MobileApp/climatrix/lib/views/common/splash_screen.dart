@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../core/theme/glassmorphism_theme.dart';
 import '../../providers/auth_provider.dart';
-import 'onboarding_screen.dart';
 import 'login_screen.dart';
 import '../customer/customer_dashboard_screen.dart';
 
@@ -23,7 +22,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1800),
+      duration: const Duration(milliseconds: 1200),
     );
 
     _scaleAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(
@@ -40,8 +39,11 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
 
   Future<void> _checkAuthAndNavigate() async {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    await authProvider.initAuth();
-    await Future.delayed(const Duration(milliseconds: 2200));
+    try {
+      await authProvider.initAuth().timeout(const Duration(milliseconds: 1000));
+    } catch (_) {}
+
+    await Future.delayed(const Duration(milliseconds: 1200));
 
     if (!mounted) return;
 
@@ -53,7 +55,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     } else {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => const OnboardingScreen()),
+        MaterialPageRoute(builder: (_) => const LoginScreen()),
       );
     }
   }
